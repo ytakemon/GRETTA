@@ -1,6 +1,17 @@
 # GINI-dev
 An R Package for Genetic Interaction Network Identification (GINI)
 
+
+
+
+
+
+
+
+
+
+
+
 [![CC BY 4.0][cc-by-shield]][cc-by]
 
 This work is licensed under a
