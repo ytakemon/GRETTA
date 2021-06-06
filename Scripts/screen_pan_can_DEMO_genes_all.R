@@ -1,3 +1,9 @@
+# First script to run for default automated screen
+#
+# Input is a gene list for screening using default automated method
+# Output will generate `screen_pan_can_DEMO_genes_all.sh` containing a list batch of screens to be submitted to the cluster
+if (!require("pacman")) install.packages("pacman")
+
 library(pacman)
 p_load(tidyverse)
 DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"

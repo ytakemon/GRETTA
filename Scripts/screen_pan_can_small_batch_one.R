@@ -1,4 +1,4 @@
-# Batch screening adapted from: 20Q1_par_MWU_genetic_screen.R
+# GINI Screen using Mann-Whitney U method.
 batch_list <- commandArgs(trailingOnly = TRUE)
 cat(paste("Scanning", length(batch_list), "genes", "\n"))
 print(batch_list)
