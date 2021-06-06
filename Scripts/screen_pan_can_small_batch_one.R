@@ -7,7 +7,7 @@ start_time <- Sys.time()
 # Set up------------------------------------------------------
 library(pacman)
 p_load(tidyverse, rcompanion, doMC, broom, diptest)
-registerDoMC(10)
+registerDoMC(2)
 DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"
 
 ## Load files ---------------------------------------------------------
