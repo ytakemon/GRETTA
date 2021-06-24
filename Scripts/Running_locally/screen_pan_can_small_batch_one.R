@@ -8,8 +8,8 @@ print(batch_list)
 start_time <- Sys.time()
 
 # Set up------------------------------------------------------
-library(pacman)
-p_load(tidyverse, rcompanion, doMC, broom, diptest)
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, rcompanion, doMC, broom, diptest)
 registerDoMC(4)
 DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"
 
