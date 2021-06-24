@@ -3,7 +3,7 @@ An R Package for Genetic Interaction Network Identification (GINI)
 
 Data are currently privately available at [Synapse](https://www.synapse.org/#!Synapse:syn25834866/files/)
 
-
+Hadley and Jenny's [book on building an R package](https://github.com/hadley/r-pkgs)
 
 
 
