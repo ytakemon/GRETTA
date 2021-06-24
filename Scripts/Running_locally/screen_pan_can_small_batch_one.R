@@ -11,15 +11,15 @@ start_time <- Sys.time()
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse, rcompanion, doMC, broom, diptest)
 registerDoMC(4)
-DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"
+Local_dir <- "/where/ever/you/decide/"
 
 ## Load files ---------------------------------------------------------
-load(paste0(DepMap_dir,"/Data/RData/20Q1_minimum_screening_data.RData"))
+load(paste0(Local_dir,"Data/20Q1_minimum_screening_data.RData"))
 
-Groups <- read_csv(paste0(DepMap_dir, "Analysis/Automate_single_screen/Pan_Cancer/AllGene_Groups_pan_cancer.csv")) %>%
+Groups <- read_csv(paste0(Local_dir, "Data/AllGene_Groups_pan_cancer.csv")) %>%
   filter(GeneName %in% batch_list)
 
-Groups_tally <- read_csv(paste0(DepMap_dir, "Analysis/Automate_single_screen/Pan_Cancer/AllGene_Groups_tally_pan_cancer.csv")) %>%
+Groups_tally <- read_csv(paste0(Local_dir, "Data/AllGene_Groups_tally_pan_cancer.csv")) %>%
     filter(GeneName %in% batch_list)
 
 # Perpare Data -----------------------------------------------------------
@@ -46,7 +46,7 @@ for(i in 1:length(batch_list)){
   }
 
   # Create Directory if not present ----------------------------------------------
-  if(dir.exists(paste0(DepMap_dir, "Analysis/Automate_single_screen/Pan_Cancer", "/", Target_gene))){
+  if(dir.exists(paste0(Local_dir, "Analysis/Pan_Cancer", "/", Target_gene))){
     print(paste0("Directory for ", Target_gene, " exists"))
   } else{
     print(paste0("Directory for ", Target_gene, " does not exist. Creating new directory ... "))
@@ -190,7 +190,7 @@ for(i in 1:length(batch_list)){
 
   # output
   write_csv(output,
-      file = paste0(DepMap_dir, "Results/Automate_single_screen/Pan_Cancer/",Target_gene, "/", Target_gene,"_MWU_genetic_screening_results.csv"))
+      file = paste0(Local_dir, "Results/Pan_Cancer/",Target_gene, "/", Target_gene,"_MWU_genetic_screening_results.csv"))
 } # End of this Target_gene
 
 end_time <- Sys.time()
