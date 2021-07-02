@@ -1,4 +1,4 @@
-# GINI-dev
+# GINIscreenR
 An R Package for Genetic Interaction Network Identification (GINI)
 
 Data are currently privately available at [Synapse](https://www.synapse.org/#!Synapse:syn25834866/files/)
