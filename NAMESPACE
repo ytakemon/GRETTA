@@ -2,3 +2,4 @@
 
 export(fbind)
 export(fcount)
+export(strsplit1)
