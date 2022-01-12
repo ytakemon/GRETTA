@@ -1,4 +1,4 @@
 library(testthat)
-library(GINIscreenR)
+library(GINIR)
 
-test_check("GINIscreenR")
+test_check("GINIR")
