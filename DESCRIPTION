@@ -23,3 +23,5 @@ Imports:
     forcats
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
+Depends: 
+    R (>= 3.10)
