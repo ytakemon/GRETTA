@@ -1,7 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GINIR
+<!--You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
+
+# Genetic Interaction Network IdentifieR (GINIR)
 
 <!-- badges: start -->
 
@@ -12,9 +14,9 @@ project](https://depmap.org/portal/) to identify cancer cell lines with
 mutations of interest and performs in-silico genetic interaction
 screens. A manuscript describing the process is being prepared.
 
-Current DepMap version is 20Q1 and was downloaded through the DepMap
-data portal. The data was distributed and used under the terms and
-conditions of [CC Atribution 4.0
+Current DepMap data used is version 20Q1 and was downloaded through the
+DepMap data portal. The data was distributed and used under the terms
+and conditions of [CC Atribution 4.0
 license](https://creativecommons.org/licenses/by/4.0/).
 
 <!-- Below this line are default template stuff that will be updated as the package comes together -->
@@ -35,7 +37,7 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("ytakemon/GINIR")
 ```
 
-## Example
+## Example (coming soon)
 
 This is a basic example which shows you how to solve a common problem:
 
@@ -43,30 +45,3 @@ This is a basic example which shows you how to solve a common problem:
 library(GINIR)
 ## basic example code
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/master/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.svg" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
