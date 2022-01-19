@@ -1,182 +1,145 @@
+#' Select mutant groups based on input gene of interest
+#' 
+#' @description
+#' `select_mutant_groups()` assigns cancer cell lines to either `Control` groups or one of the following mutant groups: `HomDel`,
+#' `T-HetDel`, `HetDel`, `Amplified`, or `Others` (see below for more details).
+#' \describe{
+#'  \item `Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
+#'  \item `HomDel` cell lines harbor one or more homozygous deleterious SNVs or have deep CN loss.
+#'  \item `T-HetDel` cell lines harbor two or more heterozygous deleterious SNVs/InDels with neutral or CN loss.
+#'  \item `HetDel` cell lines harbor one heterozygous deleterious SNV/InDel with neutral CN, or no SNV/InDel with CN loss. 
+#'  \item `Amplified` cell lines harbor no SNVs/InDels with increased CN.
+#'  \item `Others` cell lines harbor deleterious SNVs with increased CN.
+#' }
+#' 
+#' @param Input_gene string Input Hugo Symbol
+#' @return data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
+#' 
+#' @export
+#' @examples
+#' A1CF_groups <- select_mutant_groups("A1CF")
 select_mutant_groups <- function(Input_gene){
-  print(paste0("Selecting mutant groups for: ", Input_gene))
+  # Check to see input is given
+  if(missing(Input_gene)){
+    stop("Input gene is missing")
+  } else {
+    # Print input
+    print(paste0("Selecting mutant groups for: ", Input_gene))
+  }
   
-  
-}
+  # Check if input gene mutations exist
+  if(!any(mut_calls$Hugo_Symbol %in% Input_gene)|!any(copy_num_annot$GeneNames %in% Input_gene)){
+    stop(paste0("No mutations were found for: ", Input_gene,"\nPlease check spelling and for valid Hugo Symbols"))
+  }
+  # Convert to unique geneID
+  Input_geneID <- get_GeneNameID(Input_gene)
 
-
-
-
-
-
-
-
-start_time <- Sys.time()
-print(start_time)
-# Run: Rscript4.0.2 Gather_all_gene_groups_pan_cancer.R > Rout/Gather_all_gene_groups_pan_cancer.Rout 2>&1 &
-#Create a master list of all groups
-library(pacman)
-p_load(tidyverse, foreach, doParallel, doMC, broom)
-registerDoMC(5)
-DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"
-
-## Load files ------------------------------------------------------------------
-load(paste0(DepMap_dir,"/Data/RData/20Q1_full.RData"))
-
-AllGenes <- dep_annot$GeneNames[-1] #remove X1
-
-res <- NULL
-combine_by <- function(x, y){
-  bind_rows(x, y)
-}
-
-# 1:length(AllGenes)
-res <- foreach(i = 1:length(AllGenes), .combine = combine_by) %dopar% {
-  
-  print(paste0("Processing ", i, " of ",length(AllGenes)))
-  
-  Target_gene <- AllGenes[i]
-  Target_ID <- dep_annot %>% filter(GeneNames == Target_gene) %>% pull(GeneNameID)
-  
-  #Copy number
-  if(any(names(copy_num) %in% Target_ID)){
+  # Get copy number
+  if(any(names(copy_num) %in% Input_geneID)){
     target_copy_num <- copy_num %>%
-      select(DepMap_ID, all_of(Target_ID)) %>%
-      filter(DepMap_ID %in% dep$DepMap_ID) %>%
-      arrange(DepMap_ID) %>%
-      mutate( Status = case_when(
-        !!as.name(Target_ID) <= 0.25 ~ "Deep_del",
-        !!as.name(Target_ID) > 0.25 & !!as.name(Target_ID) < 0.75 ~ "Loss",
-        !!as.name(Target_ID) >= 0.75 & !!as.name(Target_ID) < 1.25 ~ "Neutral",
-        !!as.name(Target_ID) >= 1.25 ~ "Amplified",
+      dplyr::select(DepMap_ID, dplyr::all_of(Input_geneID)) %>%
+      dplyr::filter(DepMap_ID %in% dep$DepMap_ID) %>%
+      dplyr::arrange(DepMap_ID) %>%
+      dplyr::mutate( Status = dplyr::case_when(
+        !!as.name(Input_geneID) <= 0.25 ~ "Deep_del",
+        !!as.name(Input_geneID) > 0.25 & !!as.name(Input_geneID) < 0.75 ~ "Loss",
+        !!as.name(Input_geneID) >= 0.75 & !!as.name(Input_geneID) < 1.25 ~ "Neutral",
+        !!as.name(Input_geneID) >= 1.25 ~ "Amplified",
         TRUE ~ "Other"))
     
   } else {
-    target_copy_num <- dep %>% select(DepMap_ID) %>%
-      arrange(DepMap_ID) %>%
-      mutate(!!as.name(Target_ID) := NA,
+    target_copy_num <- dep %>% 
+      dplyr::select(DepMap_ID) %>%
+      dplyr::arrange(DepMap_ID) %>%
+      dplyr::mutate(!!as.name(Input_geneID) := NA,
              Status = "Unknown")
   }
   
-  # ALL Mutations
+  # Get ALL Mutations
   target_mut <- mut_calls %>%
-    filter((DepMap_ID %in% dep$DepMap_ID) & (Hugo_Symbol %in% Target_gene)) %>%
-    mutate(AC_combined = coalesce(CGA_WES_AC, SangerRecalibWES_AC, SangerWES_AC, RNAseq_AC,HC_AC, RD_AC, WGS_AC), #(Alt:REF)
+    dplyr::filter((DepMap_ID %in% dep$DepMap_ID) & (Hugo_Symbol %in% Input_gene)) %>%
+    dplyr::mutate(AC_combined = coalesce(CGA_WES_AC, SangerRecalibWES_AC, SangerWES_AC, RNAseq_AC,HC_AC, RD_AC, WGS_AC), #(Alt:REF)
            AC_ref_NULL = grepl(":0", AC_combined)) %>%
-    mutate(AC_Variant = case_when(
+    dplyr::mutate(AC_Variant = case_when(
       .$AC_ref_NULL == "TRUE" ~ "Hom_Mut",
       TRUE ~ "Het_Mut"),
       AC_Variant = paste0(Variant_Classification," ",AC_Variant)) %>% # are there any with 0 contribution from reference?
-    select(Hugo_Symbol, Chromosome:Annotation_Transcript, cDNA_Change:COSMIChsCnt, Variant_annotation:AC_Variant) %>%
-    arrange(Start_position) %>%
-    select(DepMap_ID, everything())
+    dplyr::select(Hugo_Symbol, Chromosome:Annotation_Transcript, cDNA_Change:COSMIChsCnt, Variant_annotation:AC_Variant) %>%
+    dplyr::arrange(Start_position) %>%
+    dplyr::select(DepMap_ID, everything())
+  # Count number of mutations found per sample
+  all_mutations_count_by_sample <- target_mut %>% dplyr::count(DepMap_ID)
   
-  all_mutations_count_by_sample <- target_mut %>% count(DepMap_ID)
+  # Get deleterious/damaging mutations
+  mut_dels <- target_mut %>% dplyr::filter(Variant_annotation == "damaging")
+  # Count number of deleterious mutations found per sample
+  del_mutations_count_by_sample <- mut_dels %>% dplyr::count(DepMap_ID)
+  # Find samples with homozygous deleterious mutations (HomDels)
+  hom_del_muts_by_sample <- mut_dels %>% dplyr::select(DepMap_ID, AC_ref_NULL) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(AC_ref_NULL == TRUE)
   
-  # Del mutations
-  mut_dels <- target_mut %>% filter(Variant_annotation == "damaging")
-  num_del_samples <- mut_dels %>% select(DepMap_ID) %>% distinct()
-  del_mutations_count_by_sample <- mut_dels %>% count(DepMap_ID)
-  hom_del_muts_by_sample <- mut_dels %>% select(DepMap_ID, AC_ref_NULL) %>%
-    distinct() %>%
-    filter(AC_ref_NULL == TRUE)
-  
-  # Multi muts
+  # Find samples with multiple heterozygous deleterious mutations. Trans-heterozygous mutants (T-HetDels)
   multi_mut_dels <- mut_dels %>%
-    filter(AC_ref_NULL == FALSE) %>%
-    add_count(DepMap_ID) %>% filter(n > 1)
-  count_sample_multi_mut_dels <- multi_mut_dels %>% select(DepMap_ID) %>% distinct()
+    dplyr::filter(AC_ref_NULL == FALSE) %>%
+    dplyr::add_count(DepMap_ID) %>% 
+    dplyr::filter(n > 1)
   
-  # Summarise results
-  summary <- sample_annot %>% filter(DepMap_ID %in% dep$DepMap_ID) %>%
-    select(DepMap_ID, stripped_cell_line_name, disease, lineage_subtype, primary_or_metastasis) %>%
-    left_join(. , all_mutations_count_by_sample, by = "DepMap_ID") %>%
-    rename(Total_mutations = n) %>%
-    mutate(Total_mutations = case_when(
+  # Summarize mutations for all samples 
+  summary <- sample_annot %>% 
+    dplyr::filter(DepMap_ID %in% dep$DepMap_ID) %>%
+    dplyr::select(DepMap_ID, stripped_cell_line_name, disease, lineage_subtype, primary_or_metastasis) %>%
+    dplyr::left_join(. , all_mutations_count_by_sample, by = "DepMap_ID") %>%
+    dplyr::rename(Total_mutations = n) %>%
+    dplyr::mutate(Total_mutations = case_when(
       is.na(Total_mutations) ~ as.double(0),
       TRUE ~  as.double(Total_mutations))) %>%
-    left_join(., del_mutations_count_by_sample, by = "DepMap_ID") %>%
-    rename(Del_mutations = n) %>%
-    mutate(Del_mutations = case_when(
+    dplyr::left_join(., del_mutations_count_by_sample, by = "DepMap_ID") %>%
+    dplyr::rename(Del_mutations = n) %>%
+    dplyr::mutate(Del_mutations = case_when(
       is.na(Del_mutations) ~ as.double(0),
       TRUE ~ as.double(Del_mutations)),
       Del_hom_mut = case_when(
         DepMap_ID %in% hom_del_muts_by_sample$DepMap_ID ~ TRUE,
         TRUE ~ FALSE)) %>%
-    left_join(., target_copy_num %>% select(DepMap_ID, Status), by = "DepMap_ID") %>%
-    rename(CN_status = Status) %>% arrange(-Del_mutations, -Total_mutations, CN_status)
+    dplyr::left_join(., target_copy_num %>% select(DepMap_ID, Status), by = "DepMap_ID") %>%
+    dplyr::rename(CN_status = Status) %>% arrange(-Del_mutations, -Total_mutations, CN_status)
   
+  # Annotate mutant group types based on conditions
   if(!all(summary$CN_status == "Unknown")){
-    Groups <- summary %>% mutate(
-      Group = case_when(
-        ((CN_status == "Deep_del") | (Del_hom_mut == TRUE)) ~ paste0(Target_gene,"_mut_1"),
+    Groups <- summary %>% 
+      dplyr::mutate(
+        Group = case_when(
+        ((CN_status == "Deep_del") | (Del_hom_mut == TRUE)) ~ paste0(Input_gene,"_HomDel"),
         ((Del_mutations > 1) & (CN_status == "Neutral")) |
-          ((Del_mutations == 1) & (CN_status == "Loss")) ~ paste0(Target_gene,"_mut_2"),
+          ((Del_mutations == 1) & (CN_status == "Loss")) ~ paste0(Input_gene,"_T-HetDel"),
         ((Del_mutations == 1) & (CN_status == "Neutral")) |
-          ((Del_mutations == 0) & (CN_status == "Loss")) ~ paste0(Target_gene,"_mut_3"),
+          ((Del_mutations == 0) & (CN_status == "Loss")) ~ paste0(Input_gene,"_HetDel"),
         ((Total_mutations == 0) & (CN_status == "Neutral")) ~ "Control",
         ((Total_mutations == 0) & (CN_status == "Amplified")) ~ "Amplified",
         ((Del_mutations == 1) & (CN_status == "Amplified")) ~ "Others",
         TRUE ~ "Others")) %>%
-      mutate(Group = fct_relevel(Group, "Control", "Amplified", paste0(Target_gene,"_mut_1"),  paste0(Target_gene,"_mut_2"), paste0(Target_gene,"_mut_3"), "Others")) %>%
-      mutate(GeneNameID = Target_ID,
-             GeneName = Target_gene)
+      dplyr::mutate(GeneNameID = Input_geneID,
+             GeneName = Input_gene)
   } else {
-    Groups <- summary %>% mutate(
-      Group = case_when(
-        (Del_hom_mut == TRUE) ~ paste0(Target_gene,"_mut_1"),
-        (Del_mutations > 1) ~ paste0(Target_gene,"_mut_2"),
-        (Del_mutations == 1) ~ paste0(Target_gene,"_mut_3"),
+    Groups <- summary %>% 
+      dplyr::mutate(
+        Group = case_when(
+        (Del_hom_mut == TRUE) ~ paste0(Input_gene,"_HomDel"),
+        (Del_mutations > 1) ~ paste0(Input_gene,"_T-HetDel"),
+        (Del_mutations == 1) ~ paste0(Input_gene,"_HetDel"),
         (Total_mutations == 0) ~ "Control",
         TRUE ~ "Others")) %>%
-      mutate(Group = fct_relevel(Group, "Control", paste0(Target_gene,"_mut_1"),  paste0(Target_gene,"_mut_2"), paste0(Target_gene,"_mut_3"), "Others")) %>%
-      mutate(GeneNameID = Target_ID,
-             GeneName = Target_gene)
+      dplyr::mutate(GeneNameID = Input_geneID,
+             GeneName = Input_gene)
   }
-}
-
-res %>%
-  relocate(c(GeneNameID, GeneName)) %>%
-  mutate(disease = str_replace_all(disease, " |/","_")) %>%
-  write_csv(file = paste0(DepMap_dir, "Analysis/Automate_single_screen/Pan_Cancer/AllGene_Groups_pan_cancer.csv"))
-
-# Tally pan cancer
-res %>%
-  mutate(disease = str_replace_all(disease, " |/","_")) %>%
-  group_by(GeneNameID, GeneName, Group) %>% tally %>%
-  write_csv(.,
-            file = paste0(DepMap_dir, "Analysis/Automate_single_screen/Pan_Cancer/AllGene_Groups_tally_pan_cancer.csv"))
-
-# Tally by disease type ---------------------------------------------------------
-# Unique disease types
-sample_annot_used <- sample_annot %>%
-  filter(DepMap_ID %in% dep$DepMap_ID) %>%
-  mutate(disease = str_replace_all(disease, " |/","_"))
-
-# less than 3: insufficient group size
-disease_insuff <- sample_annot_used %>% group_by(disease) %>% tally %>%
-  arrange(disease) %>% filter(n < 3) %>% pull(disease)
-
-# greater or equal to 3: sufficient group size
-disease_suff <- sample_annot_used %>% group_by(disease) %>% tally %>%
-  arrange(disease) %>% filter(n >= 3) %>% pull(disease)
-
-# Create directory for disease if not already available
-for(disease_type in disease_suff){
-  if(dir.exists(paste0(DepMap_dir,"/Analysis/Automate_single_screen/Per_Disease/",disease_type)) == FALSE){
-    dir.create(paste0(DepMap_dir,"/Analysis/Automate_single_screen/Per_Disease/",disease_type))
+  
+  # Print quick summary of mutants found
+  if(any(str_detect(Groups$Group, "HomDel|HetDel"))){
+    print("Mutants found! Summary of mutant cell lines:")
+    print(table(Groups$Group))
   } else {
-    print(paste("Directory exists for:", disease_type))
+    print(paste0("Mutants found!\nSummary of mutant cell lines: ", table(Groups$Group)))
   }
+  return(Groups)
 }
-
-res %>%
-  mutate(disease = str_replace_all(disease, " |/","_")) %>%
-  group_by(GeneNameID, GeneName, disease, Group) %>% tally %>%
-  write_csv(.,
-            file = paste0(DepMap_dir, "Analysis/Automate_single_screen/Per_Disease/AllGene_Groups_tally_per_disease.csv"))
-
-end_time <- Sys.time()
-print(paste("Start time", start_time))
-print(paste("End time", end_time))
-print(end_time - start_time)

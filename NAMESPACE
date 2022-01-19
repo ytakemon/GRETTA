@@ -3,4 +3,5 @@
 export("%>%")
 export(get_DepMapID)
 export(get_GeneNameID)
+export(select_mutant_groups)
 importFrom(magrittr,"%>%")

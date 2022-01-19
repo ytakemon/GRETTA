@@ -16,7 +16,7 @@ screens. A manuscript describing the process is being prepared.
 
 Current DepMap data used is version 20Q1 and was downloaded through the
 DepMap data portal. The data was distributed and used under the terms
-and conditions of [CC Atribution 4.0
+and conditions of [CC Attribution 4.0
 license](https://creativecommons.org/licenses/by/4.0/).
 
 <!-- Below this line are default template stuff that will be updated as the package comes together -->

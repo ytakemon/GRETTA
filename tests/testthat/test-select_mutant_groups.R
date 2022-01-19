@@ -1,3 +1,8 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("Number of example control and mutant groups are correct", {
+  test <- select_mutant_groups("A1CF") %>% dplyr::count(Group)
+  test_control <- test %>% dplyr::filter(Group == "Control")
+  test_amp <- test %>% dplyr::filter(Group == "Amplified")
+  
+  expect_equal(test_control$n, 610)
+  expect_equal(test_amp$n, 35)
 })

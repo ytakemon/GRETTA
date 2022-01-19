@@ -3,10 +3,10 @@
 #' @description 
 #' `get_GeneNameID()` and `get_DepMapID()` provide tools for converting gene symbols/ids and 
 #' common cell line aliases to DepMap's unique gene name and cell line identifiers, respectively.
-
-#' @export
+#' 
 #' @param GeneName string containing a vector of either Hugo gene symbol or numeric NCBI ID
 #' @return string
+#' @export
 #' @examples
 #' get_GeneNameID("A1CF")
 get_GeneNameID <- function(GeneName){
@@ -24,7 +24,7 @@ get_GeneNameID <- function(GeneName){
     
     # If no matches are found
   } else {
-    stop("Cannot find gene name. Please check the spelling. Gene names should be in all caps!")
+    stop("Cannot find gene name. Please check the spelling. Gene names should be a valid Hugo Symbol and in all caps!")
   }
   return(res)
 }
