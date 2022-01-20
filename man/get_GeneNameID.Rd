@@ -3,7 +3,7 @@
 \name{get_GeneNameID}
 \alias{get_GeneNameID}
 \alias{get_DepMapID}
-\title{Get unique DepMap-compatible names}
+\title{Get unique DepMap-compatible gene IDs}
 \usage{
 get_GeneNameID(GeneName)
 
@@ -23,6 +23,11 @@ string
 \code{get_GeneNameID()} and \code{get_DepMapID()} provide tools for converting gene symbols/ids and
 common cell line aliases to DepMap's unique gene name and cell line identifiers, respectively.
 }
+\section{Functions}{
+\itemize{
+\item \code{get_DepMapID}: Get unique DepMap-compatible sample IDs
+}}
+
 \examples{
 get_GeneNameID("A1CF")
 get_DepMapID("JURKAT")

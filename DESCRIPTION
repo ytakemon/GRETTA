@@ -21,7 +21,10 @@ Config/testthat/edition: 3
 Imports:
     dplyr,
     magrittr,
-    forcats
+    forcats,
+    rlang,
+    stringr,
+    utils
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 

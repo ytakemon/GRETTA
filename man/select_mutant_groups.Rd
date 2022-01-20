@@ -15,8 +15,11 @@ data frame containing a summary of mutations found in cell lines and their contr
 \description{
 \code{select_mutant_groups()} assigns cancer cell lines to either \code{Control} groups or one of the following mutant groups: \code{HomDel},
 \code{T-HetDel}, \code{HetDel}, \code{Amplified}, or \code{Others} (see below for more details).
-\describe{
-\item \code{Control} cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
+}
+\details{
+Mutant groups in more detail:
+\itemize{
+\item Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 \item \code{HomDel} cell lines harbor one or more homozygous deleterious SNVs or have deep CN loss.
 \item \code{T-HetDel} cell lines harbor two or more heterozygous deleterious SNVs/InDels with neutral or CN loss.
 \item \code{HetDel} cell lines harbor one heterozygous deleterious SNV/InDel with neutral CN, or no SNV/InDel with CN loss.
