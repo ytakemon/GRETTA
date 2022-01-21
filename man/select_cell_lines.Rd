@@ -6,44 +6,59 @@
 \usage{
 select_cell_lines(
   Input_gene = NULL,
+  Input_AA_change = NULL,
   Input_disease = NULL,
   Input_disease_subtype = NULL
 )
 }
 \arguments{
-\item{Input_gene}{string Input Hugo Symbol}
+\item{Input_gene}{string Hugo Symbol}
 
-\item{Input_disease}{string Cancer type selected from \code{list_available_cancer_types()}}
+\item{Input_AA_change}{string Amino acid change (eg. "A387A"). Input_gene must be specified}
+
+\item{Input_disease}{string Cancer type listed in \code{list_available_cancer_types()}}
 
 \item{Input_disease_subtype}{string Cancer subtype listed in \code{list_available_cancer_subtypes()}}
 }
 \value{
-data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
+Data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
 }
 \description{
 \code{select_cell_lines()} assigns cancer cell lines to either \code{Control} groups or one of the following mutant groups: \code{HomDel},
-\code{T-HetDel}, \code{HetDel}, \code{Amplified}, or \code{Others} (see below for more details).
+\code{T-HetDel}, \code{HetDel}, \code{Amplified}, or \code{Others} (see details).
 }
 \details{
-Mutant groups in more detail:
+Mutant groups in more detail when only \code{Input_gene} is defined:
 \itemize{
-\item Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
+\item \code{Control} cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 \item \code{HomDel} cell lines harbor one or more homozygous deleterious SNVs or have deep CN loss.
 \item \code{T-HetDel} cell lines harbor two or more heterozygous deleterious SNVs/InDels with neutral or CN loss.
 \item \code{HetDel} cell lines harbor one heterozygous deleterious SNV/InDel with neutral CN, or no SNV/InDel with CN loss.
 \item \code{Amplified} cell lines harbor no SNVs/InDels with increased CN.
 \item \code{Others} cell lines harbor deleterious SNVs with increased CN.
 }
+
+If Input_AA_change` is also defined:
+\itemize{
+\item \code{Control} cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
+\item \code{HomAlt} cell lines harbor a homozygous alteration for the specified mutation.
+\item \code{HetAlt} cell lines harbor a heterozygous alteration for the specified mutation.
+\item \verb{_CNneutral}, \verb{_CNamplified}, and \verb{_CNloss} define copy number (CN) status of the above mutation states.
+\item \code{Others} cell lines that do not meet above criteria.
+}
 }
 \examples{
 \dontrun{
 # Looking for TP53 mutants in all cancer cell lines (pan-cancer search)
 select_cell_lines(Input_gene = "TP53")
+select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H")
 
 # TP53 mutants only in SCLC subtypes
 select_cell_lines(Input_gene = "TP53", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
 
 # All cancer cell lines that are from Lung Cancers
 select_cell_lines(Input_disease = "Lung Cancer")
+
 }
 }
