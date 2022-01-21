@@ -1,5 +1,5 @@
 test_that("Number of example control and mutant groups are correct", {
-  test <- select_mutant_groups("A1CF") %>% dplyr::count(Group)
+  test <- select_cell_lines(Input_gene = "A1CF") %>% dplyr::count(Group)
   test_control <- test %>% dplyr::filter(Group == "Control")
   test_amp <- test %>% dplyr::filter(Group == "Amplified")
   
