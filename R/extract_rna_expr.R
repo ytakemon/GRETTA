@@ -51,7 +51,8 @@ extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Notify if some samples do not have expression data 
   if(!all(Input_samples %in% res$DepMap_ID)){
-    print(paste0("Following sample did not contain profile data: ", Input_samples[!Input_samples %in% res$DepMap_ID]))
+    print(paste0("Following sample did not contain profile data: ", 
+                 paste0(Input_samples[!Input_samples %in% res$DepMap_ID], collapse = ", ")))
     return(res)
   } else {
     return(res)

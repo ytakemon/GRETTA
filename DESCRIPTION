@@ -29,7 +29,9 @@ Imports:
     forcats,
     rlang,
     stringr,
-    utils
+    utils,
+    tidyr,
+    purrr
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 
