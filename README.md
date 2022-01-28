@@ -37,11 +37,41 @@ And the development version from [GitHub](https://github.com/) with:
 devtools::install_github("ytakemon/GINIR")
 ```
 
-## Example (coming soon)
+## Examples (coming soon)
 
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(GINIR)
 ## basic example code
+```
+
+## Session Info
+
+``` r
+sessionInfo()
+#> R version 4.0.2 (2020-06-22)
+#> Platform: x86_64-centos7-linux-gnu (64-bit)
+#> Running under: CentOS Linux 7 (Core)
+#> 
+#> Matrix products: default
+#> BLAS:   /gsc/software/linux-x86_64-centos7/R-4.0.2/lib64/R/lib/libRblas.so
+#> LAPACK: /gsc/software/linux-x86_64-centos7/R-4.0.2/lib64/R/lib/libRlapack.so
+#> 
+#> locale:
+#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] compiler_4.0.2    magrittr_2.0.1    tools_4.0.2       htmltools_0.5.1.1
+#>  [5] yaml_2.2.1        stringi_1.7.5     rmarkdown_2.9     knitr_1.37       
+#>  [9] stringr_1.4.0     xfun_0.29         digest_0.6.29     rlang_0.4.12     
+#> [13] evaluate_0.14
 ```
