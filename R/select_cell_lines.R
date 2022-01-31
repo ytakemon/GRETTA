@@ -38,8 +38,14 @@
 #' select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H")
 #' 
 #' # TP53 mutants only in SCLC subtypes
-#' select_cell_lines(Input_gene = "TP53", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
-#' select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+#' select_cell_lines(Input_gene = "TP53", 
+#' Input_disease = "Lung Cancer", 
+#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+#' 
+#' select_cell_lines(Input_gene = "TP53", 
+#' Input_AA_change = "R175H", 
+#' Input_disease = "Lung Cancer", 
+#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
 #' 
 #' # All cancer cell lines that are from Lung Cancers
 #' select_cell_lines(Input_disease = "Lung Cancer")
@@ -50,7 +56,7 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
   
   # Print and check to see input
   if(is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
-    stop("No input given. Please prvide an Hugo gene symbol and/or cancer type")
+    stop("No input given. Please prvide a Hugo gene symbol and/or cancer type")
     
   } else if(is.null(c(Input_gene, Input_disease)) & !is.null(Input_disease_subtype)){
     stop("No cancer context provided. Please define the `disease` argument.")
