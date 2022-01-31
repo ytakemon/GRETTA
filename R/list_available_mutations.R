@@ -17,14 +17,14 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' search_mutations(Gene = "TP53")
-#' search_mutations(Chr = 12)
+#' list_available_mutations(Gene = "TP53")
+#' list_available_mutations(Chr = 12)
 #' }
 #' 
-#' @rdname search_mutations
+#' @rdname list_available_mutations
 #' @export 
 #' @importFrom dplyr filter select arrange distinct
-search_mutations <- function(Gene = NULL, 
+list_available_mutations <- function(Gene = NULL, 
                              Chr = NULL, Start_bp = NULL, End_bp = NULL,
                              Is_hotspot = NULL, 
                              Is_damaging = NULL,
@@ -102,7 +102,7 @@ search_mutations <- function(Gene = NULL,
     }
     if(!is.null(Is_hotspot)){
       target_mut <- target_mut %>% dplyr::filter(.data$isTCGAhotspot == Is_hotspot |
-                                                 .data$isCOSMIChotspot == Is_hotspot)
+                                                   .data$isCOSMIChotspot == Is_hotspot)
     }
     if(!is.null(Is_damaging)){
       target_mut <- target_mut %>% dplyr::filter(.data$isDeleterious == Is_damaging)
