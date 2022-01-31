@@ -54,8 +54,14 @@ select_cell_lines(Input_gene = "TP53")
 select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H")
 
 # TP53 mutants only in SCLC subtypes
-select_cell_lines(Input_gene = "TP53", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
-select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H", Input_disease = "Lung Cancer", Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+select_cell_lines(Input_gene = "TP53", 
+Input_disease = "Lung Cancer", 
+Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+
+select_cell_lines(Input_gene = "TP53", 
+Input_AA_change = "R175H", 
+Input_disease = "Lung Cancer", 
+Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
 
 # All cancer cell lines that are from Lung Cancers
 select_cell_lines(Input_disease = "Lung Cancer")
