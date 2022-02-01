@@ -279,15 +279,10 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
   if(is.null(c(Input_disease, Input_disease_subtype)) & !is.null(Input_gene)){
     output <- Groups
     
-  } else if(!is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
-    output <- Groups %>% 
-      dplyr::filter(.data$disease %in% Input_disease &
-                      .data$disease_subtype %in% Input_disease_subtype)
-  
   } else if(is.null(Input_disease_subtype) & !is.null(c(Input_gene, Input_disease))){
     output <- Groups %>% 
       dplyr::filter(.data$disease %in% Input_disease)
-  
+    
   } else if(is.null(Input_gene) & !is.null(c(Input_disease, Input_disease_subtype))){
     output <- sample_annot %>% 
       dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, .data$primary_or_metastasis) %>%
@@ -299,6 +294,11 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
       dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, .data$primary_or_metastasis) %>%
       dplyr::filter(.data$disease %in% Input_disease)
   
+  } else if(!is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
+    output <- Groups %>% 
+      dplyr::filter(.data$disease %in% Input_disease &
+                      .data$disease_subtype %in% Input_disease_subtype)
+    
   } else {
     stop("Error with input.")
   }

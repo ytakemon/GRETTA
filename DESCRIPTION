@@ -31,7 +31,16 @@ Imports:
     stringr,
     utils,
     tidyr,
-    purrr
+    purrr,
+    doMC,
+    broom,
+    diptest,
+    parallel,
+    rcompanion,
+    foreach,
+    readr,
+    tidyselect,
+    stats
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 
