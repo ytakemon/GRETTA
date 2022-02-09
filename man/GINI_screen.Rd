@@ -8,7 +8,8 @@ GINI_screen(
   control_IDs = NULL,
   mutant_IDs = NULL,
   core_num = NULL,
-  output_dir = NULL
+  output_dir = NULL,
+  test = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,7 @@ and interquartile range (iqr) of dependency probabilities. Dependency probabilit
 where one indicates a essential gene (ie. KO of gene was lethal) and zero indicates a non-essential gene
 (KO of gene was not lethal)
 \item \code{Pval} - P-value from Mann Whitney U test between control and mutant groups.
+\item \code{Adj_pval} - BH-adjusted P-value.
 \item \code{log2FC_by_median} - Log2 normalized median fold change of dependency probabilities (mutant / control).
 \item \code{log2FC_by_mean} - Log2 normalized mean fold change of dependency probabilities (mutant / control).
 \item \code{CliffDelta} - Cliff's delta non-parametric effect size between mutant and control dependency probabilities.
@@ -45,6 +47,7 @@ Ranges between -1 to 1.
 \item \code{dip_pval} - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel.
 If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and
 that there may be another factor contributing to this separation.
+\item \code{Interaction_score} - Combined value generated from signed p-values: \verb{-log10(Pval) \\* sign(.data$log2FC_by_median)}
 }
 }
 \examples{
@@ -54,7 +57,8 @@ Screen_results <- GINI_screen(
 control_IDs = c("ACH-001354", "ACH-000274", "ACH-001799"), 
 mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
 core_num = 2, 
-output_dir = "~/Desktop/GINI_test_dir/")
+output_dir = "~/Desktop/GINI_test_dir/",
+test = TRUE) # turn on for shorter test runs
 
 }
 }

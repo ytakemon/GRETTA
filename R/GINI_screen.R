@@ -19,6 +19,7 @@
 #' where one indicates a essential gene (ie. KO of gene was lethal) and zero indicates a non-essential gene 
 #' (KO of gene was not lethal)
 #' * `Pval` - P-value from Mann Whitney U test between control and mutant groups.
+#' * `Adj_pval` - BH-adjusted P-value.
 #' * `log2FC_by_median` - Log2 normalized median fold change of dependency probabilities (mutant / control).
 #' * `log2FC_by_mean` - Log2 normalized mean fold change of dependency probabilities (mutant / control).
 #' * `CliffDelta` - Cliff's delta non-parametric effect size between mutant and control dependency probabilities. 
@@ -26,6 +27,7 @@
 #' * `dip_pval` - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel.
 #' If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and
 #' that there may be another factor contributing to this separation. 
+#' * `Interaction_score` - Combined value generated from signed p-values: `-log10(Pval) \* sign(.data$log2FC_by_median)`
 #' @md
 #' 
 #' @examples 
@@ -35,9 +37,11 @@
 #' control_IDs = c("ACH-001354", "ACH-000274", "ACH-001799"), 
 #' mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
 #' core_num = 2, 
-#' output_dir = "~/Desktop/GINI_test_dir/")
+#' output_dir = "~/Desktop/GINI_test_dir/",
+#' test = TRUE) # turn on for shorter test runs
 #' 
 #' }
+#' 
 #' @rdname GINI_screen
 #' @export 
 #' @importFrom parallel detectCores
@@ -53,7 +57,7 @@
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test
 
-GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL){
+GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, test = FALSE){
   
   # Check that essential inputs are given:
   if(is.null(control_IDs)){
@@ -121,9 +125,16 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   # Need to define function. A fix for a strange bug:
   `%dopar%` <- foreach::`%dopar%`
   
+  # For testing short loops:
+  if(test == TRUE){
+    run <- 10
+  } else if (test == FALSE){
+    run <- length(unique(select_dep$GeneNameID))
+  }
+  
   # Begin loop
   All_res <- each <- NULL
-  All_res <- foreach::foreach(each = 1:length(unique(dep$GeneNameID)), .combine = bind_rows) %dopar% {
+  All_res <- foreach::foreach(each = 1:run, .combine = bind_rows) %dopar% {
     
     # Give feedback
     if(each == 1){
@@ -201,11 +212,13 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   # Add mutant group name
   output <- All_res %>%
     dplyr::mutate(log2FC_by_median = log2(.data$Mutant_median / .data$Control_median),
-           log2FC_by_mean = log2(.data$Mutant_mean / .data$Control_mean)) %>%
+           log2FC_by_mean = log2(.data$Mutant_mean / .data$Control_mean),
+           Adj_pval = p.adjust(.data$Pval, method = "BH", length(.data$Pval)),
+           Interaction_score = -log10(.data$Pval) * sign(.data$log2FC_by_median)) %>%
     dplyr::left_join(dep_annot %>% select(.data$GeneNameID, .data$GeneNames),
               by = "GeneNameID") %>%
-    dplyr::select(.data$GeneNameID, .data$GeneNames, .data$Control_median:.data$Pval, 
-           .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything())
+    dplyr::select(.data$GeneNameID, .data$GeneNames, .data$Control_median:.data$Pval, .data$Adj_pval,
+           .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(), .data$Interaction_score)
   
   # save and return output
   output %>% readr::write_csv(file = paste0(output_dir,"/GINI_screening_results.csv"))
