@@ -7,6 +7,7 @@
 #' @param mutant_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
+#' @param test logical, For test_that to shorten computational time for testing
 #'
 #' @return A data frame containing results from the genetic screen. A copy is also saved to the 
 #' directory defined in `output_dir`.
@@ -55,7 +56,7 @@
 #' @importFrom tidyr pivot_longer pivot_wider
 #' @importFrom tidyselect everything
 #' @importFrom readr write_csv
-#' @importFrom stats median sd IQR wilcox.test
+#' @importFrom stats median sd IQR wilcox.test p.adjust
 
 GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, test = FALSE){
   

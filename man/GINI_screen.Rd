@@ -20,6 +20,8 @@ GINI_screen(
 \item{core_num}{integer, Number of cores to run analysis, Default: NULL}
 
 \item{output_dir}{string, Full path to where output file should be saved, Default: NULL}
+
+\item{test}{logical, For test_that to shorten computational time for testing}
 }
 \value{
 A data frame containing results from the genetic screen. A copy is also saved to the
@@ -61,4 +63,5 @@ output_dir = "~/Desktop/GINI_test_dir/",
 test = TRUE) # turn on for shorter test runs
 
 }
+
 }
