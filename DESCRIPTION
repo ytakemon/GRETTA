@@ -42,7 +42,8 @@ Imports:
     tidyselect,
     stats,
     ggplot2,
-    ggrepel
+    ggrepel,
+    lifecycle
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 
