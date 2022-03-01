@@ -40,7 +40,9 @@ Imports:
     foreach,
     readr,
     tidyselect,
-    stats
+    stats,
+    ggplot2,
+    ggrepel
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 

@@ -29,7 +29,7 @@ directory defined in \code{output_dir}.
 }
 \description{
 Compares dependency probabilities of mutant and control groups to determine
-whether the mutant group are resistant or suceptable specific gene perturbations.
+whether the mutant group are resistant or sensitive to specific gene perturbations.
 }
 \details{
 Description of output data frame

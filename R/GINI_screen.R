@@ -1,7 +1,7 @@
 #' @title Perform genetic interaction screen
 #' 
 #' @description Compares dependency probabilities of mutant and control groups to determine 
-#' whether the mutant group are resistant or suceptable specific gene perturbations.
+#' whether the mutant group are resistant or sensitive to specific gene perturbations.
 #' 
 #' @param control_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
 #' @param mutant_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
