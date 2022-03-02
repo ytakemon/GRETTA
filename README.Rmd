@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 
 # Flip the switch to evaluate all when ready for final render
-Final_eval <- TRUE
+Final_eval <- FALSE
 ```
 
 # Genetic Interaction Network IdentifieR (GINIR)
@@ -157,7 +157,22 @@ ggplot(ARID1A_HomDel_muts_and_ctrls_rna, aes(x = Group, y = ARID1A_8289)) +
 
 ### Perform *in silico* genetic screen
 
-After determining cell lines in the `ARID1A_HomDel` group has statistically significant reduction in RNA expression compared to `Control` cell lines, the next step is to perform the *in silico* genetic screen. This uses the dependency probabilities (or "lethality probabilities") generated from DepMap's genome-wide CRISPR-Cas9 knockout screen. Lethality probabilities range from 0.0 to 1.0 and is quantified for each gene knock out in every cancer cell line screened (There are 18,334 genes targeted in 739 cancer cell lines). A gene knock out with a lethality probability of 0.0 indicates a non-essential for the cell line, and a gene knock out with a 1.0 indicates an essential gene (ie. very lethal). 
+After determining cell lines in the `ARID1A_HomDel` group has statistically significant reduction in RNA expression compared to `Control` cell lines, the next step is to perform a *in silico* genetic screen using `screen_results()`. This uses the dependency probabilities (or **"lethality probabilities"**) generated from DepMap's genome-wide CRISPR-Cas9 knockout screen. 
+
+**Lethality probabilities** range from 0.0 to 1.0 and is quantified for each gene knock out in every cancer cell line screened (There are 18,334 genes targeted in 739 cancer cell lines). A gene knock out with a lethality probability of 0.0 indicates a non-essential for the cell line, and a gene knock out with a 1.0 indicates an essential gene (ie. very lethal). Details can be found in [Meyers, R., et al., 2017](https://doi.org/10.1038/ng.3984)
+
+At its core, `screen_results()` performs multiple Mann-Whitney U tests, comparing lethality probabilities of each targeted gene between mutant and control groups. This generates a data frame with the following columns:
+
+* `GeneName_ID` - Hugo symbol with NCBI gene ID
+* `GeneNames` - Hugo symbol
+* `_median, _mean, _sd, _iqr` - Control and mutant group's median, mean, standard deviation (sd), and interquartile range (iqr) of dependency probabilities. Dependency probabilities range from zero to one, where one indicates a essential gene (ie. KO of gene was lethal) and zero indicates a non-essential gene (KO of gene was not lethal)
+* `Pval` - P-value from Mann Whitney U test between control and mutant groups.
+* `Adj_pval` - BH-adjusted P-value.
+* `log2FC_by_median` - Log2 normalized median fold change of dependency probabilities (mutant / control).
+* `log2FC_by_mean` - Log2 normalized mean fold change of dependency probabilities (mutant / control).
+* `CliffDelta` - Cliff's delta non-parametric effect size between mutant and control dependency probabilities. Ranges between -1 to 1.
+* `dip_pval` - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel. If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and that there may be another factor contributing to this separation.
+* `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median)
 
 ```{r run_screen, eval = FALSE}
 ARID1A_mutant_IDs <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -172,16 +187,25 @@ screen_results <- GINI_screen(
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
+```{r load_prepared_results, eval = Final_eval, include = FALSE}
+# Load prepared ARID1A screen result
+data("sample_ARID1A_KO_screen")
+screen_results <- sample_ARID1A_KO_screen
+```
+
+```{r checkout_res, eval = Final_eval}
+screen_results %>% arrange(-Interaction_score) %>% head()
+```
+
 ### Visualize screen results
 
 Finally once the *in silico* screen is complete, results can be quickly visualized using `plot_screen()`. Positive genetic interaction scores indicate potential synthetic lethal genetic interactors, and negative scores indicate potential alleviating genetic interactors. 
 
 ```{r plot, eval = Final_eval}
-# Load prepared ARID1A screen result
-data("sample_ARID1A_KO_screen")
-screen_results <- sample_ARID1A_KO_screen
+# Visualize results, turn on gene labels, 
+# and label three genes each that are predicted to have 
+# lethal and alleviating genetic interactions, respectively
 
-# Visualize results, turn on gene labels, and label three genes each that are predicted to have lethal and alleviating genetic interactions, respectively
 plot_screen(result_df = screen_results, 
             label_genes = TRUE, 
             label_n = 3)

@@ -49,7 +49,7 @@ Ranges between -1 to 1.
 \item \code{dip_pval} - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel.
 If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and
 that there may be another factor contributing to this separation.
-\item \code{Interaction_score} - Combined value generated from signed p-values: \verb{-log10(Pval) \\* sign(.data$log2FC_by_median)}
+\item \code{Interaction_score} - Combined value generated from signed p-values: \verb{-log10(Pval) \\* sign(log2FC_by_median)}
 }
 }
 \examples{
