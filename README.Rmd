@@ -191,7 +191,7 @@ screen_results <- GINI_screen(
 
 ```{r load_prepared_results, eval = Final_eval, include = FALSE}
 # Load prepared ARID1A screen result
-data("sample_ARID1A_KO_screen")
+load("data/sample_ARID1A_KO_screen.rda", envir = environment())
 screen_results <- sample_ARID1A_KO_screen
 ```
 
