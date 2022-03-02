@@ -34,7 +34,7 @@ extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL){
     stop(paste0(Input_samples[!Input_samples %in% sample_annot$DepMap_ID],", not recognized as a valid sample"))
   }
   if(!all(Input_genes %in% protein_nodup$Gene_Symbol)){
-    stop(paste0(Input_genes[!Input_genes %in% protein_nodup$Gene_Symbol],", not recognized. Please check spelling or remove gene name from input"))
+    stop(paste0(Input_genes[!Input_genes %in% protein_nodup$Gene_Symbol],", not recognized or protein expression is not available. Please check spelling or remove gene name from input"))
   }
   
   # If no input gene is given, give full expr table
