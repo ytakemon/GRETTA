@@ -1,6 +1,6 @@
 Package: GINIR
 Title: Perform In-silico Screens for Genetic Interaction Networks
-Version: 0.0.0.9001
+Version: 0.1.0
 Authors@R:
     c(person(given = "Yuka",
         family = "Takemon",
