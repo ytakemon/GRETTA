@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 
 # Flip the switch to evaluate all when ready for final render
-Final_eval <- FALSE
+Final_eval <- TRUE
 ```
 
 # Genetic Interaction Network IdentifieR (GINIR)

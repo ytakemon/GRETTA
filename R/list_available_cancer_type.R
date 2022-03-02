@@ -15,7 +15,7 @@
 list_available_cancer_types <- function(){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  data("sample_annot", envir = environment())
+  load("data/sample_annot", envir = environment())
   
   # Main
   sample_annot %>% 
@@ -32,7 +32,7 @@ list_available_cancer_types <- function(){
 list_available_cancer_subtypes <- function(input_disease){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  data("sample_annot", envir = environment())
+  load("data/sample_annot.rda", envir = environment())
   
   # Main
   sample_annot %>% 
