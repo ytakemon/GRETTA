@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 
 # Flip the switch to evaluate all when ready for final render
-Final_eval <- FALSE
+Final_eval <- TRUE
 ```
 
 # Genetic Interaction Network IdentifieR (GINIR)
@@ -172,7 +172,7 @@ At its core, `screen_results()` performs multiple Mann-Whitney U tests, comparin
 * `log2FC_by_mean` - Log2 normalized mean fold change of dependency probabilities (mutant / control).
 * `CliffDelta` - Cliff's delta non-parametric effect size between mutant and control dependency probabilities. Ranges between -1 to 1.
 * `dip_pval` - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel. If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and that there may be another factor contributing to this separation.
-* `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median)
+* `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median). Negative scores indicate lethal genetic interaction, and positive scores indicate alleviating genetic interaction.
 
 ```{r run_screen, eval = FALSE}
 ARID1A_mutant_IDs <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -193,9 +193,16 @@ data("sample_ARID1A_KO_screen")
 screen_results <- sample_ARID1A_KO_screen
 ```
 
+We can quickly determine whether any lethal genetic interactions were predicted by `GINIR`. We use a `Pval` cut off of 0.05 and rank based on the `Interaction_score`. 
+
 ```{r checkout_res, eval = Final_eval}
-screen_results %>% arrange(-Interaction_score) %>% head()
+screen_results %>% 
+  filter(Pval < 0.05) %>%
+  arrange(-Interaction_score) %>% 
+  select(GeneNames:Mutant_median, Pval, Interaction_score) %>% head
 ```
+
+We immediately see that *ARID1B*, a known synthetic lethal interaction of *ARID1A*, was a the top of this list.
 
 ### Visualize screen results
 

@@ -75,6 +75,14 @@ For this example you will need to call the following libraries
 ``` r
 library(GINIR)
 library(tidyverse)
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+#> ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+#> ✓ tibble  3.1.6     ✓ dplyr   1.0.6
+#> ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+#> ✓ readr   2.1.2     ✓ forcats 0.5.1
+#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+#> x dplyr::filter() masks stats::filter()
+#> x dplyr::lag()    masks stats::lag()
 ```
 
 ### Exploring cell lines
@@ -100,9 +108,39 @@ list_available_mutations(Gene = "TP53", Is_hotspot = TRUE)
 ``` r
 # List all available cancer types
 list_available_cancer_types()
+#>  [1] "Ovarian Cancer"             "Leukemia"                  
+#>  [3] "Colon/Colorectal Cancer"    "Skin Cancer"               
+#>  [5] "Lung Cancer"                "Bladder Cancer"            
+#>  [7] "Kidney Cancer"              "Breast Cancer"             
+#>  [9] "Pancreatic Cancer"          "Myeloma"                   
+#> [11] "Brain Cancer"               "Sarcoma"                   
+#> [13] "Lymphoma"                   "Bone Cancer"               
+#> [15] "Fibroblast"                 "Gastric Cancer"            
+#> [17] "Engineered"                 "Thyroid Cancer"            
+#> [19] "Neuroblastoma"              "Prostate Cancer"           
+#> [21] "Rhabdoid"                   "Gallbladder Cancer"        
+#> [23] "Endometrial/Uterine Cancer" "Head and Neck Cancer"      
+#> [25] "Bile Duct Cancer"           "Esophageal Cancer"         
+#> [27] "Liver Cancer"               "Cervical Cancer"           
+#> [29] "Immortalized"               "Unknown"                   
+#> [31] "Eye Cancer"                 "Adrenal Cancer"            
+#> [33] "Liposarcoma"                "Embryonal Cancer"          
+#> [35] "Teratoma"                   "Non-Cancerous"             
+#> [37] NA
 
 # List all available cancer subtypes
 list_available_cancer_subtypes(input_disease = "Lung Cancer")
+#>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"           
+#>  [2] "Non-Small Cell Lung Cancer (NSCLC), Large Cell Carcinoma"     
+#>  [3] "Mesothelioma"                                                 
+#>  [4] "Small Cell Lung Cancer (SCLC)"                                
+#>  [5] "Non-Small Cell Lung Cancer (NSCLC), unspecified"              
+#>  [6] "Non-Small Cell Lung Cancer (NSCLC), Squamous Cell Carcinoma"  
+#>  [7] "Non-Small Cell Lung Cancer (NSCLC), Adenosquamous Carcinoma"  
+#>  [8] "Carcinoid"                                                    
+#>  [9] "Non-Small Cell Lung Cancer (NSCLC), Bronchoalveolar Carcinoma"
+#> [10] "Non-Small Cell Lung Cancer (NSCLC), Mucoepidermoid Carcinoma" 
+#> [11] "Carcinoma"
 ```
 
 ### Selecting mutant and control cell line groups
@@ -136,9 +174,19 @@ The cell line groups assigned by default are:
 
 ``` r
 ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A")
+#> Selecting mutant groups for: ARID1A in all cancer cell lines
 
 # Show number of cell lines in each group 
 count(ARID1A_groups, Group)
+#> # A tibble: 6 × 2
+#>   Group               n
+#>   <chr>           <int>
+#> 1 Amplified          24
+#> 2 ARID1A_HetDel     105
+#> 3 ARID1A_HomDel      13
+#> 4 ARID1A_T-HetDel    21
+#> 5 Control           529
+#> 6 Others             47
 ```
 
 #### Optional filter for specific cancer types
@@ -146,9 +194,18 @@ count(ARID1A_groups, Group)
 ``` r
 # Find pancreatic cancer cell lines with ARID1A mutations
 ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", Input_disease = "Pancreatic Cancer")
+#> Selecting mutant groups for: ARID1A in Pancreatic Cancer,  cell lines
 
 # Show number of cell lines in each group 
 count(ARID1A_pancr_groups, Group)
+#> # A tibble: 5 × 2
+#>   Group               n
+#>   <chr>           <int>
+#> 1 ARID1A_HetDel       7
+#> 2 ARID1A_HomDel       4
+#> 3 ARID1A_T-HetDel     1
+#> 4 Control            18
+#> 5 Others              1
 ```
 
 ### Check for differential expression
@@ -168,6 +225,7 @@ ARID1A_HomDel_muts_and_ctrls <- ARID1A_groups %>% filter(Group %in% c("ARID1A_Ho
 ARID1A_HomDel_muts_and_ctrls_rna <- extract_rna_expr(
   Input_samples = ARID1A_HomDel_muts_and_ctrls$DepMap_ID, 
   Input_genes = "ARID1A")
+#> [1] "Following sample did not contain profile data: ACH-001151, ACH-001685, ACH-001956"
 ```
 
 Not all cell lines contain RNA and/or protein expression profiles, and
@@ -192,14 +250,28 @@ lines compared to `Controls`.
 # Append groups and test differential expression
 ARID1A_HomDel_muts_and_ctrls_rna <- left_join(ARID1A_HomDel_muts_and_ctrls_rna,
                                               ARID1A_HomDel_muts_and_ctrls %>% select(DepMap_ID, Group))
+#> Joining, by = "DepMap_ID"
 
 # T-test 
 t.test(ARID1A_8289 ~ Group, ARID1A_HomDel_muts_and_ctrls_rna)
+#> 
+#>  Welch Two Sample t-test
+#> 
+#> data:  ARID1A_8289 by Group
+#> t = -5.4354, df = 12.591, p-value = 0.0001276
+#> alternative hypothesis: true difference in means is not equal to 0
+#> 95 percent confidence interval:
+#>  -1.7621880 -0.7574242
+#> sample estimates:
+#> mean in group ARID1A_HomDel       mean in group Control 
+#>                    3.557090                    4.816896
 
 # plot 
 ggplot(ARID1A_HomDel_muts_and_ctrls_rna, aes(x = Group, y = ARID1A_8289)) +
   geom_boxplot()
 ```
+
+<img src="man/figures/README-Check_expression_rna_stats-1.svg" width="100%" />
 
 ### Perform *in silico* genetic screen
 
@@ -246,7 +318,9 @@ columns:
     multimodel dependency probability distribution and that there may be
     another factor contributing to this separation.
   - `Interaction_score` - Combined value generated from signed p-values:
-    -log10(Pval) \* sign(log2FC\_by\_median)
+    -log10(Pval) \* sign(log2FC\_by\_median). Negative scores indicate
+    lethal genetic interaction, and positive scores indicate alleviating
+    genetic interaction.
 
 <!-- end list -->
 
@@ -263,9 +337,28 @@ screen_results <- GINI_screen(
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
+We can quickly determine whether any lethal genetic interactions were
+predicted by `GINIR`. We use a `Pval` cut off of 0.05 and rank based on
+the `Interaction_score`.
+
 ``` r
-screen_results %>% arrange(-Interaction_score) %>% head()
+screen_results %>% 
+  filter(Pval < 0.05) %>%
+  arrange(-Interaction_score) %>% 
+  select(GeneNames:Mutant_median, Pval, Interaction_score) %>% head
+#> # A tibble: 6 × 5
+#>   GeneNames Control_median Mutant_median         Pval Interaction_score
+#>   <chr>              <dbl>         <dbl>        <dbl>             <dbl>
+#> 1 ARID1B           0.0364        0.590   0.0000000342              7.47
+#> 2 OR2M3            0.00912       0.0279  0.000255                  3.59
+#> 3 C1QTNF5          0.0794        0.253   0.000334                  3.48
+#> 4 LSM1             0.0273        0.112   0.000548                  3.26
+#> 5 ONECUT1          0.00116       0.00451 0.00107                   2.97
+#> 6 ANP32B           0.0160        0.0566  0.00119                   2.92
 ```
+
+We immediately see that *ARID1B*, a known synthetic lethal interaction
+of *ARID1A*, was a the top of this list.
 
 ### Visualize screen results
 
@@ -283,6 +376,8 @@ plot_screen(result_df = screen_results,
             label_genes = TRUE, 
             label_n = 3)
 ```
+
+<img src="man/figures/README-plot-1.svg" width="100%" />
 
 ## Session Info
 
@@ -307,9 +402,33 @@ sessionInfo()
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
+#> other attached packages:
+#>  [1] forcats_0.5.1    stringr_1.4.0    dplyr_1.0.6      purrr_0.3.4     
+#>  [5] readr_2.1.2      tidyr_1.2.0      tibble_3.1.6     ggplot2_3.3.5   
+#>  [9] tidyverse_1.3.1  GINIR_0.0.0.9001
+#> 
 #> loaded via a namespace (and not attached):
-#>  [1] compiler_4.0.2    magrittr_2.0.2    tools_4.0.2       htmltools_0.5.1.1
-#>  [5] yaml_2.2.1        stringi_1.7.5     rmarkdown_2.9     knitr_1.37       
-#>  [9] stringr_1.4.0     xfun_0.29         digest_0.6.29     rlang_0.4.12     
-#> [13] evaluate_0.14
+#>  [1] matrixStats_0.59.0 fs_1.5.0           doMC_1.3.8         lubridate_1.7.10  
+#>  [5] httr_1.4.2         tools_4.0.2        backports_1.4.1    utf8_1.2.2        
+#>  [9] R6_2.5.1           nortest_1.0-4      DBI_1.1.1          colorspace_2.0-3  
+#> [13] withr_2.4.3        tidyselect_1.1.1   Exact_2.1          compiler_4.0.2    
+#> [17] rcompanion_2.4.1   cli_3.1.0          rvest_1.0.0        expm_0.999-6      
+#> [21] xml2_1.3.3         sandwich_3.0-1     labeling_0.4.2     diptest_0.76-0    
+#> [25] scales_1.1.1       lmtest_0.9-38      mvtnorm_1.1-2      proxy_0.4-26      
+#> [29] multcompView_0.1-8 digest_0.6.29      rmarkdown_2.9      pkgconfig_2.0.3   
+#> [33] htmltools_0.5.1.1  highr_0.9          dbplyr_2.1.1       rlang_0.4.12      
+#> [37] readxl_1.3.1       rstudioapi_0.13    farver_2.1.0       generics_0.1.2    
+#> [41] zoo_1.8-9          jsonlite_1.7.2     magrittr_2.0.2     modeltools_0.2-23 
+#> [45] Matrix_1.3-4       Rcpp_1.0.7         DescTools_0.99.42  munsell_0.5.0     
+#> [49] fansi_1.0.0        lifecycle_1.0.1    stringi_1.7.5      multcomp_1.4-17   
+#> [53] yaml_2.2.1         MASS_7.3-51.6      rootSolve_1.8.2.1  plyr_1.8.6        
+#> [57] grid_4.0.2         parallel_4.0.2     ggrepel_0.9.1      crayon_1.5.0      
+#> [61] lmom_2.8           lattice_0.20-41    haven_2.4.1        splines_4.0.2     
+#> [65] hms_1.1.1          knitr_1.37         pillar_1.7.0       boot_1.3-25       
+#> [69] gld_2.6.2          codetools_0.2-16   stats4_4.0.2       reprex_2.0.0      
+#> [73] glue_1.6.0         evaluate_0.14      data.table_1.14.0  modelr_0.1.8      
+#> [77] vctrs_0.3.8        tzdb_0.2.0         foreach_1.5.2      cellranger_1.1.0  
+#> [81] gtable_0.3.0       assertthat_0.2.1   xfun_0.29          coin_1.4-1        
+#> [85] libcoin_1.0-8      broom_0.7.12       e1071_1.7-7        class_7.3-17      
+#> [89] survival_3.1-12    iterators_1.0.14   TH.data_1.0-10     ellipsis_0.3.2
 ```
