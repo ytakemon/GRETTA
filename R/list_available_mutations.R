@@ -38,7 +38,7 @@ list_available_mutations <- function(Gene = NULL,
   
   # Load necessary data
   mut_calls <- NULL # see: https://support.bioconductor.org/p/24756/
-  data(list = list("mut_calls"), envir = environment())
+  load("data/mut_calls.rda", envir = environment())
   
   # If Gene is provided look for mutations:
   if(!is.null(Gene)){

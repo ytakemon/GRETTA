@@ -17,7 +17,8 @@
 get_GeneNameID <- function(GeneName){
   # Load necessary data
   dep_annot <- CCLE_exp_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  utils::data(list = list("dep_annot", "CCLE_exp_annot"), envir = environment())
+  load("data/dep_annot.rda", envir = environment())
+  load("data/CCLE_exp_annot.rda", envir = environment())
   
   # For Hugo symbols/NCBI IDs - from dependency prob.
   if(any(dep_annot$GeneNames %in% GeneName | dep_annot$GeneID %in% GeneName)){

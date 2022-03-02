@@ -89,7 +89,11 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     
     # Load necessary data
     mut_calls <- copy_num_annot <- copy_num <- dep <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-    data(list = list("mut_calls", "copy_num_annot", "copy_num", "dep", "sample_annot"), envir = environment())
+    load("data/mut_calls.rda", envir = environment())
+    load("data/copy_num_annot.rda", envir = environment())
+    load("data/copy_num.rda", envir = environment())
+    load("data/dep.rda", envir = environment())
+    load("data/sample_annot.rda", envir = environment())
     
     # Check if input gene mutations exist
     if(!any(mut_calls$Hugo_Symbol %in% Input_gene)|!any(copy_num_annot$GeneNames %in% Input_gene)){

@@ -26,7 +26,9 @@ extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Load necessary data
   CCLE_exp <- CCLE_exp_annot <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  data(list = list("CCLE_exp", "CCLE_exp_annot", "sample_annot"), envir = environment())
+  load("data/CCLE_exp.rda", envir = environment())
+  load("data/CCLE_exp_annot.rda", envir = environment())
+  load("data/sample_annot.rda", envir = environment())
   
   # Check if inputs are recognized 
   if(!all(Input_samples %in% sample_annot$DepMap_ID)){

@@ -27,7 +27,9 @@ extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Load necessary data
   protein_annot <- protein_nodup <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  data(list = list("protein_nodup", "protein_annot", "sample_annot"), envir = environment())
+  load("data/protein_nodup.rda", envir = environment())
+  load("data/protein_annot.rda", envir = environment())
+  load("data/sample_annot.rda", envir = environment())
   
   # Check if inputs are recognized 
   if(!all(Input_samples %in% sample_annot$DepMap_ID)){

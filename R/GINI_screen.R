@@ -98,7 +98,8 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   
   # Load necessary data
   dep <- dep_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  data(list = list("dep", "dep_annot"), envir = environment())
+  load("data/dep.rda", envir = environment())
+  load("data/dep_annot.rda", envir = environment())
   
   # Check to see if enough samples were given after filtering:
   Control_group_avail <- control_IDs[control_IDs %in% dep$DepMap_ID]
