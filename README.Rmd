@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 
 # Flip the switch to evaluate all when ready for final render
 Final_eval <- TRUE
+GINIR_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GINIR_data/data"
 ```
 
 # Genetic Interaction Network IdentifieR (GINIR)
@@ -38,17 +39,34 @@ Please submit an [issue](https://github.com/ytakemon/GINIR/issues) for all quest
 
 <!-- Below this line are default template stuff that will be updated as the package comes together -->
 
-## Installation
+## Package installation and data download
 
-You can install GINIR from [GitHub](https://github.com) with:
+You can install the GINIR package from [GitHub](https://github.com) with:
 
 ``` r
 install.packages("devtools")
 devtools::install_github("ytakemon/GINIR")
 ```
 
+Data and the data documentation are provided on the [GINIR github page](https://github.com/ytakemon/GINIR/) and can be installed directly in terminal using the following:
+
+``` bash
+# Make a new directory/folder called GINIR_project and go into directory
+mkdir GINIR_project
+cd GINIR_project
+
+# Download data and data documentation from the web
+wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data.tar.gz
+wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data_document.tar.gz
+
+# Extract data and data documentation
+tar -zcvf GINIR_data.tar.gz
+tar -zcvf GINIR_data_document.tar.gz
+```
+
 ## Workflow
 
+1. Install `GINIR` and download accompanying data
 1. Select mutant cell lines that carry mutations in the gene of interest and control cell lines. 
     + (optional specifications) disease type, disease subtype, amino acid change
 1. Determine differential expression between mutant and control cell line groups.
@@ -65,6 +83,12 @@ For this example you will need to call the following libraries
 ```{r libraries, eval = Final_eval}
 library(GINIR)
 library(tidyverse)
+```
+
+Then, assign a variable that points to where the `.rda` files are stored.
+
+```{r data_path, eval = FALSE}
+GINIR_data_dir <- "/path/to/GINIR_project/GINIR_data/"
 ```
 
 ### Exploring cell lines 

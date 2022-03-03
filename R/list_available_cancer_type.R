@@ -12,7 +12,10 @@
 #' 
 #' @export
 #' @examples
-#' list_available_cancer_types()
+#' \dontrun{
+#' list_available_cancer_types(data_dir = "/path/to/data")
+#' }
+#' 
 list_available_cancer_types <- function(data_dir){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
@@ -30,7 +33,9 @@ list_available_cancer_types <- function(data_dir){
 #' @importFrom rlang .data
 #' @export
 #' @examples
-#' list_available_cancer_subtypes("Lung Cancer")
+#' \dontrun{
+#' list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/data")
+#' } 
 list_available_cancer_subtypes <- function(input_disease, data_dir){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/

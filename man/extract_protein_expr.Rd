@@ -4,12 +4,14 @@
 \alias{extract_protein_expr}
 \title{Extract protein expression data for given cell lines}
 \usage{
-extract_protein_expr(Input_samples = NULL, Input_genes = NULL)
+extract_protein_expr(Input_samples = NULL, Input_genes = NULL, data_dir = NULL)
 }
 \arguments{
 \item{Input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
 
 \item{Input_genes}{string Optional Hugo Symbol(s) encoding proteins of interest, Default: NULL}
+
+\item{data_dir}{string Path to GINIR_data}
 }
 \value{
 Data frame containing protein expression for samples provided in the input.

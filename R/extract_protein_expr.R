@@ -4,6 +4,7 @@
 #' 
 #' @param Input_samples string A vector of DepMap_ID(s) must be provided, Default: NULL
 #' @param Input_genes string Optional Hugo Symbol(s) encoding proteins of interest, Default: NULL
+#' @param data_dir string Path to GINIR_data
 #' @return Data frame containing protein expression for samples provided in the input. 
 #' If no genes were specified, the function will return a data frame of proteins profiled in DepMap
 #' 
@@ -18,7 +19,7 @@
 #' @importFrom dplyr select contains left_join filter
 #' @importFrom tidyr pivot_longer
 
-extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL){
+extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL, data_dir = NULL){
   
   # Print and check to see input was provided
   if(is.null(Input_samples)){
@@ -27,9 +28,9 @@ extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Load necessary data
   protein_annot <- protein_nodup <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load("data/protein_nodup.rda", envir = environment())
-  load("data/protein_annot.rda", envir = environment())
-  load("data/sample_annot.rda", envir = environment())
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_nodup.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_annot.rda"), envir = environment())
   
   # Check if inputs are recognized 
   if(!all(Input_samples %in% sample_annot$DepMap_ID)){

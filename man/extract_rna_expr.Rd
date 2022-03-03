@@ -4,12 +4,14 @@
 \alias{extract_rna_expr}
 \title{Extract RNA expression data for given cell lines}
 \usage{
-extract_rna_expr(Input_samples = NULL, Input_genes = NULL)
+extract_rna_expr(Input_samples = NULL, Input_genes = NULL, data_dir = NULL)
 }
 \arguments{
 \item{Input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
 
 \item{Input_genes}{string Optional Hugo Symbol(s), Default: NULL}
+
+\item{data_dir}{string Path to GINIR_data}
 }
 \value{
 Data frame containing RNA expression (TPM) for sample provided in the input.

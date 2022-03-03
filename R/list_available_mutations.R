@@ -12,6 +12,7 @@
 #' De_novo_Start_OutOfFrame, Frame_Shift_Del, Frame_Shift_Ins, IGR, In_Frame_Del, In_Frame_Ins, 
 #' Intron, Missense_Mutation, Nonsense_Mutation, Nonstop_Mutation, Silent, Splice_Site, 
 #' Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins, Default: NULL
+#' @param data_dir string Path to GINIR_data
 #' 
 #' @return A data frame containing mutations matching criteria of input arguments
 #' 
@@ -28,7 +29,8 @@ list_available_mutations <- function(Gene = NULL,
                              Chr = NULL, Start_bp = NULL, End_bp = NULL,
                              Is_hotspot = NULL, 
                              Is_damaging = NULL,
-                             Variant_classification = NULL){
+                             Variant_classification = NULL,
+                             data_dir = NULL){
   
   # Print and check to see input
   if(is.null(c(Gene, Chr))){
@@ -38,7 +40,7 @@ list_available_mutations <- function(Gene = NULL,
   
   # Load necessary data
   mut_calls <- NULL # see: https://support.bioconductor.org/p/24756/
-  load("data/mut_calls.rda", envir = environment())
+  load(paste0(data_dir, "/mut_calls.rda"), envir = environment())
   
   # If Gene is provided look for mutations:
   if(!is.null(Gene)){

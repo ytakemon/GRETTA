@@ -8,6 +8,8 @@
 #' @param Input_AA_change string Amino acid change (eg. "A387A"). Input_gene must be specified
 #' @param Input_disease string Cancer type listed in `list_available_cancer_types()`
 #' @param Input_disease_subtype string Cancer subtype listed in `list_available_cancer_subtypes()`
+#' @param data_dir string Path to GINIR_data
+#' 
 #' @return Data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
 #' @import rlang
 #' @import dplyr
@@ -52,7 +54,7 @@
 #' 
 #' }
 
-select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_disease = NULL, Input_disease_subtype = NULL){
+select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_disease = NULL, Input_disease_subtype = NULL, data_dir = NULL){
   
   # Print and check to see input
   if(is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
@@ -89,18 +91,18 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     
     # Load necessary data
     mut_calls <- copy_num_annot <- copy_num <- dep <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-    load("data/mut_calls.rda", envir = environment())
-    load("data/copy_num_annot.rda", envir = environment())
-    load("data/copy_num.rda", envir = environment())
-    load("data/dep.rda", envir = environment())
-    load("data/sample_annot.rda", envir = environment())
+    load(paste0(data_dir, "/mut_calls.rda"), envir = environment())
+    load(paste0(data_dir, "/copy_num_annot.rda"), envir = environment())
+    load(paste0(data_dir, "/copy_num.rda"), envir = environment())
+    load(paste0(data_dir, "/dep.rda"), envir = environment())
+    load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
     
     # Check if input gene mutations exist
     if(!any(mut_calls$Hugo_Symbol %in% Input_gene)|!any(copy_num_annot$GeneNames %in% Input_gene)){
       stop(paste0("No mutations were found for: ", Input_gene,". Please check spelling and for valid Hugo Symbols"))
     }
     # Convert to unique geneID
-    Input_geneID <- get_GeneNameID(Input_gene)
+    Input_geneID <- get_GeneNameID(Input_gene, data_dir = data_dir)
     
     # Get copy number
     if(any(names(copy_num) %in% Input_geneID)){

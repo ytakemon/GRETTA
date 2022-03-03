@@ -8,7 +8,8 @@ select_cell_lines(
   Input_gene = NULL,
   Input_AA_change = NULL,
   Input_disease = NULL,
-  Input_disease_subtype = NULL
+  Input_disease_subtype = NULL,
+  data_dir = NULL
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ select_cell_lines(
 \item{Input_disease}{string Cancer type listed in \code{list_available_cancer_types()}}
 
 \item{Input_disease_subtype}{string Cancer subtype listed in \code{list_available_cancer_subtypes()}}
+
+\item{data_dir}{string Path to GINIR_data}
 }
 \value{
 Data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.

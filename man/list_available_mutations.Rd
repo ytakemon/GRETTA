@@ -11,7 +11,8 @@ list_available_mutations(
   End_bp = NULL,
   Is_hotspot = NULL,
   Is_damaging = NULL,
-  Variant_classification = NULL
+  Variant_classification = NULL,
+  data_dir = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ list_available_mutations(
 De_novo_Start_OutOfFrame, Frame_Shift_Del, Frame_Shift_Ins, IGR, In_Frame_Del, In_Frame_Ins,
 Intron, Missense_Mutation, Nonsense_Mutation, Nonstop_Mutation, Silent, Splice_Site,
 Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins, Default: NULL}
+
+\item{data_dir}{string Path to GINIR_data}
 }
 \value{
 A data frame containing mutations matching criteria of input arguments

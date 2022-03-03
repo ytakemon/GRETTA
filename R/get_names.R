@@ -5,6 +5,7 @@
 #' common cell line aliases to DepMap's unique gene name and cell line identifiers, respectively.
 #' 
 #' @param GeneName string containing a vector of either Hugo gene symbol or numeric NCBI ID
+#' @param data_dir string Path to GINIR_data
 #' @return string
 #' 
 #' @import rlang
@@ -13,12 +14,14 @@
 #' 
 #' @export
 #' @examples
-#' get_GeneNameID("A1CF")
-get_GeneNameID <- function(GeneName){
+#' \dontrun{
+#' get_GeneNameID("A1CF", data_dir = "/path/")
+#' }
+get_GeneNameID <- function(GeneName, data_dir){
   # Load necessary data
   dep_annot <- CCLE_exp_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load("data/dep_annot.rda", envir = environment())
-  load("data/CCLE_exp_annot.rda", envir = environment())
+  load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/CCLE_exp_annot.rda"), envir = environment())
   
   # For Hugo symbols/NCBI IDs - from dependency prob.
   if(any(dep_annot$GeneNames %in% GeneName | dep_annot$GeneID %in% GeneName)){
@@ -41,6 +44,7 @@ get_GeneNameID <- function(GeneName){
 
 #' @describeIn get_GeneNameID Get unique DepMap-compatible sample IDs
 #' @param sample_name string containing a vector of unique sample_id used in proteomics data or common cell line names
+#' @param data_dir string Path to GINIR_data
 #' @return string
 #' 
 #' @import rlang
@@ -49,11 +53,14 @@ get_GeneNameID <- function(GeneName){
 #' 
 #' @export
 #' @examples
-#' get_DepMapID("JURKAT")
-get_DepMapID <- function(sample_name){
+#' \dontrun{
+#' get_DepMapID("JURKAT", data_dir = "/path/")
+#' }
+get_DepMapID <- function(sample_name, data_dir){
   # Load necessary data
   protein_annot <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  utils::data(list = list("protein_annot", "sample_annot"), envir = environment())
+  load(paste0(data_dir, "/protein_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # For sample names from proteomics data 
   if(any(protein_annot$GygiNames %in% sample_name)){

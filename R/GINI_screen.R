@@ -7,6 +7,7 @@
 #' @param mutant_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
+#' @param data_dir string Path to GINIR_data
 #' @param test logical, For test_that to shorten computational time for testing
 #'
 #' @return A data frame containing results from the genetic screen. A copy is also saved to the 
@@ -58,7 +59,7 @@
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
 
-GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, test = FALSE){
+GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, test = FALSE){
   
   # Check that essential inputs are given:
   if(is.null(control_IDs)){
@@ -98,8 +99,8 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   
   # Load necessary data
   dep <- dep_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load("data/dep.rda", envir = environment())
-  load("data/dep_annot.rda", envir = environment())
+  load(paste0(data_dir, "/dep.rda"), envir = environment())
+  load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
   
   # Check to see if enough samples were given after filtering:
   Control_group_avail <- control_IDs[control_IDs %in% dep$DepMap_ID]

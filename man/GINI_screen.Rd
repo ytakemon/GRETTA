@@ -9,6 +9,7 @@ GINI_screen(
   mutant_IDs = NULL,
   core_num = NULL,
   output_dir = NULL,
+  data_dir = NULL,
   test = FALSE
 )
 }
@@ -20,6 +21,8 @@ GINI_screen(
 \item{core_num}{integer, Number of cores to run analysis, Default: NULL}
 
 \item{output_dir}{string, Full path to where output file should be saved, Default: NULL}
+
+\item{data_dir}{string Path to GINIR_data}
 
 \item{test}{logical, For test_that to shorten computational time for testing}
 }

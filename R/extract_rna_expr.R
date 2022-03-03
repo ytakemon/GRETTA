@@ -4,6 +4,7 @@
 #' 
 #' @param Input_samples string A vector of DepMap_ID(s) must be provided, Default: NULL
 #' @param Input_genes string Optional Hugo Symbol(s), Default: NULL
+#' @param data_dir string Path to GINIR_data
 #' @return Data frame containing RNA expression (TPM) for sample provided in the input. 
 #' If no genes were specified, the function will return a data frame of all genes profiled in DepMap
 #' 
@@ -17,7 +18,7 @@
 #' @export 
 #' @importFrom dplyr filter select
 
-extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL){
+extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL, data_dir = NULL){
 
    # Print and check to see input was provided
   if(is.null(Input_samples)){
@@ -26,9 +27,9 @@ extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Load necessary data
   CCLE_exp <- CCLE_exp_annot <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load("data/CCLE_exp.rda", envir = environment())
-  load("data/CCLE_exp_annot.rda", envir = environment())
-  load("data/sample_annot.rda", envir = environment())
+  load(paste0(data_dir,"/CCLE_exp.rda"), envir = environment())
+  load(paste0(data_dir,"/CCLE_exp_annot.rda"), envir = environment())
+  load(paste0(data_dir,"/sample_annot.rda"), envir = environment())
   
   # Check if inputs are recognized 
   if(!all(Input_samples %in% sample_annot$DepMap_ID)){
@@ -48,7 +49,7 @@ extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL){
   
   # Otherwise, provide only expr of genes of interst 
   res <- CCLE_exp %>%
-    dplyr::select(.data$DepMap_ID, get_GeneNameID(Input_genes)) %>%
+    dplyr::select(.data$DepMap_ID, get_GeneNameID(Input_genes, data_dir = data_dir)) %>%
     dplyr::filter(.data$DepMap_ID %in% Input_samples)
   
   # Notify if some samples do not have expression data 

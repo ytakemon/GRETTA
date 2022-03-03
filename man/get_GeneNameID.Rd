@@ -5,12 +5,14 @@
 \alias{get_DepMapID}
 \title{Get unique DepMap-compatible gene IDs}
 \usage{
-get_GeneNameID(GeneName)
+get_GeneNameID(GeneName, data_dir)
 
-get_DepMapID(sample_name)
+get_DepMapID(sample_name, data_dir)
 }
 \arguments{
 \item{GeneName}{string containing a vector of either Hugo gene symbol or numeric NCBI ID}
+
+\item{data_dir}{string Path to GINIR_data}
 
 \item{sample_name}{string containing a vector of unique sample_id used in proteomics data or common cell line names}
 }
@@ -29,6 +31,10 @@ common cell line aliases to DepMap's unique gene name and cell line identifiers,
 }}
 
 \examples{
-get_GeneNameID("A1CF")
-get_DepMapID("JURKAT")
+\dontrun{
+get_GeneNameID("A1CF", data_dir = "/path/")
+}
+\dontrun{
+get_DepMapID("JURKAT", data_dir = "/path/")
+}
 }

@@ -5,11 +5,13 @@
 \alias{list_available_cancer_subtypes}
 \title{List cancer types that are available}
 \usage{
-list_available_cancer_types()
+list_available_cancer_types(data_dir)
 
-list_available_cancer_subtypes(input_disease)
+list_available_cancer_subtypes(input_disease, data_dir)
 }
 \arguments{
+\item{data_dir}{string Path to GINIR_data}
+
 \item{input_disease}{string A vector of unique with one or more cancer types listed in \code{list_available_cancer_types()}}
 }
 \value{
@@ -24,6 +26,11 @@ string A vector containing unique cancer types available
 }}
 
 \examples{
-list_available_cancer_types()
-list_available_cancer_subtypes("Lung Cancer")
+\dontrun{
+list_available_cancer_types(data_dir = "/path/to/data")
+}
+
+\dontrun{
+list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/data")
+} 
 }
