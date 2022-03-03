@@ -39,26 +39,46 @@ all questions regarding GINIR.
 
 <!-- Below this line are default template stuff that will be updated as the package comes together -->
 
-## Installation
+## Package installation and data download
 
-You can install GINIR from [GitHub](https://github.com) with:
+You can install the GINIR package from [GitHub](https://github.com)
+with:
 
 ``` r
 install.packages("devtools")
 devtools::install_github("ytakemon/GINIR")
 ```
 
+Data and the data documentation are provided on the [GINIR github
+page](https://github.com/ytakemon/GINIR/) and can be installed directly
+in terminal using the following:
+
+``` bash
+# Make a new directory/folder called GINIR_project and go into directory
+mkdir GINIR_project
+cd GINIR_project
+
+# Download data and data documentation from the web
+wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data.tar.gz
+wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data_document.tar.gz
+
+# Extract data and data documentation
+tar -zcvf GINIR_data.tar.gz
+tar -zcvf GINIR_data_document.tar.gz
+```
+
 ## Workflow
 
-1.  Select mutant cell lines that carry mutations in the gene of
+1.  Install `GINIR` and download accompanying data
+2.  Select mutant cell lines that carry mutations in the gene of
     interest and control cell lines.
       - (optional specifications) disease type, disease subtype, amino
         acid change
-2.  Determine differential expression between mutant and control cell
+3.  Determine differential expression between mutant and control cell
     line groups.
       - (optional but recommended)
-3.  Perform *in silico* genetic screen.
-4.  Visualize results
+4.  Perform *in silico* genetic screen.
+5.  Visualize results
 
 ## Example: Identifying *ARID1A* genetic interactions
 
@@ -87,6 +107,13 @@ library(tidyverse)
 #> x dplyr::lag()    masks stats::lag()
 ```
 
+Then, assign a variable that points to where the `.rda` files are
+stored.
+
+``` r
+GINIR_data_dir <- "/path/to/GINIR_project/GINIR_data/"
+```
+
 ### Exploring cell lines
 
 One way to explore cell lines that are available in DepMap is through
@@ -104,12 +131,12 @@ knockout screen data)
 
 ``` r
 # Find hotspot mutations in TP53
-list_available_mutations(Gene = "TP53", Is_hotspot = TRUE) 
+list_available_mutations(Gene = "TP53", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
 ```
 
 ``` r
 # List all available cancer types
-list_available_cancer_types()
+list_available_cancer_types(data_dir = GINIR_data_dir)
 #>  [1] "Ovarian Cancer"             "Leukemia"                  
 #>  [3] "Colon/Colorectal Cancer"    "Skin Cancer"               
 #>  [5] "Lung Cancer"                "Bladder Cancer"            
@@ -131,7 +158,7 @@ list_available_cancer_types()
 #> [37] NA
 
 # List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer")
+list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = GINIR_data_dir)
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"           
 #>  [2] "Non-Small Cell Lung Cancer (NSCLC), Large Cell Carcinoma"     
 #>  [3] "Mesothelioma"                                                 
@@ -175,7 +202,7 @@ The cell line groups assigned by default are:
 <!-- end list -->
 
 ``` r
-ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A")
+ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A", data_dir = GINIR_data_dir)
 #> Selecting mutant groups for: ARID1A in all cancer cell lines
 
 # Show number of cell lines in each group 
@@ -195,7 +222,9 @@ count(ARID1A_groups, Group)
 
 ``` r
 # Find pancreatic cancer cell lines with ARID1A mutations
-ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", Input_disease = "Pancreatic Cancer")
+ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", 
+                                         Input_disease = "Pancreatic Cancer",
+                                         data_dir = GINIR_data_dir)
 #> Selecting mutant groups for: ARID1A in Pancreatic Cancer,  cell lines
 
 # Show number of cell lines in each group 
@@ -226,7 +255,8 @@ ARID1A_HomDel_muts_and_ctrls <- ARID1A_groups %>% filter(Group %in% c("ARID1A_Ho
 # Get RNA expression 
 ARID1A_HomDel_muts_and_ctrls_rna <- extract_rna_expr(
   Input_samples = ARID1A_HomDel_muts_and_ctrls$DepMap_ID, 
-  Input_genes = "ARID1A")
+  Input_genes = "ARID1A",
+  data_dir = GINIR_data_dir)
 #> [1] "Following sample did not contain profile data: ACH-001151, ACH-001685, ACH-001956"
 ```
 
@@ -239,7 +269,8 @@ site](https://depmap.org/portal/).)
 # Get protein expression
 ARID1A_HomDel_muts_and_ctrls_protein <- extract_protein_expr(
   Input_samples = ARID1A_HomDel_muts_and_ctrls$DepMap_ID,
-  Input_genes = "ARID1A")
+  Input_genes = "ARID1A",
+  data_dir = GINIR_data_dir)
 
 # Produces an error message since ARID1A protein data is not available
 ```
@@ -336,6 +367,7 @@ screen_results <- GINI_screen(
   mutant_IDs = ARID1A_control_IDs, 
   core_num = 5, # depends on how many cores you have  
   output_dir = "path/to/results/folder/", # Will save your results here as well as in the variable
+  data_dir = GINIR_data_dir,
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 

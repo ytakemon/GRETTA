@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # Flip the switch to evaluate all when ready for final render
 Final_eval <- TRUE
-GINIR_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GINIR_data/data"
+GINIR_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GINIR_data/data/"
 ```
 
 # Genetic Interaction Network IdentifieR (GINIR)
@@ -99,15 +99,15 @@ Current DepMap data used by default is version 20Q1, which contains whole-genome
 
 ```{r listing_available_muts, eval = FALSE}
 # Find hotspot mutations in TP53
-list_available_mutations(Gene = "TP53", Is_hotspot = TRUE) 
+list_available_mutations(Gene = "TP53", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
 ```
 
 ```{r listing_available_cancer_types, eval = Final_eval}
 # List all available cancer types
-list_available_cancer_types()
+list_available_cancer_types(data_dir = GINIR_data_dir)
 
 # List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer")
+list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = GINIR_data_dir)
 ```
 
 ### Selecting mutant and control cell line groups
@@ -127,7 +127,7 @@ The cell line groups assigned by default are:
 
 
 ```{r select_groups, eval = Final_eval}
-ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A")
+ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A", data_dir = GINIR_data_dir)
 
 # Show number of cell lines in each group 
 count(ARID1A_groups, Group)
@@ -136,7 +136,9 @@ count(ARID1A_groups, Group)
 
 ```{r select_groups_option, eval = Final_eval}
 # Find pancreatic cancer cell lines with ARID1A mutations
-ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", Input_disease = "Pancreatic Cancer")
+ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", 
+                                         Input_disease = "Pancreatic Cancer",
+                                         data_dir = GINIR_data_dir)
 
 # Show number of cell lines in each group 
 count(ARID1A_pancr_groups, Group)
@@ -153,7 +155,8 @@ ARID1A_HomDel_muts_and_ctrls <- ARID1A_groups %>% filter(Group %in% c("ARID1A_Ho
 # Get RNA expression 
 ARID1A_HomDel_muts_and_ctrls_rna <- extract_rna_expr(
   Input_samples = ARID1A_HomDel_muts_and_ctrls$DepMap_ID, 
-  Input_genes = "ARID1A")
+  Input_genes = "ARID1A",
+  data_dir = GINIR_data_dir)
 ```
 
 Not all cell lines contain RNA and/or protein expression profiles, and not all proteins were detected by mass spectrometer. (Details on data generation can be found on the [DepMap site](https://depmap.org/portal/).)
@@ -162,7 +165,8 @@ Not all cell lines contain RNA and/or protein expression profiles, and not all p
 # Get protein expression
 ARID1A_HomDel_muts_and_ctrls_protein <- extract_protein_expr(
   Input_samples = ARID1A_HomDel_muts_and_ctrls$DepMap_ID,
-  Input_genes = "ARID1A")
+  Input_genes = "ARID1A",
+  data_dir = GINIR_data_dir)
 
 # Produces an error message since ARID1A protein data is not available
 ```
@@ -210,12 +214,13 @@ screen_results <- GINI_screen(
   mutant_IDs = ARID1A_control_IDs, 
   core_num = 5, # depends on how many cores you have  
   output_dir = "path/to/results/folder/", # Will save your results here as well as in the variable
+  data_dir = GINIR_data_dir,
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
 ```{r load_prepared_results, eval = Final_eval, include = FALSE}
 # Load prepared ARID1A screen result
-load("data/sample_ARID1A_KO_screen.rda", envir = environment())
+load(paste0(GINIR_data_dir,"/sample_ARID1A_KO_screen.rda"), envir = environment())
 screen_results <- sample_ARID1A_KO_screen
 ```
 
