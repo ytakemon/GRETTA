@@ -6,3 +6,4 @@
 ^\.github/ISSUE_TEMPLATE$
 ^\.github/ISSUE_TEMPLATE/*\.md$
 ^.*\.png$
+^.*\.gz$
