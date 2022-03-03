@@ -4,7 +4,8 @@
 #' `list_available_cancer_types()` and `list_available_cancer_subtypes()` provide tools for identifying cancer (sub)types that are available in DepMap.
 #' 
 #' @return string A vector containing unique cancer types available
-#' 
+
+#' @param data_dir string Path to GINIR_data
 #' @import rlang
 #' @import dplyr
 #' @import utils
@@ -12,10 +13,10 @@
 #' @export
 #' @examples
 #' list_available_cancer_types()
-list_available_cancer_types <- function(){
+list_available_cancer_types <- function(data_dir){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load(paste0(system.file(package = "GINIR"), "/data/sample_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Main
   sample_annot %>% 
@@ -25,14 +26,15 @@ list_available_cancer_types <- function(){
 #' @describeIn list_available_cancer_types List cancer subtypes that are available
 #' 
 #' @param input_disease string A vector of unique with one or more cancer types listed in `list_available_cancer_types()`
+#' @param data_dir string Path to GINIR_data
 #' @importFrom rlang .data
 #' @export
 #' @examples
 #' list_available_cancer_subtypes("Lung Cancer")
-list_available_cancer_subtypes <- function(input_disease){
+list_available_cancer_subtypes <- function(input_disease, data_dir){
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load(paste0(system.file(package = "GINIR"), "/data/sample_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Main
   sample_annot %>% 
