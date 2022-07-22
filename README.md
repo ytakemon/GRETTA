@@ -108,13 +108,13 @@ For this example you will need to call the following libraries
 ``` r
 library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-#> ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-#> ✓ tibble  3.1.6     ✓ dplyr   1.0.8
-#> ✓ tidyr   1.2.0     ✓ stringr 1.4.0
-#> ✓ readr   2.1.2     ✓ forcats 0.5.1
+#> ✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+#> ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+#> ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+#> ✔ readr   2.1.2     ✔ forcats 0.5.1
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> x dplyr::filter() masks stats::filter()
-#> x dplyr::lag()    masks stats::lag()
+#> ✖ dplyr::filter() masks stats::filter()
+#> ✖ dplyr::lag()    masks stats::lag()
 library(GINIR)
 ```
 
@@ -488,20 +488,22 @@ known SWI/SNF subunits, namely *ARID1A*, *SMARCE1*, *SMARCB1*,
 # Show top 10 co-essential genes. 
 coess_annotated_df %>% arrange(Rank) %>% head(10)
 #> # A tibble: 10 × 13
-#>    GeneNameID_A GeneNameID_B estimate statistic  p.value parameter conf.low
-#>    <chr>        <chr>           <dbl>     <dbl>    <dbl>     <int>    <dbl>
-#>  1 ARID1A_8289  ARID1A_8289     1        Inf    0              724    1    
-#>  2 ARID1A_8289  SMARCE1_6605    0.508     15.9  7.70e-49       724    0.452
-#>  3 ARID1A_8289  SMARCB1_6598    0.488     15.0  1.07e-44       724    0.430
-#>  4 ARID1A_8289  SMARCC1_6599    0.436     13.0  4.79e-35       724    0.375
-#>  5 ARID1A_8289  DPF2_5977       0.395     11.6  1.62e-28       724    0.332
-#>  6 ARID1A_8289  SS18_6760       0.300      8.47 1.32e-16       724    0.233
-#>  7 ARID1A_8289  SMARCC2_6601    0.248      6.88 1.34e-11       724    0.178
-#>  8 ARID1A_8289  SMARCD2_6603    0.227      6.27 6.16e-10       724    0.157
-#>  9 ARID1A_8289  IER5L_389792    0.210      5.78 1.12e- 8       724    0.139
-#> 10 ARID1A_8289  PRDM15_63977    0.206      5.66 2.20e- 8       724    0.135
-#> # … with 6 more variables: conf.high <dbl>, method <chr>, alternative <chr>,
-#> #   Rank <int>, Padj_BH <dbl>, Candidate_gene <lgl>
+#>    GeneNameID_A GeneNa…¹ estim…² stati…³  p.value param…⁴ conf.…⁵ conf.…⁶ method
+#>    <chr>        <chr>      <dbl>   <dbl>    <dbl>   <int>   <dbl>   <dbl> <chr> 
+#>  1 ARID1A_8289  ARID1A_…   1      Inf    0            724   1       1     Pears…
+#>  2 ARID1A_8289  SMARCE1…   0.508   15.9  7.70e-49     724   0.452   0.560 Pears…
+#>  3 ARID1A_8289  SMARCB1…   0.488   15.0  1.07e-44     724   0.430   0.541 Pears…
+#>  4 ARID1A_8289  SMARCC1…   0.436   13.0  4.79e-35     724   0.375   0.493 Pears…
+#>  5 ARID1A_8289  DPF2_59…   0.395   11.6  1.62e-28     724   0.332   0.455 Pears…
+#>  6 ARID1A_8289  SS18_67…   0.300    8.47 1.32e-16     724   0.233   0.365 Pears…
+#>  7 ARID1A_8289  SMARCC2…   0.248    6.88 1.34e-11     724   0.178   0.315 Pears…
+#>  8 ARID1A_8289  SMARCD2…   0.227    6.27 6.16e-10     724   0.157   0.295 Pears…
+#>  9 ARID1A_8289  IER5L_3…   0.210    5.78 1.12e- 8     724   0.139   0.279 Pears…
+#> 10 ARID1A_8289  PRDM15_…   0.206    5.66 2.20e- 8     724   0.135   0.274 Pears…
+#> # … with 4 more variables: alternative <chr>, Rank <int>, Padj_BH <dbl>,
+#> #   Candidate_gene <lgl>, and abbreviated variable names ¹​GeneNameID_B,
+#> #   ²​estimate, ³​statistic, ⁴​parameter, ⁵​conf.low, ⁶​conf.high
+#> # ℹ Use `colnames()` to see all variable names
 ```
 
 ## Session Info
@@ -528,56 +530,56 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GINIR_0.1.0     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.8    
-#>  [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.6   
-#>  [9] ggplot2_3.3.5   tidyverse_1.3.1
+#>  [1] GINIR_0.2.0     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
+#>  [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.8   
+#>  [9] ggplot2_3.3.6   tidyverse_1.3.1
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] matrixStats_0.59.0            fs_1.5.0                     
 #>  [3] doMC_1.3.8                    lubridate_1.7.10             
-#>  [5] doParallel_1.0.16             httr_1.4.2                   
+#>  [5] doParallel_1.0.17             httr_1.4.2                   
 #>  [7] tools_4.0.2                   backports_1.4.1              
 #>  [9] utf8_1.2.2                    R6_2.5.1                     
 #> [11] nortest_1.0-4                 DBI_1.1.2                    
 #> [13] colorspace_2.0-3              withr_2.5.0                  
 #> [15] tidyselect_1.1.2              Exact_2.1                    
 #> [17] compiler_4.0.2                rcompanion_2.4.1             
-#> [19] cli_3.2.0                     rvest_1.0.0                  
+#> [19] cli_3.3.0                     rvest_1.0.0                  
 #> [21] expm_0.999-6                  xml2_1.3.3                   
 #> [23] sandwich_3.0-1                labeling_0.4.2               
-#> [25] inflection_1.3.5              diptest_0.76-0               
-#> [27] scales_1.1.1                  lmtest_0.9-38                
+#> [25] inflection_1.3.6              diptest_0.76-0               
+#> [27] scales_1.2.0                  lmtest_0.9-38                
 #> [29] mvtnorm_1.1-2                 proxy_0.4-26                 
 #> [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
 #> [33] digest_0.6.29                 rmarkdown_2.9                
 #> [35] pkgconfig_2.0.3               htmltools_0.5.2              
 #> [37] highr_0.9                     dbplyr_2.1.1                 
-#> [39] fastmap_1.1.0                 rlang_1.0.1                  
+#> [39] fastmap_1.1.0                 rlang_1.0.4                  
 #> [41] readxl_1.3.1                  rstudioapi_0.13              
-#> [43] farver_2.1.0                  generics_0.1.2               
+#> [43] farver_2.1.1                  generics_0.1.3               
 #> [45] zoo_1.8-9                     jsonlite_1.7.2               
-#> [47] magrittr_2.0.2                modeltools_0.2-23            
-#> [49] Matrix_1.3-4                  Rcpp_1.0.8                   
+#> [47] magrittr_2.0.3                modeltools_0.2-23            
+#> [49] Matrix_1.3-4                  Rcpp_1.0.9                   
 #> [51] DescTools_0.99.42             munsell_0.5.0                
-#> [53] fansi_1.0.2                   lifecycle_1.0.1              
-#> [55] multcomp_1.4-17               stringi_1.7.6                
+#> [53] fansi_1.0.3                   lifecycle_1.0.1              
+#> [55] multcomp_1.4-17               stringi_1.7.8                
 #> [57] yaml_2.2.1                    MASS_7.3-51.6                
 #> [59] rootSolve_1.8.2.1             plyr_1.8.6                   
 #> [61] grid_4.0.2                    parallel_4.0.2               
-#> [63] ggrepel_0.9.1                 crayon_1.5.0                 
+#> [63] ggrepel_0.9.1                 crayon_1.5.1                 
 #> [65] lmom_2.8                      lattice_0.20-41              
 #> [67] haven_2.4.1                   splines_4.0.2                
 #> [69] hms_1.1.1                     knitr_1.37                   
-#> [71] pillar_1.7.0                  boot_1.3-25                  
+#> [71] pillar_1.8.0                  boot_1.3-25                  
 #> [73] gld_2.6.2                     stats4_4.0.2                 
 #> [75] codetools_0.2-16              reprex_2.0.0                 
 #> [77] glue_1.6.2                    evaluate_0.14                
 #> [79] data.table_1.14.2             modelr_0.1.8                 
-#> [81] vctrs_0.3.8                   tzdb_0.2.0                   
+#> [81] vctrs_0.4.1                   tzdb_0.3.0                   
 #> [83] foreach_1.5.2                 cellranger_1.1.0             
 #> [85] gtable_0.3.0                  assertthat_0.2.1             
 #> [87] xfun_0.29                     coin_1.4-1                   
-#> [89] libcoin_1.0-8                 broom_0.7.12                 
+#> [89] libcoin_1.0-8                 broom_1.0.0                  
 #> [91] e1071_1.7-7                   class_7.3-17                 
 #> [93] survival_3.1-12               iterators_1.0.14             
 #> [95] TH.data_1.0-10                ellipsis_0.3.2
