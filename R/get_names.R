@@ -15,9 +15,16 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' get_GeneNameID("A1CF", data_dir = "/path/")
+#' get_GeneNameID("A1CF", data_dir = "/path/to/DepMap_data/")
 #' }
 get_GeneNameID <- function(GeneName, data_dir){
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
+  
   # Load necessary data
   dep_annot <- CCLE_exp_annot <- NULL # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/dep_annot.rda"), envir = environment())

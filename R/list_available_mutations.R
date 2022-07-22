@@ -18,8 +18,8 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' list_available_mutations(Gene = "TP53")
-#' list_available_mutations(Chr = 12)
+#' list_available_mutations(Gene = "TP53", data_dir = "/path/to/DepMap_data/")
+#' list_available_mutations(Chr = 12, data_dir = "/path/to/DepMap_data/")
 #' }
 #' 
 #' @rdname list_available_mutations
@@ -33,9 +33,14 @@ list_available_mutations <- function(Gene = NULL,
                              data_dir = NULL){
   
   # Print and check to see input
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
   if(is.null(c(Gene, Chr))){
     stop("No input gene or region given. Please prvide a Hugo gene symbol.")
-    
   }
   
   # Load necessary data

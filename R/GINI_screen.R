@@ -40,6 +40,7 @@
 #' mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
 #' core_num = 2, 
 #' output_dir = "~/Desktop/GINI_test_dir/",
+#' data_dir = "/path/to/DepMap_data/",
 #' test = TRUE) # turn on for shorter test runs
 #' 
 #' }
@@ -82,6 +83,12 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   }
   if(!dir.exists(output_dir)){
     stop("Output directory does not exist. Please provide full path to directory.")
+  }
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
   }
   
   # Set cores:

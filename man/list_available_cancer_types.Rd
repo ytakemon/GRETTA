@@ -31,6 +31,6 @@ list_available_cancer_types(data_dir = "/path/to/data")
 }
 
 \dontrun{
-list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/data")
+list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/DepMap_data/")
 } 
 }

@@ -67,7 +67,9 @@ tar -zcvf GINIR_data.tar.gz
 tar -zcvf GINIR_data_document.tar.gz
 ```
 
-## Workflow
+## Workflows
+
+### Genetic interaction mapping
 
 1.  Install `GINIR` and download accompanying data
 2.  Select mutant cell lines that carry mutations in the gene of
@@ -80,9 +82,18 @@ tar -zcvf GINIR_data_document.tar.gz
 4.  Perform *in silico* genetic screen.
 5.  Visualize results
 
+### Co-essential network mapping
+
+1.  Install `GINIR` and download accompanying data
+2.  Run correlation coefficient analysis.
+3.  Calculate inflection points of negative/positive curve to determine
+    a threshold.
+4.  Apply threshold.
+5.  Visualize results
+
 ## Example: Identifying *ARID1A* genetic interactions
 
-*ARID1A* encodes a member of the chromatic remodeling SWItch/Sucrose
+*ARID1A* encodes a member of the chromatin remodeling SWItch/Sucrose
 Non-Fermentable (SWI/SNF) complex and is a frequently mutated gene in
 cancer. It is known that *ARID1A* and its homolog, *ARID1B*, are
 synthetic lethal to one another: The dual loss of ARID1A and its
@@ -95,7 +106,6 @@ interaction.
 For this example you will need to call the following libraries
 
 ``` r
-library(GINIR)
 library(tidyverse)
 #> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 #> ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
@@ -105,6 +115,7 @@ library(tidyverse)
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> x dplyr::filter() masks stats::filter()
 #> x dplyr::lag()    masks stats::lag()
+library(GINIR)
 ```
 
 Then, assign a variable that points to where the `.rda` files are
@@ -130,8 +141,8 @@ with quantitative proteomics data, and `739` cell lines with CRISPR-Cas9
 knockout screen data)
 
 ``` r
-# Find hotspot mutations in TP53
-list_available_mutations(Gene = "TP53", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
+# Find ARID1A hotspot mutations detected in all cell lines
+list_available_mutations(Gene = "ARID1A", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
 ```
 
 ``` r
@@ -399,7 +410,8 @@ of *ARID1A*, was a the top of this list.
 Finally once the *in silico* screen is complete, results can be quickly
 visualized using `plot_screen()`. Positive genetic interaction scores
 indicate potential synthetic lethal genetic interactors, and negative
-scores indicate potential alleviating genetic interactors.
+scores indicate potential alleviating genetic interactors. As expected,
+we identified *ARID1B* as a synthetic lethal interactor of *ARID1A*.
 
 ``` r
 # Visualize results, turn on gene labels, 
@@ -412,6 +424,85 @@ plot_screen(result_df = screen_results,
 ```
 
 <img src="man/figures/README-plot-1.svg" width="100%" />
+
+## Example: Identifying *ARID1A* co-essential genes
+
+Perturbing genes that function in same/synergistic pathways or in the
+same complex are said to show similar fitness effects, and these that
+show effects are considered to be “co-essential”. The strategy of
+mapping co-essential gene have been used by several studies to attribute
+functions to previously annotated genes as well as to identify a novel
+subunit of a large complex ([Wainberg et
+al. 2021](https://doi.org/10.1038/s41588-021-00840-z); [Pan et
+al. 2018](https://doi.org/10.1016/j.cels.2018.04.011)).
+
+Given that ARID1A is known subunit of the mammalian SWI/SNF complex
+([Mashtalir et al. 2018](https://doi.org/10.1016/j.cell.2018.09.032)),
+we expect that members of the SWI/SNF complex would share
+co-essentiality with *ARID1A*. This example will demonstrate how we can
+map *ARID1A*’s co-essential gene network using `GINIR`.
+
+## Identifying genes with highest correlation coefficients
+
+To determine co-esseential genes, we will perform multiple Pearson
+correlation coefficient analyses between *ARID1A* KO effects and the KO
+effects of all 18,333 genes. A cut off will be determined by calculating
+the inflection point of the ranked coefficient curve. As expected find
+SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two
+co-essential genes.
+
+``` r
+# Map co-essential genes
+coess_df <- coessential_map(
+  Input_gene = "ARID1A", 
+  core_num = 5, 
+  data_dir = GINIR_data_dir, 
+  output_dir = "path/to/results/folder/",
+  test = FALSE)
+
+# Calculate inflection points of positive and negative curve using co-essential gene results.
+coess_inflection_df <- get_inflection_points(coess_df)
+```
+
+Next, we annotate the data frame containing the co-essential network
+data and visualize.
+
+``` r
+# Combine and annotate data frame containg co-essential genes
+coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
+
+plot_coessential_genes(
+  result_df = coess_annotated_df, 
+  inflection_df = coess_inflection_df,
+  label_genes = TRUE, # Should gene names be labled?
+  label_n = 3) # Number of genes to display from each end
+```
+
+<img src="man/figures/README-combine_n_visualize-1.svg" width="100%" />
+
+We also see that the top ten *ARID1A* co-essential genes include eight
+known SWI/SNF subunits, namely *ARID1A*, *SMARCE1*, *SMARCB1*,
+*SMARCC1*, *DPF2*, *SS18*, *SMARCC2*, and *SMARCD2*.
+
+``` r
+# Show top 10 co-essential genes. 
+coess_annotated_df %>% arrange(Rank) %>% head(10)
+#> # A tibble: 10 × 13
+#>    GeneNameID_A GeneNameID_B estimate statistic  p.value parameter conf.low
+#>    <chr>        <chr>           <dbl>     <dbl>    <dbl>     <int>    <dbl>
+#>  1 ARID1A_8289  ARID1A_8289     1        Inf    0              724    1    
+#>  2 ARID1A_8289  SMARCE1_6605    0.508     15.9  7.70e-49       724    0.452
+#>  3 ARID1A_8289  SMARCB1_6598    0.488     15.0  1.07e-44       724    0.430
+#>  4 ARID1A_8289  SMARCC1_6599    0.436     13.0  4.79e-35       724    0.375
+#>  5 ARID1A_8289  DPF2_5977       0.395     11.6  1.62e-28       724    0.332
+#>  6 ARID1A_8289  SS18_6760       0.300      8.47 1.32e-16       724    0.233
+#>  7 ARID1A_8289  SMARCC2_6601    0.248      6.88 1.34e-11       724    0.178
+#>  8 ARID1A_8289  SMARCD2_6603    0.227      6.27 6.16e-10       724    0.157
+#>  9 ARID1A_8289  IER5L_389792    0.210      5.78 1.12e- 8       724    0.139
+#> 10 ARID1A_8289  PRDM15_63977    0.206      5.66 2.20e- 8       724    0.135
+#> # … with 6 more variables: conf.high <dbl>, method <chr>, alternative <chr>,
+#> #   Rank <int>, Padj_BH <dbl>, Candidate_gene <lgl>
+```
 
 ## Session Info
 
@@ -437,32 +528,57 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.8     purrr_0.3.4    
-#>  [5] readr_2.1.2     tidyr_1.2.0     tibble_3.1.6    ggplot2_3.3.5  
-#>  [9] tidyverse_1.3.1 GINIR_0.1.0    
+#>  [1] GINIR_0.1.0     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.8    
+#>  [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.6   
+#>  [9] ggplot2_3.3.5   tidyverse_1.3.1
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] matrixStats_0.59.0 fs_1.5.0           doMC_1.3.8         lubridate_1.7.10  
-#>  [5] httr_1.4.2         tools_4.0.2        backports_1.4.1    utf8_1.2.2        
-#>  [9] R6_2.5.1           nortest_1.0-4      DBI_1.1.1          colorspace_2.0-3  
-#> [13] withr_2.4.3        tidyselect_1.1.2   Exact_2.1          compiler_4.0.2    
-#> [17] rcompanion_2.4.1   cli_3.2.0          rvest_1.0.0        expm_0.999-6      
-#> [21] xml2_1.3.3         sandwich_3.0-1     labeling_0.4.2     diptest_0.76-0    
-#> [25] scales_1.1.1       lmtest_0.9-38      mvtnorm_1.1-2      proxy_0.4-26      
-#> [29] multcompView_0.1-8 digest_0.6.29      rmarkdown_2.9      pkgconfig_2.0.3   
-#> [33] htmltools_0.5.1.1  highr_0.9          dbplyr_2.1.1       rlang_1.0.1       
-#> [37] readxl_1.3.1       rstudioapi_0.13    farver_2.1.0       generics_0.1.2    
-#> [41] zoo_1.8-9          jsonlite_1.7.2     magrittr_2.0.2     modeltools_0.2-23 
-#> [45] Matrix_1.3-4       Rcpp_1.0.8         DescTools_0.99.42  munsell_0.5.0     
-#> [49] fansi_1.0.2        lifecycle_1.0.1    stringi_1.7.6      multcomp_1.4-17   
-#> [53] yaml_2.2.1         MASS_7.3-51.6      rootSolve_1.8.2.1  plyr_1.8.6        
-#> [57] grid_4.0.2         parallel_4.0.2     ggrepel_0.9.1      crayon_1.5.0      
-#> [61] lmom_2.8           lattice_0.20-41    haven_2.4.1        splines_4.0.2     
-#> [65] hms_1.1.1          knitr_1.37         pillar_1.7.0       boot_1.3-25       
-#> [69] gld_2.6.2          codetools_0.2-16   stats4_4.0.2       reprex_2.0.0      
-#> [73] glue_1.6.2         evaluate_0.14      data.table_1.14.0  modelr_0.1.8      
-#> [77] vctrs_0.3.8        tzdb_0.2.0         foreach_1.5.2      cellranger_1.1.0  
-#> [81] gtable_0.3.0       assertthat_0.2.1   xfun_0.29          coin_1.4-1        
-#> [85] libcoin_1.0-8      broom_0.7.12       e1071_1.7-7        class_7.3-17      
-#> [89] survival_3.1-12    iterators_1.0.14   TH.data_1.0-10     ellipsis_0.3.2
+#>  [1] matrixStats_0.59.0            fs_1.5.0                     
+#>  [3] doMC_1.3.8                    lubridate_1.7.10             
+#>  [5] doParallel_1.0.16             httr_1.4.2                   
+#>  [7] tools_4.0.2                   backports_1.4.1              
+#>  [9] utf8_1.2.2                    R6_2.5.1                     
+#> [11] nortest_1.0-4                 DBI_1.1.2                    
+#> [13] colorspace_2.0-3              withr_2.5.0                  
+#> [15] tidyselect_1.1.2              Exact_2.1                    
+#> [17] compiler_4.0.2                rcompanion_2.4.1             
+#> [19] cli_3.2.0                     rvest_1.0.0                  
+#> [21] expm_0.999-6                  xml2_1.3.3                   
+#> [23] sandwich_3.0-1                labeling_0.4.2               
+#> [25] inflection_1.3.5              diptest_0.76-0               
+#> [27] scales_1.1.1                  lmtest_0.9-38                
+#> [29] mvtnorm_1.1-2                 proxy_0.4-26                 
+#> [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
+#> [33] digest_0.6.29                 rmarkdown_2.9                
+#> [35] pkgconfig_2.0.3               htmltools_0.5.2              
+#> [37] highr_0.9                     dbplyr_2.1.1                 
+#> [39] fastmap_1.1.0                 rlang_1.0.1                  
+#> [41] readxl_1.3.1                  rstudioapi_0.13              
+#> [43] farver_2.1.0                  generics_0.1.2               
+#> [45] zoo_1.8-9                     jsonlite_1.7.2               
+#> [47] magrittr_2.0.2                modeltools_0.2-23            
+#> [49] Matrix_1.3-4                  Rcpp_1.0.8                   
+#> [51] DescTools_0.99.42             munsell_0.5.0                
+#> [53] fansi_1.0.2                   lifecycle_1.0.1              
+#> [55] multcomp_1.4-17               stringi_1.7.6                
+#> [57] yaml_2.2.1                    MASS_7.3-51.6                
+#> [59] rootSolve_1.8.2.1             plyr_1.8.6                   
+#> [61] grid_4.0.2                    parallel_4.0.2               
+#> [63] ggrepel_0.9.1                 crayon_1.5.0                 
+#> [65] lmom_2.8                      lattice_0.20-41              
+#> [67] haven_2.4.1                   splines_4.0.2                
+#> [69] hms_1.1.1                     knitr_1.37                   
+#> [71] pillar_1.7.0                  boot_1.3-25                  
+#> [73] gld_2.6.2                     stats4_4.0.2                 
+#> [75] codetools_0.2-16              reprex_2.0.0                 
+#> [77] glue_1.6.2                    evaluate_0.14                
+#> [79] data.table_1.14.2             modelr_0.1.8                 
+#> [81] vctrs_0.3.8                   tzdb_0.2.0                   
+#> [83] foreach_1.5.2                 cellranger_1.1.0             
+#> [85] gtable_0.3.0                  assertthat_0.2.1             
+#> [87] xfun_0.29                     coin_1.4-1                   
+#> [89] libcoin_1.0-8                 broom_0.7.12                 
+#> [91] e1071_1.7-7                   class_7.3-17                 
+#> [93] survival_3.1-12               iterators_1.0.14             
+#> [95] TH.data_1.0-10                ellipsis_0.3.2
 ```

@@ -42,7 +42,9 @@ Imports:
     stats,
     ggplot2,
     ggrepel,
-    lifecycle
+    lifecycle,
+    RootsExtremaInflections,
+    tibble
 URL: https://github.com/ytakemon/GINIR
 BugReports: https://github.com/ytakemon/GINIR/issues
 Depends: 

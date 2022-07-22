@@ -64,7 +64,9 @@ tar -zcvf GINIR_data.tar.gz
 tar -zcvf GINIR_data_document.tar.gz
 ```
 
-## Workflow
+## Workflows 
+
+### Genetic interaction mapping
 
 1. Install `GINIR` and download accompanying data
 1. Select mutant cell lines that carry mutations in the gene of interest and control cell lines. 
@@ -74,15 +76,23 @@ tar -zcvf GINIR_data_document.tar.gz
 1. Perform *in silico* genetic screen.
 1. Visualize results
 
+### Co-essential network mapping
+
+1. Install `GINIR` and download accompanying data
+1. Run correlation coefficient analysis.
+1. Calculate inflection points of negative/positive curve to determine a threshold.
+1. Apply threshold.
+1. Visualize results
+
 ## Example: Identifying *ARID1A* genetic interactions
 
-*ARID1A* encodes a member of the chromatic remodeling SWItch/Sucrose Non-Fermentable (SWI/SNF) complex and is a frequently mutated gene in cancer. It is known that *ARID1A* and its homolog, *ARID1B*, are synthetic lethal to one another: The dual loss of ARID1A and its homolog, ARID1B, in a cell is lethal; however, the loss of either gene alone is not  ([Helming et al., 2014](https://doi.org/10.1038/nm.3480)). This example will demonstrate how we can identify synthetic lethal interactors of *ARID1A* using `GINIR` and predict this known interaction.
+*ARID1A* encodes a member of the chromatin remodeling SWItch/Sucrose Non-Fermentable (SWI/SNF) complex and is a frequently mutated gene in cancer. It is known that *ARID1A* and its homolog, *ARID1B*, are synthetic lethal to one another: The dual loss of ARID1A and its homolog, ARID1B, in a cell is lethal; however, the loss of either gene alone is not  ([Helming et al., 2014](https://doi.org/10.1038/nm.3480)). This example will demonstrate how we can identify synthetic lethal interactors of *ARID1A* using `GINIR` and predict this known interaction.
 
 For this example you will need to call the following libraries
 
 ```{r libraries, eval = Final_eval}
-library(GINIR)
 library(tidyverse)
+library(GINIR)
 ```
 
 Then, assign a variable that points to where the `.rda` files are stored.
@@ -98,8 +108,8 @@ One way to explore cell lines that are available in DepMap is through their [por
 Current DepMap data used by default is version 20Q1, which contains whole-genome sequencing or whole-exome sequencing annotations for `1775` cancer cell lines (`1270` cell lines with RNA-seq data, `378` cell lines with quantitative proteomics data, and `739` cell lines with CRISPR-Cas9 knockout screen data)
 
 ```{r listing_available_muts, eval = FALSE}
-# Find hotspot mutations in TP53
-list_available_mutations(Gene = "TP53", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
+# Find ARID1A hotspot mutations detected in all cell lines
+list_available_mutations(Gene = "ARID1A", Is_hotspot = TRUE, data_dir = GINIR_data_dir) 
 ```
 
 ```{r listing_available_cancer_types, eval = Final_eval}
@@ -237,7 +247,7 @@ We immediately see that *ARID1B*, a known synthetic lethal interaction of *ARID1
 
 ### Visualize screen results
 
-Finally once the *in silico* screen is complete, results can be quickly visualized using `plot_screen()`. Positive genetic interaction scores indicate potential synthetic lethal genetic interactors, and negative scores indicate potential alleviating genetic interactors. 
+Finally once the *in silico* screen is complete, results can be quickly visualized using `plot_screen()`. Positive genetic interaction scores indicate potential synthetic lethal genetic interactors, and negative scores indicate potential alleviating genetic interactors. As expected, we identified *ARID1B* as a synthetic lethal interactor of *ARID1A*.
 
 ```{r plot, eval = Final_eval}
 # Visualize results, turn on gene labels, 
@@ -249,6 +259,55 @@ plot_screen(result_df = screen_results,
             label_n = 3)
 ```
 
+## Example: Identifying *ARID1A* co-essential genes
+
+Perturbing genes that function in same/synergistic pathways or in the same complex are said to show similar fitness effects, and these that show effects are considered to be "co-essential". The strategy of mapping co-essential gene have been used by several studies to attribute functions to previously annotated genes as well as to identify a novel subunit of a large complex ([Wainberg et al. 2021](https://doi.org/10.1038/s41588-021-00840-z); [Pan et al. 2018](https://doi.org/10.1016/j.cels.2018.04.011)). 
+
+Given that ARID1A is known subunit of the mammalian SWI/SNF complex ([Mashtalir et al. 2018](https://doi.org/10.1016/j.cell.2018.09.032)), we expect that members of the SWI/SNF complex would share co-essentiality with *ARID1A*. This example will demonstrate how we can map *ARID1A*'s co-essential gene network using `GINIR`.
+
+## Identifying genes with highest correlation coefficients
+
+To determine co-esseential genes, we will perform multiple Pearson correlation coefficient analyses between *ARID1A* KO effects and the KO effects of all 18,333 genes. A cut off will be determined by calculating the inflection point of the ranked coefficient curve. As expected find SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two co-essential genes.
+
+```{r load_prepared_results_coess, eval = Final_eval, include = FALSE}
+load(paste0(GINIR_data_dir,"/sample_ARID1A_coessential_result.rda"), envir = environment())
+load(paste0(GINIR_data_dir,"/sample_ARID1A_coessential_inflection.rda"), envir = environment())
+coess_df <- sample_ARID1A_coessential_result
+coess_inflection_df <- inflection_df 
+```
+
+```{r coess_df, eval = FALSE}
+# Map co-essential genes
+coess_df <- coessential_map(
+  Input_gene = "ARID1A", 
+  core_num = 5, 
+  data_dir = GINIR_data_dir, 
+  output_dir = "path/to/results/folder/",
+  test = FALSE)
+
+# Calculate inflection points of positive and negative curve using co-essential gene results.
+coess_inflection_df <- get_inflection_points(coess_df)
+```
+
+Next, we annotate the data frame containing the co-essential network data and visualize. 
+
+```{r combine_n_visualize, eval = Final_eval}
+# Combine and annotate data frame containg co-essential genes
+coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
+
+plot_coessential_genes(
+  result_df = coess_annotated_df, 
+  inflection_df = coess_inflection_df,
+  label_genes = TRUE, # Should gene names be labled?
+  label_n = 3) # Number of genes to display from each end
+```
+
+We also see that the top ten *ARID1A* co-essential genes include eight known SWI/SNF subunits, namely *ARID1A*, *SMARCE1*, *SMARCB1*, *SMARCC1*, *DPF2*, *SS18*, *SMARCC2*, and *SMARCD2*.
+
+```{r top10_coess, eval = Final_eval}
+# Show top 10 co-essential genes. 
+coess_annotated_df %>% arrange(Rank) %>% head(10)
+```
 
 ## Session Info 
 ```{r sessioninfo}

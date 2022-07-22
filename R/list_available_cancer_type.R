@@ -34,9 +34,15 @@ list_available_cancer_types <- function(data_dir){
 #' @export
 #' @examples
 #' \dontrun{
-#' list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/data")
+#' list_available_cancer_subtypes("Lung Cancer", data_dir = "/path/to/DepMap_data/")
 #' } 
 list_available_cancer_subtypes <- function(input_disease, data_dir){
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
   # Load necessary data
   sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/sample_annot.rda"), envir = environment())

@@ -12,7 +12,10 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' extract_rna_expr(Input_samples = c("ACH-001642","ACH-000688"), Input_genes = c("TP53","ARID1A"))
+#' extract_rna_expr(
+#' Input_samples = c("ACH-001642","ACH-000688"), 
+#' Input_genes = c("TP53","ARID1A"),
+#' data_dir = "/path/to/DepMap_data/")
 #' }
 #' @rdname extract_rna_expr
 #' @export 
@@ -23,7 +26,13 @@ extract_rna_expr <- function(Input_samples = NULL, Input_genes = NULL, data_dir 
    # Print and check to see input was provided
   if(is.null(Input_samples)){
     stop("No samples given. Please input sample DepMap_ID")
-  } 
+  }
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
   
   # Load necessary data
   CCLE_exp <- CCLE_exp_annot <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/

@@ -32,7 +32,7 @@ common cell line aliases to DepMap's unique gene name and cell line identifiers,
 
 \examples{
 \dontrun{
-get_GeneNameID("A1CF", data_dir = "/path/")
+get_GeneNameID("A1CF", data_dir = "/path/to/DepMap_data/")
 }
 \dontrun{
 get_DepMapID("JURKAT", data_dir = "/path/")

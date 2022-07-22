@@ -25,6 +25,9 @@ See also \code{extract_protein_rna} to extract proteomics profile data
 }
 \examples{
 \dontrun{
-extract_protein_expr(Input_samples = c("ACH-000004", "ACH-000146"), Input_genes = c("ATM","TOP1"))
+extract_protein_expr(
+Input_samples = c("ACH-000004", "ACH-000146"), 
+Input_genes = c("ATM","TOP1"),
+data_dir = "/path/to/DepMap_data/")
 }
 }

@@ -36,21 +36,27 @@
 #' @examples
 #' \dontrun{
 #' # Looking for TP53 mutants in all cancer cell lines (pan-cancer search)
-#' select_cell_lines(Input_gene = "TP53")
-#' select_cell_lines(Input_gene = "TP53", Input_AA_change = "R175H")
+#' select_cell_lines(Input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
+#' 
+#' select_cell_lines(
+#' Input_gene = "TP53", 
+#' Input_AA_change = "R175H", 
+#' data_dir = "/path/to/DepMap_data/")
 #' 
 #' # TP53 mutants only in SCLC subtypes
 #' select_cell_lines(Input_gene = "TP53", 
 #' Input_disease = "Lung Cancer", 
-#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+#' data_dir = "/path/to/DepMap_data/")
 #' 
 #' select_cell_lines(Input_gene = "TP53", 
 #' Input_AA_change = "R175H", 
 #' Input_disease = "Lung Cancer", 
-#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)")
+#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+#' data_dir = "/path/to/DepMap_data/")
 #' 
 #' # All cancer cell lines that are from Lung Cancers
-#' select_cell_lines(Input_disease = "Lung Cancer")
+#' select_cell_lines(Input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
 #' 
 #' }
 
@@ -84,6 +90,12 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
   } else {
     stop("Error with input.")
     
+  }
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
   }
   
   # If Input_gene is provided look for mutations:

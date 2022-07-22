@@ -12,7 +12,10 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' extract_protein_expr(Input_samples = c("ACH-000004", "ACH-000146"), Input_genes = c("ATM","TOP1"))
+#' extract_protein_expr(
+#' Input_samples = c("ACH-000004", "ACH-000146"), 
+#' Input_genes = c("ATM","TOP1"),
+#' data_dir = "/path/to/DepMap_data/")
 #' }
 #' @rdname extract_protein_expr
 #' @export 
@@ -25,6 +28,12 @@ extract_protein_expr <- function(Input_samples = NULL, Input_genes = NULL, data_
   if(is.null(Input_samples)){
     stop("No samples given. Please input sample DepMap_ID")
   } 
+  if(is.null(data_dir)){
+    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  }
+  if(!dir.exists(data_dir)){
+    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
   
   # Load necessary data
   protein_annot <- protein_nodup <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/

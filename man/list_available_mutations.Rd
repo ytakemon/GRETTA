@@ -43,8 +43,8 @@ Quick method to look up mutations of interest prior to using \code{select_cell_l
 }
 \examples{
 \dontrun{
-list_available_mutations(Gene = "TP53")
-list_available_mutations(Chr = 12)
+list_available_mutations(Gene = "TP53", data_dir = "/path/to/DepMap_data/")
+list_available_mutations(Chr = 12, data_dir = "/path/to/DepMap_data/")
 }
 
 }

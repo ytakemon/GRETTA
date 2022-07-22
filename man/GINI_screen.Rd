@@ -63,6 +63,7 @@ control_IDs = c("ACH-001354", "ACH-000274", "ACH-001799"),
 mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
 core_num = 2, 
 output_dir = "~/Desktop/GINI_test_dir/",
+data_dir = "/path/to/DepMap_data/",
 test = TRUE) # turn on for shorter test runs
 
 }
