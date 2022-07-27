@@ -1,6 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!--You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
 
 # Genetic Interaction Network IdentifieR (GINIR)
@@ -31,8 +30,7 @@ license](https://creativecommons.org/licenses/by/4.0/).
 This repository is being developed and maintained by [Yuka
 Takemon](https://github.com/ytakemon) at the [Dr. Marco
 Marra](https://www.bcgsc.ca/labs/marra-lab)’s laboratory at the
-[Canada’s Michael Smith Genome Sciences
-Centre](https://www.bcgsc.ca/).
+[Canada’s Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
 Please submit an [issue](https://github.com/ytakemon/GINIR/issues) for
 all questions regarding GINIR.
@@ -63,8 +61,8 @@ wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data.tar.gz
 wget https://github.com/ytakemon/GINIR/raw/main/GINIR_data_document.tar.gz
 
 # Extract data and data documentation
-tar -zcvf GINIR_data.tar.gz
-tar -zcvf GINIR_data_document.tar.gz
+tar -zxvf GINIR_data.tar.gz
+tar -zxvf GINIR_data_document.tar.gz
 ```
 
 ## Workflows
@@ -74,11 +72,11 @@ tar -zcvf GINIR_data_document.tar.gz
 1.  Install `GINIR` and download accompanying data
 2.  Select mutant cell lines that carry mutations in the gene of
     interest and control cell lines.
-      - (optional specifications) disease type, disease subtype, amino
+    -   (optional specifications) disease type, disease subtype, amino
         acid change
 3.  Determine differential expression between mutant and control cell
     line groups.
-      - (optional but recommended)
+    -   (optional but recommended)
 4.  Perform *in silico* genetic screen.
 5.  Visualize results
 
@@ -122,7 +120,7 @@ Then, assign a variable that points to where the `.rda` files are
 stored.
 
 ``` r
-GINIR_data_dir <- "/path/to/GINIR_project/GINIR_data/"
+GINIR_data_dir <- "/path/to/GINIR_project/data/"
 ```
 
 ### Exploring cell lines
@@ -190,27 +188,24 @@ loss-of-function alterations in the gene specified and group them into
 six different groups.
 
 Loss-of-function alterations include variants that are annotated as:
-`"Nonsense_Mutation", "Frame_Shift_Ins", "Splice_Site",
-"De_novo_Start_OutOfFrame", "Frame_Shift_Del", "Start_Codon_SNP",
-"Start_Codon_Del",` and `"Start_Codon_Ins"`. Copy number alterations are
-also taken into consideration and group as `"Deep_del", "Loss",
-"Neutral",` or `"Amplified"`.
+`"Nonsense_Mutation", "Frame_Shift_Ins", "Splice_Site", "De_novo_Start_OutOfFrame", "Frame_Shift_Del", "Start_Codon_SNP", "Start_Codon_Del",`
+and `"Start_Codon_Ins"`. Copy number alterations are also taken into
+consideration and group as `"Deep_del", "Loss", "Neutral",` or
+`"Amplified"`.
 
 The cell line groups assigned by default are:
 
-  - `Control` cell lines do not harbor any single nucleotide variations
+-   `Control` cell lines do not harbor any single nucleotide variations
     (SNVs) or insertions and deletions (InDels) with a neutral copy
     number (CN).
-  - `HomDel` cell lines harbor one or more homozygous deleterious SNVs
+-   `HomDel` cell lines harbor one or more homozygous deleterious SNVs
     or have deep CN loss.
-  - `T-HetDel` cell lines harbor two or more heterozygous deleterious
+-   `T-HetDel` cell lines harbor two or more heterozygous deleterious
     SNVs/InDels with neutral or CN loss.
-  - `HetDel` cell lines harbor one heterozygous deleterious SNV/InDel
+-   `HetDel` cell lines harbor one heterozygous deleterious SNV/InDel
     with neutral CN, or no SNV/InDel with CN loss.
-  - `Amplified` cell lines harbor no SNVs/InDels with increased CN.
-  - `Others` cell lines harbor deleterious SNVs with increased CN.
-
-<!-- end list -->
+-   `Amplified` cell lines harbor no SNVs/InDels with increased CN.
+-   `Others` cell lines harbor deleterious SNVs with increased CN.
 
 ``` r
 ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A", data_dir = GINIR_data_dir)
@@ -331,42 +326,40 @@ each gene knock out in every cancer cell line screened (There are 18,334
 genes targeted in 739 cancer cell lines). A gene knock out with a
 lethality probability of 0.0 indicates a non-essential for the cell
 line, and a gene knock out with a 1.0 indicates an essential gene (ie.
-very lethal). Details can be found in [Meyers, R., et
-al., 2017](https://doi.org/10.1038/ng.3984)
+very lethal). Details can be found in [Meyers, R., et al.,
+2017](https://doi.org/10.1038/ng.3984)
 
 At its core, `screen_results()` performs multiple Mann-Whitney U tests,
 comparing lethality probabilities of each targeted gene between mutant
 and control groups. This generates a data frame with the following
 columns:
 
-  - `GeneName_ID` - Hugo symbol with NCBI gene ID
-  - `GeneNames` - Hugo symbol
-  - `_median, _mean, _sd, _iqr` - Control and mutant group’s median,
+-   `GeneName_ID` - Hugo symbol with NCBI gene ID
+-   `GeneNames` - Hugo symbol
+-   `_median, _mean, _sd, _iqr` - Control and mutant group’s median,
     mean, standard deviation (sd), and interquartile range (iqr) of
     dependency probabilities. Dependency probabilities range from zero
     to one, where one indicates a essential gene (ie. KO of gene was
     lethal) and zero indicates a non-essential gene (KO of gene was not
     lethal)
-  - `Pval` - P-value from Mann Whitney U test between control and mutant
+-   `Pval` - P-value from Mann Whitney U test between control and mutant
     groups.
-  - `Adj_pval` - BH-adjusted P-value.
-  - `log2FC_by_median` - Log2 normalized median fold change of
+-   `Adj_pval` - BH-adjusted P-value.
+-   `log2FC_by_median` - Log2 normalized median fold change of
     dependency probabilities (mutant / control).
-  - `log2FC_by_mean` - Log2 normalized mean fold change of dependency
+-   `log2FC_by_mean` - Log2 normalized mean fold change of dependency
     probabilities (mutant / control).
-  - `CliffDelta` - Cliff’s delta non-parametric effect size between
+-   `CliffDelta` - Cliff’s delta non-parametric effect size between
     mutant and control dependency probabilities. Ranges between -1 to 1.
-  - `dip_pval` - Hartigan’s dip test p-value. Tests whether distribution
+-   `dip_pval` - Hartigan’s dip test p-value. Tests whether distribution
     of mutant dependency probability is unimodel. If dip test is
     rejected (p-value \< 0.05), this indicates that there is a
     multimodel dependency probability distribution and that there may be
     another factor contributing to this separation.
-  - `Interaction_score` - Combined value generated from signed p-values:
-    -log10(Pval) \* sign(log2FC\_by\_median). Negative scores indicate
+-   `Interaction_score` - Combined value generated from signed p-values:
+    -log10(Pval) \* sign(log2FC_by_median). Negative scores indicate
     lethal genetic interaction, and positive scores indicate alleviating
     genetic interaction.
-
-<!-- end list -->
 
 ``` r
 ARID1A_mutant_IDs <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -374,8 +367,8 @@ ARID1A_control_IDs <- ARID1A_groups %>% filter(Group %in% c("Control")) %>% pull
 
 # This can take several hours depending on number of lines/cores used. Best to run this overnight.
 screen_results <- GINI_screen(
-  control_IDs = ARID1A_mutant_IDs, 
-  mutant_IDs = ARID1A_control_IDs, 
+  control_IDs = ARID1A_control_IDs, 
+  mutant_IDs = ARID1A_mutant_IDs,
   core_num = 5, # depends on how many cores you have  
   output_dir = "path/to/results/folder/", # Will save your results here as well as in the variable
   data_dir = GINIR_data_dir,
@@ -551,7 +544,7 @@ sessionInfo()
 #> [27] scales_1.2.0                  lmtest_0.9-38                
 #> [29] mvtnorm_1.1-2                 proxy_0.4-26                 
 #> [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
-#> [33] digest_0.6.29                 rmarkdown_2.9                
+#> [33] digest_0.6.29                 rmarkdown_2.14               
 #> [35] pkgconfig_2.0.3               htmltools_0.5.2              
 #> [37] highr_0.9                     dbplyr_2.1.1                 
 #> [39] fastmap_1.1.0                 rlang_1.0.4                  
@@ -578,7 +571,7 @@ sessionInfo()
 #> [81] vctrs_0.4.1                   tzdb_0.3.0                   
 #> [83] foreach_1.5.2                 cellranger_1.1.0             
 #> [85] gtable_0.3.0                  assertthat_0.2.1             
-#> [87] xfun_0.29                     coin_1.4-1                   
+#> [87] xfun_0.31                     coin_1.4-1                   
 #> [89] libcoin_1.0-8                 broom_1.0.0                  
 #> [91] e1071_1.7-7                   class_7.3-17                 
 #> [93] survival_3.1-12               iterators_1.0.14             
