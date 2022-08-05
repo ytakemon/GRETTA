@@ -57,7 +57,7 @@ list_available_mutations <- function(Gene = NULL,
     # Get ALL Mutations, and apply additional filters if they exist
     target_mut <- mut_calls %>%
       dplyr::filter(.data$Hugo_Symbol %in% Gene) %>%
-      dplyr::select(.data$Hugo_Symbol:.data$Annotation_Transcript, 
+      dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript, 
                     .data$cDNA_Change:.data$COSMIChsCnt, 
                     .data$Variant_annotation) %>%
       dplyr::arrange(.data$Start_position) %>%
@@ -95,7 +95,7 @@ list_available_mutations <- function(Gene = NULL,
     # Get ALL Mutations, and apply additional filters if they exist
     target_mut <- mut_calls %>%
       dplyr::filter(.data$Chromosome %in% as.character(Chr)) %>%
-      dplyr::select(.data$Hugo_Symbol:.data$Annotation_Transcript, 
+      dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript, 
                     .data$cDNA_Change:.data$COSMIChsCnt, 
                     .data$Variant_annotation) %>%
       dplyr::arrange(.data$Start_position) %>%
