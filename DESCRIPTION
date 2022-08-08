@@ -1,6 +1,6 @@
 Package: GINIR
 Title: Perform In-silico Screens to Identify Genetic Interaction and Essentiality Networks
-Version: 0.3.0
+Version: 0.3.1
 Authors@R:
     c(person(given = "Yuka",
         family = "Takemon",
