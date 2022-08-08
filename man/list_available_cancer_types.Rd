@@ -22,9 +22,9 @@ string A vector containing unique cancer types available
 }
 \section{Functions}{
 \itemize{
-\item \code{list_available_cancer_subtypes}: List cancer subtypes that are available
-}}
+\item \code{list_available_cancer_subtypes()}: List cancer subtypes that are available
 
+}}
 \examples{
 \dontrun{
 list_available_cancer_types(data_dir = "/path/to/data")

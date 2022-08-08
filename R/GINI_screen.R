@@ -148,19 +148,29 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
     
     # Give feedback
     if(each == 1){
-      print(paste0("Processing ", each, " of ", length(unique(dep$GeneNameID))))
-    } else if(each == length(unique(dep$GeneNameID))){
-      print(paste0("Processing ", each, " of ", length(unique(dep$GeneNameID))))
+      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+    } else if(each == length(unique(select_dep$GeneNameID))){
+      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
     } else if(each%%1000 == 0){
-      print(paste0("Processing ", each, " of ", length(unique(dep$GeneNameID))))
+      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
     }
     
     # Get each gene
     geneID <- unique(select_dep$GeneNameID)[each]
-    df <- select_dep %>% dplyr::filter(.data$GeneNameID == geneID)
+    df <- select_dep %>% 
+      dplyr::filter(.data$GeneNameID == geneID) %>%
+      dplyr::filter(!is.na(.data$DepProb))
     
-    if(all(df$DepProb == 0)){
+    df_post_filter_check <- df %>% count(.data$CellType)
+    
+    if(any(df_post_filter_check$n < 2)){
+      populate <- rep(NA,11)
+      
+    } else if(all(df$DepProb == 0)){
       populate <- rep(0,11)
+      
+    } else if(all(df$DepProb == 1)){
+      populate <- rep(1,11)
       
     } else {
       # # MWU doesn't handle na or zero's well so
@@ -179,10 +189,10 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
       if((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)){
         
         fit_pval <- stats::wilcox.test(DepProb ~ CellType, df,
-                                paired = F,
-                                alternative = "two.sided",
-                                conf.int = T,
-                                na.action = "na.omit")$p.value
+                                       paired = F,
+                                       alternative = "two.sided",
+                                       conf.int = T,
+                                       na.action = "na.omit")$p.value
         
         # If group size is < 3 cliffDelta will have error:
         # missing value where TRUE/FALSE needed
@@ -222,13 +232,13 @@ GINI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, 
   # Add mutant group name
   output <- All_res %>%
     dplyr::mutate(log2FC_by_median = log2(.data$Mutant_median / .data$Control_median),
-           log2FC_by_mean = log2(.data$Mutant_mean / .data$Control_mean),
-           Adj_pval = p.adjust(.data$Pval, method = "BH", length(.data$Pval)),
-           Interaction_score = -log10(.data$Pval) * sign(.data$log2FC_by_median)) %>%
+                  log2FC_by_mean = log2(.data$Mutant_mean / .data$Control_mean),
+                  Adj_pval = p.adjust(.data$Pval, method = "BH", length(.data$Pval)),
+                  Interaction_score = -log10(.data$Pval) * sign(.data$log2FC_by_median)) %>%
     dplyr::left_join(dep_annot %>% select(.data$GeneNameID, .data$GeneNames),
-              by = "GeneNameID") %>%
+                     by = "GeneNameID") %>%
     dplyr::select(.data$GeneNameID, .data$GeneNames, .data$Control_median:.data$Pval, .data$Adj_pval,
-           .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(), .data$Interaction_score)
+                  .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(), .data$Interaction_score)
   
   # save and return output
   output %>% readr::write_csv(file = paste0(output_dir,"/GINI_screening_results.csv"))

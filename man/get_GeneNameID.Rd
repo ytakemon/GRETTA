@@ -27,9 +27,9 @@ common cell line aliases to DepMap's unique gene name and cell line identifiers,
 }
 \section{Functions}{
 \itemize{
-\item \code{get_DepMapID}: Get unique DepMap-compatible sample IDs
-}}
+\item \code{get_DepMapID()}: Get unique DepMap-compatible sample IDs
 
+}}
 \examples{
 \dontrun{
 get_GeneNameID("A1CF", data_dir = "/path/to/DepMap_data/")
