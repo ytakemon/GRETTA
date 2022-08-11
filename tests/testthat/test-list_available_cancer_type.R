@@ -1,5 +1,5 @@
 test_that("Test that list_available_cancer_types works", {
-  dir <- "/projects/marralab/ytakemon_prj/DepMap/GINIR_data/data"
+  dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/20Q1/data"
   
   # To list all types
   res1 <- list_available_cancer_types(data_dir = dir)
