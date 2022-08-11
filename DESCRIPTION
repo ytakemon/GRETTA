@@ -1,6 +1,6 @@
 Package: GRETA
 Title: Genetic Interaction and Essentiality Mapper
-Version: 0.3.1
+Version: 0.3.2
 Authors@R:
     c(person(given = "Yuka",
         family = "Takemon",
