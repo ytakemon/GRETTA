@@ -139,16 +139,40 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     
     # Get ALL Mutations
     target_mut <- mut_calls %>%
-      dplyr::filter((.data$DepMap_ID %in% dep$DepMap_ID) & (.data$Hugo_Symbol %in% Input_gene)) %>%
-      dplyr::mutate(AC_combined = dplyr::coalesce(.data$CGA_WES_AC, .data$SangerRecalibWES_AC, .data$SangerWES_AC, .data$RNAseq_AC, .data$HC_AC, .data$RD_AC, .data$WGS_AC), #(Alt:REF)
-                    AC_ref_NULL = grepl(":0", .data$AC_combined)) %>%
-      dplyr::mutate(AC_Variant = dplyr::case_when(
-        .data$AC_ref_NULL == "TRUE" ~ "Hom_Mut",
-        TRUE ~ "Het_Mut"),
-        AC_Variant = paste0(.data$Variant_Classification," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
-      dplyr::select(.data$Hugo_Symbol, .data$Chromosome:.data$Annotation_Transcript, .data$cDNA_Change:.data$COSMIChsCnt, .data$Variant_annotation:.data$AC_Variant) %>%
-      dplyr::arrange(.data$Start_position) %>%
-      dplyr::select(.data$DepMap_ID, everything())
+      dplyr::filter((.data$DepMap_ID %in% dep$DepMap_ID) & (.data$Hugo_Symbol %in% Input_gene))
+    
+    # Only some mut_calls contain a "SangerRecalibWES_AC" column
+    if(any(colnames(target_mut) %in% "SangerRecalibWES_AC")){
+      target_mut <- target_mut %>% 
+        dplyr::mutate(AC_combined = dplyr::coalesce(.data$CGA_WES_AC, .data$SangerRecalibWES_AC, .data$SangerWES_AC, .data$RNAseq_AC, .data$HC_AC, .data$RD_AC, .data$WGS_AC), #(Alt:REF)
+                      AC_ref_NULL = grepl(":0", .data$AC_combined)) %>%
+        dplyr::mutate(AC_Variant = dplyr::case_when(
+          .data$AC_ref_NULL == "TRUE" ~ "Hom_Mut",
+          TRUE ~ "Het_Mut"),
+          AC_Variant = paste0(.data$Variant_Classification," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
+        dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$End_position, 
+                      .data$Strand, .data$Variant_Classification, .data$Variant_Type, .data$Reference_Allele, 
+                      .data$Tumor_Seq_Allele1, .data$dbSNP_RS, .data$dbSNP_Val_Status, .data$Genome_Change, .data$Annotation_Transcript, 
+                      .data$cDNA_Change, .data$Codon_Change, .data$Protein_Change, .data$isDeleterious, .data$isTCGAhotspot, 
+                      .data$TCGAhsCnt, .data$isCOSMIChotspot, .data$COSMIChsCnt, .data$Variant_annotation, .data$AC_combined, 
+                      .data$AC_ref_NULL, .data$AC_Variant) %>%
+        dplyr::arrange(.data$Start_position)
+    } else {
+      target_mut <- target_mut %>% 
+        dplyr::mutate(AC_combined = dplyr::coalesce(.data$CGA_WES_AC, .data$SangerWES_AC, .data$RNAseq_AC, .data$HC_AC, .data$RD_AC, .data$WGS_AC), #(Alt:REF)
+                      AC_ref_NULL = grepl(":0", .data$AC_combined)) %>%
+        dplyr::mutate(AC_Variant = dplyr::case_when(
+          .data$AC_ref_NULL == "TRUE" ~ "Hom_Mut",
+          TRUE ~ "Het_Mut"),
+          AC_Variant = paste0(.data$Variant_Classification," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
+        dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$End_position, 
+                      .data$Strand, .data$Variant_Classification, .data$Variant_Type, .data$Reference_Allele, 
+                      .data$Alternate_Allele, .data$dbSNP_RS, .data$dbSNP_Val_Status, .data$Genome_Change, .data$Annotation_Transcript, 
+                      .data$cDNA_Change, .data$Codon_Change, .data$Protein_Change, .data$isDeleterious, .data$isTCGAhotspot, 
+                      .data$TCGAhsCnt, .data$isCOSMIChotspot, .data$COSMIChsCnt, .data$Variant_annotation, .data$AC_combined, 
+                      .data$AC_ref_NULL, .data$AC_Variant) %>%
+        dplyr::arrange(.data$Start_position)
+    }
     # Count number of mutations found per sample
     all_mutations_count_by_sample <- target_mut %>% dplyr::count(.data$DepMap_ID)
     

@@ -55,9 +55,9 @@ install.packages("devtools")
 devtools::install_github("ytakemon/GRETA")
 ```
 
-Data and the data documentation are provided on the [GRETA github
-page](https://github.com/ytakemon/GRETA/) and can be installed directly
-in terminal using the following:
+DepMap 20Q1 data and the data documentation files are provided above and
+can be extracted directly in terminal using the following bash code (not
+in R/RStudio):
 
 ``` bash
 # Make a new directory/folder called GRETA_project and go into directory
@@ -65,12 +65,12 @@ mkdir GRETA_project
 cd GRETA_project
 
 # Download data and data documentation from the web
-wget https://github.com/ytakemon/GRETA/raw/main/GRETA_data.tar.gz
-wget https://github.com/ytakemon/GRETA/raw/main/GRETA_data_document.tar.gz
+wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data.tar.gz
+wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data_document.tar.gz
 
 # Extract data and data documentation
-tar -zxvf GRETA_data.tar.gz
-tar -zxvf GRETA_data_document.tar.gz
+tar -zxvf GRETA_DepMap_20Q1_data.tar.gz
+tar -zxvf GRETA_DepMap_20Q1_data_document.tar.gz
 ```
 
 ## Workflows
@@ -533,7 +533,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETA_0.3.1     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
+#>  [1] GRETA_0.3.2     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
 #>  [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.8   
 #>  [9] ggplot2_3.3.6   tidyverse_1.3.2
 #> 

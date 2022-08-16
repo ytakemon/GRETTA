@@ -1,0 +1,24 @@
+citHeader("To cite GRETA in publications use:")
+
+citEntry(
+  entry    = "Manual",
+  title    = "GRETA: A Genetic interaction and essentiality mapper",
+  author   = as.person(c("Yuka Takemon", "Marco A. Marra")),
+  doi = "10.5281/zenodo.6940757",
+  year     = 2022,
+  url      = "https://github.com/ytakemon/GRETA",
+  textVersion = paste("Takemon, Yuka and Marra, Marco A. (2022). GRETA: A Genetic interaction and essentiality mapper. https://doi.org/10.5281/zenodo.6940757 ")
+)
+
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "{GRETA}: A Genetic interaction and essentiality mapper.",
+         author = c(person("Yuka", "Takemon"), person("Marco A.", "Marra")),
+         year = "2022",
+         note = note,
+	 url = "https://github.com/ytakemon/GRETA")
+
+textVersion = paste0("Yuka Takemon, (2022)",
+  "GRETA: A Genetic interaction and essentiality mapper.",
+  "https://github.com/ytakemon/GRETA")

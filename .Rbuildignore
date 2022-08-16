@@ -8,4 +8,5 @@
 ^tests/testthat/*\.csv$
 ^.*\.png$
 ^.*\.gz$
-^\Reminders.R
+^Additional_data$
+^Additional_data/*

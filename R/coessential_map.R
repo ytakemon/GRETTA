@@ -57,7 +57,7 @@
 #' @importFrom stats cor.test
 
 coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_lines = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, test = FALSE){
-
+  
   # Check that essential inputs are given:
   if(is.null(Input_gene)){
     stop("No control IDs detected")
@@ -112,14 +112,22 @@ coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_
       dplyr::pull(.data$DepMap_ID)
   }
   
-  AllGenes <- colnames(gene_effect)[-1] # removes DepMap_ID column
-  
-  gene_effect_long <- gene_effect %>%
-    tidyr::pivot_longer(
-      cols = matches("\\d"),
-      names_to = "GeneNameID",
-      values_to = "Effect_score") %>%
-    dplyr::filter(.data$DepMap_ID %in% selected_cell_lines)
+  # account for differences between DepMap versions
+  if(ncol(gene_effect) == 3){
+    AllGenes <- unique(gene_effect$GeneNameID)
+    gene_effect_long <- gene_effect %>%
+      dplyr::filter(.data$DepMap_ID %in% selected_cell_lines)
+    
+  } else if(ncol(gene_effect) > 3) {
+    AllGenes <- colnames(gene_effect)[-1] # removes DepMap_ID column  
+    gene_effect_long <- gene_effect %>%
+      tidyr::pivot_longer(
+        cols = matches("\\d"),
+        names_to = "GeneNameID",
+        values_to = "Effect_score") %>%
+      dplyr::filter(.data$DepMap_ID %in% selected_cell_lines)
+    
+  }
   
   Gene_A_GeneNameID <-  get_GeneNameID(Input_gene, data_dir = data_dir)
   Gene_A_effect <- gene_effect_long %>% dplyr::filter(.data$GeneNameID == Gene_A_GeneNameID)
