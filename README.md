@@ -41,7 +41,9 @@ being prepared.
 ## Questions and issues
 
 Please submit an [issue](https://github.com/ytakemon/GRETA/issues) for
-all questions and requests regarding GRETA.
+all questions and requests regarding GRETA. An [FAQ
+section](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions)
+is also available.
 
 <!-- Below this line are default template stuff that will be updated as the package comes together -->
 
@@ -57,7 +59,8 @@ devtools::install_github("ytakemon/GRETA")
 
 DepMap 20Q1 data and the data documentation files are provided above and
 can be extracted directly in terminal using the following bash code (not
-in R/RStudio):
+in R/RStudio). For other DepMap data versions please refer to the [FAQ
+section](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions).
 
 ``` bash
 # Make a new directory/folder called GRETA_project and go into directory
@@ -447,7 +450,7 @@ map *ARID1A*’s co-essential gene network using `GRETA`.
 
 ## Identifying genes with highest correlation coefficients
 
-To determine co-esseential genes, we will perform multiple Pearson
+To determine co-essential genes, we will perform multiple Pearson
 correlation coefficient analyses between *ARID1A* KO effects and the KO
 effects of all 18,333 genes. A cut off will be determined by calculating
 the inflection point of the ranked coefficient curve. As expected find
@@ -471,13 +474,13 @@ Next, we annotate the data frame containing the co-essential network
 data and visualize.
 
 ``` r
-# Combine and annotate data frame containg co-essential genes
+# Combine and annotate data frame containing co-essential genes
 coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
 
 plot_coessential_genes(
   result_df = coess_annotated_df, 
   inflection_df = coess_inflection_df,
-  label_genes = TRUE, # Should gene names be labled?
+  label_genes = TRUE, # Should gene names be labeled?
   label_n = 3) # Number of genes to display from each end
 ```
 
