@@ -1,3 +1,7 @@
+# GRETA 0.4.0
+-   All GRETA functions are now compatible with multiple DepMap data versions (20Q1, 21Q4, and 22Q2)! 
+-   An FAQ section is now available [here](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions).
+
 # GRETA 0.3.2
 
 -   GINIR package name has now changed to GRETA (Genetic inteRaction and EssenTially mApper).
