@@ -1,4 +1,6 @@
 # GRETA 0.4.1
+-   Users can now custom name their output files in `GI_screen()` and `coessential_map()` with the `output_filename =` option. 
+-   Technically I think this should be a minor version update, but it seemed too insignificant to go to v0.5.0. 
 
 # GRETA 0.4.0
 -   All GRETA functions are now compatible with multiple DepMap data versions (20Q1, 21Q4, and 22Q2)! 
