@@ -1,6 +1,6 @@
 #' @title Perform co-essentially mapping
 #' 
-#' @description Performs multiple correltion coefficent analysese and determines cut to identify most likely co-essential genes.
+#' @description Performs multiple correlation coefficient analyses and determines cut to identify most likely co-essential genes.
 #' 
 #' @param Input_gene string, A vector containing one Hugo Symbol, Default: NULL
 #' @param Input_disease string, A vector one or more disease contexts, Will perform pan-cancer analyses 
@@ -10,8 +10,9 @@
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
 #' @param data_dir string Path to GINIR_data
+#' @param output_filename string name of file without the ".csv" extension. 
 #' @param test logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly 
-#' priort to running all 18,333 genes. Default: FALSE.
+#' prior to running all 18,333 genes. Default: FALSE.
 #'
 #' @return A data frame containing Pearson correlation coefficients. A copy is also saved to the 
 #' directory defined in `output_dir`.
@@ -56,7 +57,7 @@
 #' @importFrom readr write_csv
 #' @importFrom stats cor.test
 
-coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_lines = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, test = FALSE){
+coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_lines = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, output_filename = NULL, test = FALSE){
   
   # Check that essential inputs are given:
   if(is.null(Input_gene)){
@@ -82,6 +83,11 @@ coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_
   }
   if(!dir.exists(data_dir)){
     stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
+  if(!is.null(output_filename)){
+    output_dir_and_filename <- paste0(output_dir,"/",output_filename,".csv")
+  } else {
+    output_dir_and_filename <- paste0(output_dir,"/GINI_coessentiality_network_results.csv")
   }
   
   # Set cores:
@@ -171,8 +177,8 @@ coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_
     dplyr::mutate(
       Rank = order(-.data$estimate, decreasing = F),
       Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))) %>%
-    readr::write_csv(file = paste0(output_dir,"/GINI_coessentiality_network_results.csv"))
+    readr::write_csv(file = output_dir_and_filename)
   
-  print(paste0("Coessentiality mapping finished. Outputs were written to: ", output_dir,"/GINI_coessentiality_network_results.csv"))
+  print(paste0("Coessentiality mapping finished. Outputs were written to: ", output_dir_and_filename))
   return(output)
 }

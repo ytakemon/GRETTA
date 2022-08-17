@@ -11,6 +11,7 @@ coessential_map(
   core_num = NULL,
   output_dir = NULL,
   data_dir = NULL,
+  output_filename = NULL,
   test = FALSE
 )
 }
@@ -29,15 +30,17 @@ Will perform pan-cancer analyses (all cell lines) by default, Default: NULL}
 
 \item{data_dir}{string Path to GINIR_data}
 
+\item{output_filename}{string name of file without the ".csv" extension.}
+
 \item{test}{logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly
-priort to running all 18,333 genes. Default: FALSE.}
+prior to running all 18,333 genes. Default: FALSE.}
 }
 \value{
 A data frame containing Pearson correlation coefficients. A copy is also saved to the
 directory defined in \code{output_dir}.
 }
 \description{
-Performs multiple correltion coefficent analysese and determines cut to identify most likely co-essential genes.
+Performs multiple correlation coefficient analyses and determines cut to identify most likely co-essential genes.
 }
 \details{
 Description of output data frame

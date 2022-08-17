@@ -8,6 +8,7 @@
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
 #' @param data_dir string Path to GRETA_data
+#' @param output_filename string name of file without the ".csv" extension. 
 #' @param test logical, For test_that to shorten computational time for testing
 #'
 #' @return A data frame containing results from the genetic screen. A copy is also saved to the 
@@ -60,7 +61,7 @@
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
 
-GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, test = FALSE){
+GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, output_filename = NULL, test = FALSE){
   
   # Check that essential inputs are given:
   if(is.null(control_IDs)){
@@ -89,6 +90,11 @@ GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, ou
   }
   if(!dir.exists(data_dir)){
     stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  }
+  if(!is.null(output_filename)){
+    output_dir_and_filename <- paste0(output_dir,"/",output_filename,".csv")
+  } else {
+    output_dir_and_filename <- paste0(output_dir,"/GINI_coessentiality_network_results.csv")
   }
   
   # Set cores:
@@ -241,6 +247,6 @@ GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, ou
                   .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(), .data$Interaction_score)
   
   # save and return output
-  output %>% readr::write_csv(file = paste0(output_dir,"/GRETA_screening_results.csv"))
+  output %>% readr::write_csv(file = output_dir_and_filename)
   return(output)
 }
