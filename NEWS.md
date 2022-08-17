@@ -1,3 +1,5 @@
+# GRETA 0.4.1
+
 # GRETA 0.4.0
 -   All GRETA functions are now compatible with multiple DepMap data versions (20Q1, 21Q4, and 22Q2)! 
 -   An FAQ section is now available [here](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions).
