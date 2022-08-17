@@ -179,6 +179,6 @@ coessential_map <- function(Input_gene = NULL, Input_disease = NULL, Input_cell_
       Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))) %>%
     readr::write_csv(file = output_dir_and_filename)
   
-  print(paste0("Coessentiality mapping finished. Outputs were written to: ", output_dir_and_filename))
+  print(paste0("Coessentiality mapping finished. Outputs were also written to: ", output_dir_and_filename))
   return(output)
 }

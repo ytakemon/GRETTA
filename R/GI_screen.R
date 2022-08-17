@@ -248,5 +248,7 @@ GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, ou
   
   # save and return output
   output %>% readr::write_csv(file = output_dir_and_filename)
+  
+  print(paste0("In-silico genetic interaction screen finished. Outputs were also written to: ", output_dir_and_filename))
   return(output)
 }
