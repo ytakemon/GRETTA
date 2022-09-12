@@ -10,3 +10,5 @@
 ^.*\.gz$
 ^Additional_data$
 ^Additional_data/*
+^Singularity$
+^Singularity/*

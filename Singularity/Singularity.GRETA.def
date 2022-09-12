@@ -1,0 +1,56 @@
+# Singularity definition for a R 4.2.0 with GRETA package and data
+
+# Pulling from pre-made rocker container containing R-4.2.0 and tidyverse, devtools pre-installed.
+BootStrap: docker
+From: rocker/verse:4.2.0
+
+%post
+    # install additional packages
+    R --no-echo -e 'devtools::install_github("ytakemon/GRETA")'
+
+    # Craete folders 
+    mkdir /home/GRETA
+    mkdir /home/GRETA/data
+    mkdir /home/GRETA/data/20Q1/
+    mkdir /home/GRETA/data/21Q4/
+    mkdir /home/GRETA/data/22Q2/
+    mkdir /home/GRETA/output
+
+    # Download and extract data
+        # 20Q1
+        cd /home/GRETA/data/20Q1/
+        wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data.tar.gz
+        wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data_document.tar.gz
+        tar -zxvf GRETA_DepMap_20Q1_data.tar.gz
+        tar -zxvf GRETA_DepMap_20Q1_data_document.tar.gz
+
+        # 21Q4
+        cd /home/GRETA/data/21Q4/
+        wget https://github.com/ytakemon/GRETA/raw/main/Additional_DepMap_data_versions/21Q4/GRETA_DepMap_21Q4_data.tar.gz
+        tar -zxvf GRETA_DepMap_21Q4_data.tar.gz
+
+        # 22Q2
+        cd /home/GRETA/data/22Q2/
+        wget https://github.com/ytakemon/GRETA/raw/main/Additional_DepMap_data_versions/22Q1/GRETA_DepMap_22Q2_data.tar.gz
+        tar -zxvf GRETA_DepMap_22Q2_data.tar.gz
+    
+%environment
+    export LC_ALL=C.UTF-8
+
+%help
+    This container contains R-4.2.0 with GRETA R package and its dependencies pre-installed. 
+    Accompanying DepMap data have also been pre-downloaded.
+    
+    To enter this container: $ singularity shell GRETA_test.sif (This will open an interactive shell)
+    
+    Inside the container
+    To run R: Singularity> R
+    
+    Important directories
+    DepMap data are located in: /home/GRETA/data/
+    GRETA outputs can be directed to: /home/GRETA/output/
+
+%labels
+  Author: Yuka Takemon
+  Contact: ytakemon@bcgsc.ca 
+
