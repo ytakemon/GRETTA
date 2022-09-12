@@ -1,3 +1,3 @@
-Singularity.GRETA.def is the definition file for the singularity image file (sif) located at:
+Singularity.GRETA.def is the definition file for the singularity image file (sif) located at: https://cloud.sylabs.io/library/ytakemon/greta/greta
 
-Tutorial for installing and running this container can be found at:
+Tutorial for installing and running this container can be found at: https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity
