@@ -3,6 +3,25 @@
 # Pulling from pre-made rocker container containing R-4.2.0 and tidyverse, devtools pre-installed.
 BootStrap: docker
 From: rocker/verse:4.2.0
+    
+%environment
+    export LC_ALL=C.UTF-8
+
+%help
+    This container contains R-4.2.0 with GRETA R package and its dependencies pre-installed. 
+    Accompanying DepMap data can be found at /home/GRETA/output/.
+    
+    See following link for a detailed tutorial: https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity
+    
+    Singularity recipe file can be found at: https://github.com/ytakemon/GRETA/tree/main/Singularity
+
+    Important directories
+    DepMap data are located in: /home/GRETA/data/
+    GRETA outputs can be directed to: /home/GRETA/output/
+
+%labels
+  Author: Yuka Takemon
+  Contact: ytakemon@bcgsc.ca 
 
 %post
     # install additional packages
@@ -33,24 +52,8 @@ From: rocker/verse:4.2.0
         cd /home/GRETA/data/22Q2/
         wget https://github.com/ytakemon/GRETA/raw/main/Additional_DepMap_data_versions/22Q1/GRETA_DepMap_22Q2_data.tar.gz
         tar -zxvf GRETA_DepMap_22Q2_data.tar.gz
-    
-%environment
-    export LC_ALL=C.UTF-8
 
-%help
-    This container contains R-4.2.0 with GRETA R package and its dependencies pre-installed. 
-    Accompanying DepMap data have also been pre-downloaded.
-    
-    To enter this container: $ singularity shell GRETA_test.sif (This will open an interactive shell)
-    
-    Inside the container
-    To run R: Singularity> R
-    
-    Important directories
-    DepMap data are located in: /home/GRETA/data/
-    GRETA outputs can be directed to: /home/GRETA/output/
-
-%labels
-  Author: Yuka Takemon
-  Contact: ytakemon@bcgsc.ca 
-
+%runscript
+    # Run Rscript provided 
+    # Eg. To run the tutorial run `singularity run greta.sif ARID1A_tutorial.R`
+    exec Rscript $@
