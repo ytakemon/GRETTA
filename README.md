@@ -25,7 +25,7 @@ downloaded through the DepMap data portal. The data was distributed and
 used under the terms and conditions of [CC Attribution 4.0
 license](https://creativecommons.org/licenses/by/4.0/).
 
-## Contributions
+## Maintainer
 
 This repository is maintained by [Yuka
 Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco
@@ -38,14 +38,13 @@ A please find the citation using `citation("GRETA")` and include the DOI
 at the top of this page. A manuscript describing workflow and usage is
 being prepared.
 
-## Questions and issues
+## Questions
 
-Please submit an [issue](https://github.com/ytakemon/GRETA/issues) for
-all questions and requests regarding GRETA. An [FAQ
+Please check the [FAQ
 section](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions)
-is also available.
-
-<!-- Below this line are default template stuff that will be updated as the package comes together -->
+for additional information and if you cannot find your answer there or
+have a request please submit an
+[issue](https://github.com/ytakemon/GRETA/issues).
 
 ## Package installation and data download
 
@@ -60,7 +59,7 @@ devtools::install_github("ytakemon/GRETA")
 DepMap 20Q1 data and the data documentation files are provided above and
 can be extracted directly in terminal using the following bash code (not
 in R/RStudio). For other DepMap data versions please refer to the [FAQ
-section](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions).
+section](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions#q-how-to-download-and-use-other-versions-of-depmap-data).
 
 ``` bash
 # Make a new directory/folder called GRETA_project and go into directory
@@ -75,6 +74,10 @@ wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data_document.
 tar -zxvf GRETA_DepMap_20Q1_data.tar.gz
 tar -zxvf GRETA_DepMap_20Q1_data_document.tar.gz
 ```
+
+A singularity container has also been provided and instructions can be
+found
+[here](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
 
 ## Workflows
 
@@ -536,7 +539,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETA_0.3.2     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
+#>  [1] GRETA_0.4.0     forcats_0.5.1   stringr_1.4.0   dplyr_1.0.9    
 #>  [5] purrr_0.3.4     readr_2.1.2     tidyr_1.2.0     tibble_3.1.8   
 #>  [9] ggplot2_3.3.6   tidyverse_1.3.2
 #> 
