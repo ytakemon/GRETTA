@@ -6,8 +6,8 @@ library(tidyverse)
 library(GRETA)
 
 # Set paths 
-GRETA_data_dir <- "/home/GRETA/data/20Q1/data/"
-GRETA_output_dir <- "/home/GRETA/Results/"
+GRETA_data_dir <- "./GRETA/data/20Q1/data/"
+GRETA_output_dir <- "./GRETA/output/"
 
 # Identify cell lines with ARID1A WT allele or LOF mutations
 message("Assigning cancer cell lines into ARID1A control group and HomDel mutant group.")
@@ -38,7 +38,7 @@ GI_plot <- plot_screen(
     label_n = 3)
 
 # save plot 
-pdf("/home/GRETA/Results/Tutorial_ARID1A_GI_ranked_plot.pdf", width = 6, height = 4)
+pdf("./GRETA/output/Tutorial_ARID1A_GI_ranked_plot.pdf", width = 6, height = 4)
 print(GI_plot)
 dev.off()
 
@@ -67,8 +67,8 @@ essential_plot <- plot_coessential_genes(
   label_n = 3) # Number of genes to display from each end
 
 # save plot 
-pdf("/home/GRETA/Results/Tutorial_ARID1A_essentiality_ranked_plot.pdf", width = 6, height = 4)
+pdf("./GRETA/output/Tutorial_ARID1A_essentiality_ranked_plot.pdf", width = 6, height = 4)
 print(essential_plot)
 dev.off()
 
-message("Results are save in `/home/GRETA/Results/`")
+message("Results are save in `./GRETA/output/`")
