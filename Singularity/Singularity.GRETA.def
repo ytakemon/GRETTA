@@ -9,15 +9,15 @@ From: rocker/verse:4.2.0
 
 %help
     This container contains R-4.2.0 with GRETA R package and its dependencies pre-installed. 
-    Accompanying DepMap data can be found at ./GRETA/output/.
+    Accompanying DepMap data can be found at $PWD/GRETA/output/.
     
     See following link for a detailed tutorial: https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity
     
     Singularity recipe file can be found at: https://github.com/ytakemon/GRETA/tree/main/Singularity
 
     Important directories
-    DepMap data are located in: ./GRETA/data/
-    GRETA outputs can be directed to: ./GRETA/output/
+    DepMap data are located in: $PWD/GRETA/data/
+    GRETA outputs can be directed to: $PWD/GRETA/output/
 
 %labels
   Author: Yuka Takemon
@@ -28,28 +28,28 @@ From: rocker/verse:4.2.0
     R --no-echo -e 'devtools::install_github("ytakemon/GRETA")'
 
     # Craete folders 
-    mkdir ./GRETA/
-    mkdir ./GRETA/data
-    mkdir ./GRETA/data/20Q1/
-    mkdir ./GRETA/data/21Q4/
-    mkdir ./GRETA/data/22Q2/
-    mkdir ./GRETA/output/
+    mkdir $PWD/GRETA
+    mkdir $PWD/GRETA/data
+    mkdir $PWD/GRETA/data/20Q1
+    mkdir $PWD/GRETA/data/21Q4
+    mkdir $PWD/GRETA/data/22Q2
+    mkdir $PWD/GRETA/output
 
     # Download and extract data
         # 20Q1
-        cd ./GRETA/data/20Q1/
+        cd $PWD/GRETA/data/20Q1
         wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data.tar.gz
         wget https://github.com/ytakemon/GRETA/raw/main/GRETA_DepMap_20Q1_data_document.tar.gz
         tar -zxvf GRETA_DepMap_20Q1_data.tar.gz
         tar -zxvf GRETA_DepMap_20Q1_data_document.tar.gz
 
         # 21Q4
-        cd ./GRETA/data/21Q4/
+        cd ../21Q4
         wget https://github.com/ytakemon/GRETA/raw/main/Additional_DepMap_data_versions/21Q4/GRETA_DepMap_21Q4_data.tar.gz
         tar -zxvf GRETA_DepMap_21Q4_data.tar.gz
 
         # 22Q2
-        cd ./GRETA/data/22Q2/
+        cd ../22Q2
         wget https://github.com/ytakemon/GRETA/raw/main/Additional_DepMap_data_versions/22Q1/GRETA_DepMap_22Q2_data.tar.gz
         tar -zxvf GRETA_DepMap_22Q2_data.tar.gz
 
