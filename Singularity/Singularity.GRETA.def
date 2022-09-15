@@ -54,5 +54,5 @@ From: rocker/verse:4.2.0
 
 %runscript
     # Run Rscript provided 
-    # Eg. To run the tutorial run `singularity run greta.sif ARID1A_tutorial.R`
+    # Eg. To run the tutorial with 40 threads using: `singularity run greta.sif ARID1A_tutorial.R 40`
     exec Rscript $@
