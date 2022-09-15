@@ -30,7 +30,8 @@ message("Depending on the number of threads used, this may take a while...")
 screen_results <- GI_screen(
   control_IDs = ARID1A_control_IDs, 
   mutant_IDs = ARID1A_mutant_IDs,
-  core_num = all_cores - 1, # leave one core free, just in case.
+  # core_num = all_cores - 1, # leave one core free, just in case.
+  core_num = 20,
   output_dir = GRETA_output_dir, # Will save your results here as well as in the variable
   data_dir = GRETA_data_dir,
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
@@ -43,7 +44,7 @@ GI_plot <- plot_screen(
     label_n = 3)
 
 # save plot 
-pdf("./GRETA/output/Tutorial_ARID1A_GI_ranked_plot.pdf", width = 6, height = 4)
+pdf(paste0(GRETA_output_dir, "Tutorial_ARID1A_GI_ranked_plot.pdf", width = 6, height = 4))
 print(GI_plot)
 dev.off()
 
@@ -52,7 +53,8 @@ dev.off()
 message("Running essentiality analysis.")
 coess_df <- coessential_map(
   Input_gene = "ARID1A", 
-  core_num = all_cores - 1, # leave one core free, just in case.
+  # core_num = all_cores - 1, # leave one core free, just in case.
+  core_num = 20,
   output_dir = GRETA_output_dir, # Will save your results here as well as in the variable
   data_dir = GRETA_data_dir,
   test = FALSE)
@@ -72,7 +74,7 @@ essential_plot <- plot_coessential_genes(
   label_n = 3) # Number of genes to display from each end
 
 # save plot 
-pdf("./GRETA/output/Tutorial_ARID1A_essentiality_ranked_plot.pdf", width = 6, height = 4)
+pdf(paste0(GRETA_output_dir, "Tutorial_ARID1A_essentiality_ranked_plot.pdf", width = 6, height = 4))
 print(essential_plot)
 dev.off()
 
