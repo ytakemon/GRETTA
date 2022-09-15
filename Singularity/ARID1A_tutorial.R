@@ -7,7 +7,7 @@ library(GRETA)
 
 # Set paths 
 GRETA_data_dir <- "/opt/GRETA/data/20Q1/data/"
-GRETA_output_dir <- paste0(getwd(),"/output")
+GRETA_output_dir <- paste0(getwd(),"/output/")
 
 # Create output directory if not already created
 if(!dir.exists(GRETA_output_dir)){

@@ -94,7 +94,7 @@ GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, ou
   if(!is.null(output_filename)){
     output_dir_and_filename <- paste0(output_dir,"/",output_filename,".csv")
   } else {
-    output_dir_and_filename <- paste0(output_dir,"/GINI_coessentiality_network_results.csv")
+    output_dir_and_filename <- paste0(output_dir,"/GRETA_GI_screen_results.csv")
   }
   
   # Set cores:
