@@ -35,8 +35,9 @@ Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 ## Citations
 
 A please find the citation using `citation("GRETA")` and include the DOI
-at the top of this page. A manuscript describing workflow and usage is
-being prepared.
+at the top of this page. A manuscript describing GRETA and its usage is
+now available on [BioRxiv (Takemon, Y. and Marra, MA.,
+2020)](https://doi.org/10.1101/2022.09.21.508787).
 
 ## Questions
 
@@ -326,7 +327,7 @@ ggplot(ARID1A_HomDel_muts_and_ctrls_rna, aes(x = Group, y = ARID1A_8289)) +
   geom_boxplot()
 ```
 
-<img src="man/figures/README-Check_expression_rna_stats-1.svg" width="100%" />
+<img src="man/figures/README-Check_expression_rna_stats-1.png" width="100%" />
 
 ### Perform *in silico* genetic screen
 
@@ -432,7 +433,7 @@ plot_screen(result_df = screen_results,
             label_n = 3)
 ```
 
-<img src="man/figures/README-plot-1.svg" width="100%" />
+<img src="man/figures/README-plot-1.png" width="100%" />
 
 ## Example: Identifying *ARID1A* co-essential genes
 
@@ -487,7 +488,7 @@ plot_coessential_genes(
   label_n = 3) # Number of genes to display from each end
 ```
 
-<img src="man/figures/README-combine_n_visualize-1.svg" width="100%" />
+<img src="man/figures/README-combine_n_visualize-1.png" width="100%" />
 
 We also see that the top ten *ARID1A* co-essential genes include eight
 known SWI/SNF subunits, namely *ARID1A*, *SMARCE1*, *SMARCB1*,

@@ -38,7 +38,7 @@ This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), a 
 
 ## Citations 
 
-A please find the citation using `citation("GRETA")` and include the DOI at the top of this page. A manuscript describing workflow and usage is being prepared.
+A please find the citation using `citation("GRETA")` and include the DOI at the top of this page. A manuscript describing GRETA and its usage is now available on [BioRxiv (Takemon, Y. and Marra, MA., 2020)](https://doi.org/10.1101/2022.09.21.508787). 
 
 ## Questions
 
