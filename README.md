@@ -37,7 +37,7 @@ Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 A please find the citation using `citation("GRETA")` and include the DOI
 at the top of this page. A manuscript describing GRETA and its usage is
 now available on [BioRxiv (Takemon, Y. and Marra, MA.,
-2020)](https://doi.org/10.1101/2022.09.21.508787).
+2022)](https://doi.org/10.1101/2022.09.21.508787).
 
 ## Questions
 
