@@ -382,9 +382,9 @@ columns:
     lethal genetic interaction, and positive scores indicate alleviating
     genetic interaction.
 
-> **Warning** This process may take minutes depending on the number of
-> cores assigned. In our example below, `GI_screen()` took \~2 hours to
-> process.
+> **Warning** This process may take a few hours depending on the number
+> of cores assigned. In our example below, `GI_screen()` took \~2 hours
+> to process.
 
 ``` r
 ARID1A_mutant_IDs <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -470,8 +470,8 @@ the inflection point of the ranked coefficient curve. As expected find
 SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two
 co-essential genes.
 
-> **Warning** This process may take minutes depending on the number of
-> cores assigned. In our example below, `coessential_map()` +
+> **Warning** This process may take several minutes depending on the
+> number of cores assigned. In our example below, `coessential_map()` +
 > `get_inflection_points()` took \~30 minutes to process.
 
 ``` r
