@@ -5,8 +5,9 @@
 \title{Perform genetic interaction screen}
 \usage{
 GI_screen(
-  control_IDs = NULL,
-  mutant_IDs = NULL,
+  control_id = NULL,
+  mutant_id = NULL,
+  gene_list = NULL,
   core_num = NULL,
   output_dir = NULL,
   data_dir = NULL,
@@ -15,9 +16,11 @@ GI_screen(
 )
 }
 \arguments{
-\item{control_IDs}{string, A vector containing two or more DepMap_IDs, Default: NULL}
+\item{control_id}{string, A vector containing two or more DepMap_id, Default: NULL}
 
-\item{mutant_IDs}{string, A vector containing two or more DepMap_IDs, Default: NULL}
+\item{mutant_id}{string, A vector containing two or more DepMap_id, Default: NULL}
+
+\item{gene_list}{string, A vector containing a list of Hugo symbols to subset the screen and to perform a small in-silico screen, Default: NULL}
 
 \item{core_num}{integer, Number of cores to run analysis, Default: NULL}
 
@@ -25,7 +28,7 @@ GI_screen(
 
 \item{data_dir}{string Path to GRETA_data}
 
-\item{output_filename}{string name of file without the ".csv" extension.}
+\item{output_filename}{string name of file without the '.csv' extension.}
 
 \item{test}{logical, For test_that to shorten computational time for testing}
 }
@@ -62,11 +65,12 @@ that there may be another factor contributing to this separation.
 \dontrun{
 
 Screen_results <- GI_screen(
-control_IDs = c("ACH-001354", "ACH-000274", "ACH-001799"), 
-mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
+control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
+mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
+gene_list = c("ARID1A", "ARID1B", "SMARCA2"),
 core_num = 2, 
-output_dir = "~/Desktop/GRETA_test_dir/",
-data_dir = "/path/to/DepMap_data/",
+output_dir = '~/Desktop/GRETA_test_dir/',
+data_dir = '/path/to/DepMap_data/',
 test = TRUE) # turn on for shorter test runs
 
 }

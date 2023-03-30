@@ -3,12 +3,13 @@
 #' @description Compares dependency probabilities of mutant and control groups to determine 
 #' whether the mutant group are resistant or sensitive to specific gene perturbations.
 #' 
-#' @param control_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
-#' @param mutant_IDs string, A vector containing two or more DepMap_IDs, Default: NULL
+#' @param control_id string, A vector containing two or more DepMap_id, Default: NULL
+#' @param mutant_id string, A vector containing two or more DepMap_id, Default: NULL
+#' @param gene_list string, A vector containing a list of Hugo symbols to subset the screen and to perform a small in-silico screen, Default: NULL
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
 #' @param data_dir string Path to GRETA_data
-#' @param output_filename string name of file without the ".csv" extension. 
+#' @param output_filename string name of file without the '.csv' extension. 
 #' @param test logical, For test_that to shorten computational time for testing
 #'
 #' @return A data frame containing results from the genetic screen. A copy is also saved to the 
@@ -37,11 +38,12 @@
 #' \dontrun{
 #' 
 #' Screen_results <- GI_screen(
-#' control_IDs = c("ACH-001354", "ACH-000274", "ACH-001799"), 
-#' mutant_IDs = c("ACH-000911", "ACH-001957", "ACH-000075"), 
+#' control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
+#' mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
+#' gene_list = c("ARID1A", "ARID1B", "SMARCA2"),
 #' core_num = 2, 
-#' output_dir = "~/Desktop/GRETA_test_dir/",
-#' data_dir = "/path/to/DepMap_data/",
+#' output_dir = '~/Desktop/GRETA_test_dir/',
+#' data_dir = '/path/to/DepMap_data/',
 #' test = TRUE) # turn on for shorter test runs
 #' 
 #' }
@@ -61,194 +63,285 @@
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
 
-GI_screen <- function(control_IDs = NULL, mutant_IDs = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL, output_filename = NULL, test = FALSE){
+GI_screen <- function(
+    control_id = NULL, mutant_id = NULL, gene_list = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL,
+    output_filename = NULL, test = FALSE
+) {
   
   # Check that essential inputs are given:
-  if(is.null(control_IDs)){
+  if (is.null(control_id)) {
     stop("No control IDs detected")
   }
-  if(is.null(mutant_IDs)){
+  if (is.null(mutant_id)) {
     stop("No mutant IDs detected")
   }
-  if(is.null(core_num)){
-    cores_detected <-  parallel::detectCores()
+  if (is.null(core_num)) {
+    cores_detected <- parallel::detectCores()
     print("No cores specified")
-    print(paste0("Detected: ", cores_detected," cores"))
-    print(paste0("Using: ", cores_detected/2," cores"))
+    print(paste0("Detected: ", cores_detected, " cores"))
+    print(paste0("Using: ", cores_detected/2, " cores"))
     doMC::registerDoMC(cores_detected/2)
   }
-  if(is.null(output_dir)){
-    output_dir <- paste0(getwd(),"/GRETA_",Sys.Date())
+  if (is.null(output_dir)) {
+    output_dir <- paste0(getwd(), "/GRETA_", Sys.Date())
     print(paste0("No output directory specified. Creating: ", output_dir))
     dir.create(output_dir)
   }
-  if(!dir.exists(output_dir)){
+  if (!dir.exists(output_dir)) {
     stop("Output directory does not exist. Please provide full path to directory.")
   }
-  if(is.null(data_dir)){
-    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  if (is.null(data_dir)) {
+    stop(
+      paste0("No directory to data was specified. Please provide path to DepMap data.")
+    )
   }
-  if(!dir.exists(data_dir)){
-    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  if (!dir.exists(data_dir)) {
+    stop(
+      paste0(
+        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
+      )
+    )
   }
-  if(!is.null(output_filename)){
-    output_dir_and_filename <- paste0(output_dir,"/",output_filename,".csv")
+  if (!is.null(output_filename)) {
+    output_dir_and_filename <- paste0(output_dir, "/", output_filename, ".csv")
   } else {
-    output_dir_and_filename <- paste0(output_dir,"/GRETA_GI_screen_results.csv")
+    output_dir_and_filename <- paste0(output_dir, "/GRETA_GI_screen_results.csv")
   }
   
   # Set cores:
-  if(!is.null(core_num)){
+  if (!is.null(core_num)) {
     doMC::registerDoMC(core_num)
   }
   
   # Check to see enough samples were given:
-  if(length(control_IDs) < 2){
+  if (length(control_id) <
+      2) {
     stop("Not enough controls! Provide at least two.")
   }
-  if(length(mutant_IDs) < 2){
+  if (length(mutant_id) <
+      2) {
     stop("Not enough mutants! Provide at least two.")
   }
   
   # Load necessary data
-  dep <- dep_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load(paste0(data_dir, "/dep.rda"), envir = environment())
-  load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
+  dep <- dep_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
+  load(
+    paste0(data_dir, "/dep.rda"),
+    envir = environment()
+  )
+  load(
+    paste0(data_dir, "/dep_annot.rda"),
+    envir = environment()
+  )
+  
+  # If a list of genes are provided, check to see if they are all available.
+  if(!is.null(gene_list)){
+    if(!all(gene_list %in% dep_annot$GeneNames)){ # if all there
+      missing <- gene_list[!gene_list %in% dep_annot$GeneNames]
+      cat(
+        "The following gene(s) were not found or screened by DepMap. Please remove them and try again. \n ",
+        paste0(missing, collapse = ", ")
+      )
+      stop()
+    }
+  }
   
   # Check to see if enough samples were given after filtering:
-  Control_group_avail <- control_IDs[control_IDs %in% dep$DepMap_ID]
-  Mutant_groups_avail <- mutant_IDs[mutant_IDs %in% dep$DepMap_ID]
-  if(length(Control_group_avail) < 2){
-    stop(paste0("Not enough controls were screened! Only the following control samples were screen: ", 
-                paste0(Control_group_avail, collapse = ", ")))
+  Control_group_avail <- control_id[control_id %in% dep$DepMap_ID]
+  Mutant_groups_avail <- mutant_id[mutant_id %in% dep$DepMap_ID]
+  if (length(Control_group_avail) <
+      2) {
+    stop(
+      paste0(
+        "Not enough controls were screened! Only the following control samples were screen: ",
+        paste0(Control_group_avail, collapse = ", ")
+      )
+    )
   }
-  if(length(Control_group_avail) < 2){
-    stop(paste0("Not enough mutants were screened! Only the following mutant samples were screen: ", 
-                paste0(Mutant_groups_avail, collapse = ", ")))
+  if (length(Control_group_avail) <
+      2) {
+    stop(
+      paste0(
+        "Not enough mutants were screened! Only the following mutant samples were screen: ",
+        paste0(Mutant_groups_avail, collapse = ", ")
+      )
+    )
   }
   
   # Filter dep probs to only those that are used:
   select_dep <- dep %>%
-    tidyr::pivot_longer(cols = tidyselect::matches("\\d"), names_to = "GeneNameID", values_to = "DepProb") %>%
-    dplyr::mutate(CellType = case_when(
-      DepMap_ID %in% Mutant_groups_avail ~ "Mutant",
-      DepMap_ID %in% Control_group_avail ~ "Control",
-      TRUE ~ "Others")) %>%
-    dplyr::filter(.data$CellType != "Others") %>%  
+    tidyr::pivot_longer(
+      cols = tidyselect::matches("\\d"),
+      names_to = "GeneNameID", values_to = "DepProb"
+    ) %>%
+    dplyr::mutate(
+      CellType = case_when(
+        DepMap_ID %in% Mutant_groups_avail ~ "Mutant", DepMap_ID %in% Control_group_avail ~
+          "Control", TRUE ~ "Others"
+      )
+    ) %>%
+    dplyr::filter(.data$CellType != "Others") %>%
     dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType, "Control", "Mutant"))
   
+  # Filter further if subsetting
+  if(!is.null(gene_list)){
+    select_dep_annot <- dep_annot %>% 
+      filter(GeneNames %in% gene_list)
+    
+    select_dep <- select_dep %>%
+      filter(GeneNameID %in% select_dep_annot$GeneNameID)
+  }
   
   # Need to define function. A fix for a strange bug:
   `%dopar%` <- foreach::`%dopar%`
   
   # For testing short loops:
-  if(test == TRUE){
+  if (test == TRUE) {
     run <- 10
-  } else if (test == FALSE){
+  } else if (test == FALSE) {
     run <- length(unique(select_dep$GeneNameID))
   }
   
   # Begin loop
   All_res <- each <- NULL
-  All_res <- foreach::foreach(each = 1:run, .combine = bind_rows) %dopar% {
-    
-    # Give feedback
-    if(each == 1){
-      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
-    } else if(each == length(unique(select_dep$GeneNameID))){
-      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
-    } else if(each%%1000 == 0){
-      print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
-    }
-    
-    # Get each gene
-    geneID <- unique(select_dep$GeneNameID)[each]
-    df <- select_dep %>% 
-      dplyr::filter(.data$GeneNameID == geneID) %>%
-      dplyr::filter(!is.na(.data$DepProb))
-    
-    df_post_filter_check <- df %>% count(.data$CellType)
-    
-    if(any(df_post_filter_check$n < 2)){
-      populate <- rep(NA,11)
+  All_res <- foreach::foreach(each = 1:run, .combine = bind_rows) %dopar%
+    {
       
-    } else if(all(df$DepProb == 0)){
-      populate <- rep(0,11)
-      
-    } else if(all(df$DepProb == 1)){
-      populate <- rep(1,11)
-      
-    } else {
-      # # MWU doesn't handle na or zero's well so
-      # # FOR NOW remove zeros.
-      # df <- df %>% filter(!is.na(DepProb)) %>%
-      #   filter(DepProb != 0)
-      
-      stats <- df %>%
-        dplyr::group_by(.data$CellType) %>%
-        dplyr::summarize(Median = stats::median(.data$DepProb, na.rm = TRUE),
-                         Mean = mean(.data$DepProb, na.rm = TRUE),
-                         SD = stats::sd(.data$DepProb, na.rm = TRUE),
-                         IQR = stats::IQR(.data$DepProb, na.rm = TRUE),
-                         .groups = "drop")
-      
-      if((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)){
-        
-        fit_pval <- stats::wilcox.test(DepProb ~ CellType, df,
-                                       paired = F,
-                                       alternative = "two.sided",
-                                       conf.int = T,
-                                       na.action = "na.omit")$p.value
-        
-        # If group size is < 3 cliffDelta will have error:
-        # missing value where TRUE/FALSE needed
-        # Important note: because celltype has a specific factor order specified for select_dep, a delta > 0 indicates an effect score greater in the Control (first level) and a delta < 0 means an effect score greater in the Mutant( second level)
-        
-        CliffDelta <- rcompanion::cliffDelta(DepProb ~ CellType, df)
-        
-        # Add diptest for uni/multi modality
-        # null hypothesis if p > 0.05 the data is unimodal
-        # alternative hyp if p < 0.05 the data is multimodal
-        dip_pval <- df %>%
-          dplyr::filter(.data$CellType == "Mutant") %>%
-          dplyr::pull(.data$DepProb) %>%
-          diptest::dip.test() %>% 
-          broom::tidy() %>%
-          dplyr::pull(.data$p.value)
-        
-      } else if((any(is.na(stats)) == TRUE) & (nrow(stats) == 2)){
-        populate <- rep(0,11)
+      # Give feedback
+      if (each == 1) {
+        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+      } else if (each == length(unique(select_dep$GeneNameID))) {
+        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+      } else if (each%%1000 == 0) {
+        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
       }
       
-      if((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)){
-        populate <- as.numeric(c(unlist(stats)[-c(1,2)], fit_pval, -CliffDelta[[1]], dip_pval))
+      # Get each gene
+      geneID <- unique(select_dep$GeneNameID)[each]
+      df <- select_dep %>%
+        dplyr::filter(.data$GeneNameID == geneID) %>%
+        dplyr::filter(!is.na(.data$DepProb))
+      
+      df_post_filter_check <- df %>%
+        count(.data$CellType)
+      
+      if (any(df_post_filter_check$n < 2)) {
+        populate <- rep(NA, 11)
+        
+      } else if (all(df$DepProb == 0)) {
+        populate <- rep(0, 11)
+        
+      } else if (all(df$DepProb == 1)) {
+        populate <- rep(1, 11)
+        
       } else {
-        populate <- rep(0,11)
+        # # MWU doesn't handle na or zero's well so # FOR NOW remove
+        # zeros.  df <- df %>% filter(!is.na(DepProb)) %>%
+        # filter(DepProb != 0)
+        
+        stats <- df %>%
+          dplyr::group_by(.data$CellType) %>%
+          dplyr::summarize(
+            Median = stats::median(.data$DepProb, na.rm = TRUE),
+            Mean = mean(.data$DepProb, na.rm = TRUE),
+            SD = stats::sd(.data$DepProb, na.rm = TRUE),
+            IQR = stats::IQR(.data$DepProb, na.rm = TRUE),
+            .groups = "drop"
+          )
+        
+        if ((any(is.na(stats)) !=
+             TRUE) & (nrow(stats) ==
+                      2)) {
+          
+          fit_pval <- stats::wilcox.test(
+            DepProb ~ CellType, df, paired = F, alternative = "two.sided",
+            conf.int = T, na.action = "na.omit"
+          )$p.value
+          
+          # If group size is < 3 cliffDelta will have error: missing
+          # value where TRUE/FALSE needed Important note: because
+          # celltype has a specific factor order specified for
+          # select_dep, a delta > 0 indicates an effect score greater
+          # in the Control (first level) and a delta < 0 means an
+          # effect score greater in the Mutant( second level)
+          
+          CliffDelta <- rcompanion::cliffDelta(DepProb ~ CellType, df)
+          
+          # Add diptest for uni/multi modality null hypothesis if p >
+          # 0.05 the data is unimodal alternative hyp if p < 0.05 the
+          # data is multimodal
+          dip_pval <- df %>%
+            dplyr::filter(.data$CellType == "Mutant") %>%
+            dplyr::pull(.data$DepProb) %>%
+            diptest::dip.test() %>%
+            broom::tidy() %>%
+            dplyr::pull(.data$p.value)
+          
+        } else if ((any(is.na(stats)) ==
+                    TRUE) & (nrow(stats) ==
+                             2)) {
+          populate <- rep(0, 11)
+        }
+        
+        if ((any(is.na(stats)) !=
+             TRUE) & (nrow(stats) ==
+                      2)) {
+          populate <- as.numeric(
+            c(
+              unlist(stats)[-c(1, 2)],
+              fit_pval, -CliffDelta[[1]], dip_pval
+            )
+          )
+        } else {
+          populate <- rep(0, 11)
+        }
       }
-    }
-    
-    tibble(Result = c("Control_median", "Mutant_median", "Control_mean", "Mutant_mean","Control_sd", "Mutant_sd", "Control_iqr","Mutant_iqr", "Pval",
-                      "CliffDelta", "dip_pval")) %>%
-      dplyr::mutate(!!sym(geneID) := populate) %>%
-      tidyr::pivot_longer(-.data$Result) %>%
-      tidyr::pivot_wider(names_from = .data$Result, values_from = .data$value) %>%
-      dplyr::rename(GeneNameID = .data$name)
-  } # End of for loop
+      
+      tibble(
+        Result = c(
+          "Control_median", "Mutant_median", "Control_mean", "Mutant_mean",
+          "Control_sd", "Mutant_sd", "Control_iqr", "Mutant_iqr", "Pval",
+          "CliffDelta", "dip_pval"
+        )
+      ) %>%
+        dplyr::mutate(
+          !!sym(geneID) :=
+            populate
+        ) %>%
+        tidyr::pivot_longer(-.data$Result) %>%
+        tidyr::pivot_wider(names_from = .data$Result, values_from = .data$value) %>%
+        dplyr::rename(GeneNameID = .data$name)
+    }  # End of for loop
   
   # Add mutant group name
   output <- All_res %>%
-    dplyr::mutate(log2FC_by_median = log2(.data$Mutant_median / .data$Control_median),
-                  log2FC_by_mean = log2(.data$Mutant_mean / .data$Control_mean),
-                  Adj_pval = p.adjust(.data$Pval, method = "BH", length(.data$Pval)),
-                  Interaction_score = -log10(.data$Pval) * sign(.data$log2FC_by_median)) %>%
-    dplyr::left_join(dep_annot %>% select(.data$GeneNameID, .data$GeneNames),
-                     by = "GeneNameID") %>%
-    dplyr::select(.data$GeneNameID, .data$GeneNames, .data$Control_median:.data$Pval, .data$Adj_pval,
-                  .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(), .data$Interaction_score)
+    dplyr::mutate(
+      log2FC_by_median = log2(.data$Mutant_median/.data$Control_median),
+      log2FC_by_mean = log2(.data$Mutant_mean/.data$Control_mean),
+      Adj_pval = p.adjust(.data$Pval, method = "BH", length(.data$Pval)),
+      Interaction_score = -log10(.data$Pval) *
+        sign(.data$log2FC_by_median)
+    ) %>%
+    dplyr::left_join(
+      dep_annot %>%
+        select(.data$GeneNameID, .data$GeneNames),
+      by = "GeneNameID"
+    ) %>%
+    dplyr::select(
+      .data$GeneNameID, .data$GeneNames, .data$Control_median:.data$Pval, .data$Adj_pval,
+      .data$log2FC_by_median, .data$log2FC_by_mean, tidyselect::everything(),
+      .data$Interaction_score
+    )
   
   # save and return output
-  output %>% readr::write_csv(file = output_dir_and_filename)
+  output %>%
+    readr::write_csv(file = output_dir_and_filename)
   
-  print(paste0("In-silico genetic interaction screen finished. Outputs were also written to: ", output_dir_and_filename))
+  print(
+    paste0(
+      "In-silico genetic interaction screen finished. Outputs were also written to: ",
+      output_dir_and_filename
+    )
+  )
   return(output)
 }

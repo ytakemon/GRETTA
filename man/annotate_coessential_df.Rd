@@ -5,14 +5,14 @@
 \title{Combine and annotate co-essential dataframe}
 \usage{
 annotate_coessential_df(
-  Input_coessential_df = NULL,
-  Input_inflection_points = NULL
+  input_coessential_df = NULL,
+  input_inflection_points = NULL
 )
 }
 \arguments{
-\item{Input_coessential_df}{data frame, A data frame output from \code{coessential_map()}, Default: NULL}
+\item{input_coessential_df}{data frame, A data frame output from \code{coessential_map()}, Default: NULL}
 
-\item{Input_inflection_points}{data frame, A data frame output from get_inflection_points(), Default: NULL}
+\item{input_inflection_points}{data frame, A data frame output from get_inflection_points(), Default: NULL}
 }
 \value{
 The input data frame containing co-essential correlation coefficients will be annotated with an additional column
@@ -34,8 +34,8 @@ or below (negative curve) of the inflection point.
 \dontrun{
 
 annotated_coessential_df <- annotate_coessential_df(
-Input_coessential_df = co_ess_res,
-Input_inflection_points = inflection_points)
+input_coessential_df = co_ess_res,
+input_inflection_points = inflection_points)
 
 }
 

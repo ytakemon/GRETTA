@@ -5,9 +5,9 @@
 \title{Perform co-essentially mapping}
 \usage{
 coessential_map(
-  Input_gene = NULL,
-  Input_disease = NULL,
-  Input_cell_lines = NULL,
+  input_gene = NULL,
+  input_disease = NULL,
+  input_cell_lines = NULL,
   core_num = NULL,
   output_dir = NULL,
   data_dir = NULL,
@@ -16,12 +16,12 @@ coessential_map(
 )
 }
 \arguments{
-\item{Input_gene}{string, A vector containing one Hugo Symbol, Default: NULL}
+\item{input_gene}{string, A vector containing one Hugo Symbol, Default: NULL}
 
-\item{Input_disease}{string, A vector one or more disease contexts, Will perform pan-cancer analyses
+\item{input_disease}{string, A vector one or more disease contexts, Will perform pan-cancer analyses
 (all cell lines) by default, Default: NULL}
 
-\item{Input_cell_lines}{string, A vector DepMap_IDs for which co-essentiality mapping will be performed on.
+\item{input_cell_lines}{string, A vector DepMap_IDs for which co-essentiality mapping will be performed on.
 Will perform pan-cancer analyses (all cell lines) by default, Default: NULL}
 
 \item{core_num}{integer, Number of cores to run analysis, Default: NULL}
@@ -30,7 +30,7 @@ Will perform pan-cancer analyses (all cell lines) by default, Default: NULL}
 
 \item{data_dir}{string Path to GINIR_data}
 
-\item{output_filename}{string name of file without the ".csv" extension.}
+\item{output_filename}{string name of file without the '.csv' extension.}
 
 \item{test}{logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly
 prior to running all 18,333 genes. Default: FALSE.}
@@ -63,9 +63,9 @@ Description of output data frame
 \dontrun{
 
 Screen_results <- GINI_screen(
-Input_gene = "ARID1A", 
-output_dir = "~/Desktop/GINI_test_dir/",
-data_dir = "/path/to/DepMap_data/",
+input_gene = 'ARID1A', 
+output_dir = '~/Desktop/GINI_test_dir/',
+data_dir = '/path/to/DepMap_data/',
 test = TRUE) # turn on for shorter test runs
 
 }

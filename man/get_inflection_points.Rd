@@ -4,10 +4,10 @@
 \alias{get_inflection_points}
 \title{Calculate inflection points of co-essential data frame}
 \usage{
-get_inflection_points(Input_coessential_df = NULL)
+get_inflection_points(input_coessential_df = NULL)
 }
 \arguments{
-\item{Input_coessential_df}{data frame, A data frame output from \code{coessential_map()}, Default: NULL.}
+\item{input_coessential_df}{data frame, A data frame output from \code{coessential_map()}, Default: NULL.}
 }
 \value{
 A data frame containing rank at which the threshold should be drawn for positive and negative co-essential genes.
@@ -26,7 +26,7 @@ Description of output data frame
 \examples{
 \dontrun{
 
-inflection_points <- get_inflection_points(Input_coessential_df = coess_df)
+inflection_points <- get_inflection_points(input_coessential_df = coess_df)
 
 }
 

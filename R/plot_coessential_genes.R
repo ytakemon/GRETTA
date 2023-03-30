@@ -26,71 +26,76 @@
 #' @importFrom stringr str_split_fixed
 #' @importFrom ggrepel geom_label_repel
 
-plot_coessential_genes <- function(result_df = NULL, inflection_df = NULL, label_genes = FALSE, label_n = NULL){
+plot_coessential_genes <- function(result_df = NULL, inflection_df = NULL, label_genes = FALSE, label_n = NULL) {
   # Check data is provided
-  if(is.null(result_df)){
+  if (is.null(result_df)) {
     stop("No result data frame provided")
   }
-  if(is.null(inflection_df)){
+  if (is.null(inflection_df)) {
     stop("No inflection data frame provided")
   }
   
-  # Extract gene_names only 
+  # Extract gene_names only
   plot_df <- result_df %>%
-    dplyr::mutate(GeneName_B = stringr::str_split_fixed(.data$GeneNameID_B,"_",2)[,1]) %>%
+    dplyr::mutate(
+      GeneName_B = stringr::str_split_fixed(.data$GeneNameID_B, "_", 2)[,
+                                                                        1]
+    ) %>%
     dplyr::arrange(.data$Rank)
   
-  # Extract genes to label if indicated 
-  if(label_genes == TRUE){
-    if(is.null(label_n)){
+  # Extract genes to label if indicated
+  if (label_genes == TRUE) {
+    if (is.null(label_n)) {
       label_n = 1
     }
     
-    pos_gene <- plot_df %>% dplyr::arrange(.data$Rank) %>% dplyr::slice(1:label_n) %>% dplyr::pull(.data$GeneName_B)
-    neg_gene <- plot_df %>% dplyr::arrange(-.data$Rank) %>% dplyr::slice(1:label_n) %>% dplyr::pull(.data$GeneName_B)
+    pos_gene <- plot_df %>%
+      dplyr::arrange(.data$Rank) %>%
+      dplyr::slice(1:label_n) %>%
+      dplyr::pull(.data$GeneName_B)
+    neg_gene <- plot_df %>%
+      dplyr::arrange(-.data$Rank) %>%
+      dplyr::slice(1:label_n) %>%
+      dplyr::pull(.data$GeneName_B)
     Label_on_plot <- c(pos_gene, neg_gene)
   }
   
   
   plot_df <- plot_df %>%
     dplyr::mutate(
-      Label_on_plot = dplyr::case_when(
-        .data$GeneName_B %in% Label_on_plot ~ TRUE,
-        TRUE ~ FALSE),
-      point_colour = dplyr::case_when(
-        .data$Candidate_gene == TRUE ~ "red",
-        TRUE ~ "grey"
-      ))
+      Label_on_plot = dplyr::case_when(.data$GeneName_B %in% Label_on_plot ~ TRUE, TRUE ~ FALSE),
+      point_colour = dplyr::case_when(.data$Candidate_gene == TRUE ~ "red", TRUE ~ "grey")
+    )
   
   # get cor. coef of threshold
   pos_inflection_cor <- plot_df %>%
-    dplyr::filter(.data$Rank <= inflection_df$Inflection_point_pos_byRank) %>% 
-    dplyr::pull(.data$estimate) %>% min
+    dplyr::filter(.data$Rank <= inflection_df$Inflection_point_pos_byRank) %>%
+    dplyr::pull(.data$estimate) %>%
+    min
   neg_inflection_cor <- plot_df %>%
-    dplyr::filter(.data$Rank >= inflection_df$Inflection_point_neg_byRank) %>% 
-    dplyr::pull(.data$estimate) %>% max
+    dplyr::filter(.data$Rank >= inflection_df$Inflection_point_neg_byRank) %>%
+    dplyr::pull(.data$estimate) %>%
+    max
   
-  plot <- ggplot2::ggplot(plot_df,
-                     ggplot2::aes(x = .data$Rank, y = .data$estimate,
-                     colour = .data$point_colour,
-                     label = ifelse(.data$Label_on_plot, .data$GeneName_B,"")))+
-    ggplot2::geom_hline(yintercept = c(pos_inflection_cor, neg_inflection_cor), 
-               linetype = "dashed",
-               colour = c("dark grey"))+
-    ggplot2::geom_point()+
-    ggrepel::geom_text_repel(seed = 4,
-                             colour = "black",
-                             min.segment.length = 0,
-                             box.padding = 0.25,
-                             nudge_x = -1000,
-                             max.overlaps = Inf)+
-    ggplot2::scale_colour_identity()+
-    ggplot2::scale_y_continuous(limits = c(-1.0, 1.0), breaks = seq(-1.0, 1.0, by = 0.25)) +
-    ggplot2::theme_light()+
-    ggplot2::scale_x_reverse()+
-    ggplot2::theme(text = ggplot2::element_text(size = 12))+
-    ggplot2::ylab("Pearson correlation coefficient")+
+  plot <- ggplot2::ggplot(
+    plot_df, ggplot2::aes(
+      x = .data$Rank, y = .data$estimate, colour = .data$point_colour, label = ifelse(.data$Label_on_plot, .data$GeneName_B, "")
+    )
+  ) +
+    ggplot2::geom_hline(
+      yintercept = c(pos_inflection_cor, neg_inflection_cor),
+      linetype = "dashed", colour = c("dark grey")
+    ) +
+    ggplot2::geom_point() + ggrepel::geom_text_repel(
+      seed = 4, colour = "black", min.segment.length = 0, box.padding = 0.25, nudge_x = -1000,
+      max.overlaps = Inf
+    ) +
+    ggplot2::scale_colour_identity() + ggplot2::scale_y_continuous(
+      limits = c(-1, 1),
+      breaks = seq(-1, 1, by = 0.25)
+    ) +
+    ggplot2::theme_light() + ggplot2::scale_x_reverse() + ggplot2::theme(text = ggplot2::element_text(size = 12)) +
+    ggplot2::ylab("Pearson correlation coefficient") +
     ggplot2::xlab("")
   print(plot)
 }
-

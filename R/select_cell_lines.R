@@ -4,10 +4,10 @@
 #' `select_cell_lines()` assigns cancer cell lines to either `Control` groups or one of the following mutant groups: `HomDel`,
 #' `T-HetDel`, `HetDel`, `Amplified`, or `Others` (see details).
 #' 
-#' @param Input_gene string Hugo Symbol
-#' @param Input_AA_change string Amino acid change (eg. "A387A"). Input_gene must be specified
-#' @param Input_disease string Cancer type listed in `list_available_cancer_types()`
-#' @param Input_disease_subtype string Cancer subtype listed in `list_available_cancer_subtypes()`
+#' @param input_gene string Hugo Symbol
+#' @param input_aa_change string Amino acid change (eg. "A387A"). input_gene must be specified
+#' @param input_disease string Cancer type listed in `list_available_cancer_types()`
+#' @param input_disease_subtype string Cancer subtype listed in `list_available_cancer_subtypes()`
 #' @param data_dir string Path to GINIR_data
 #' 
 #' @return Data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
@@ -17,7 +17,7 @@
 #' 
 #' @export
 #' @details 
-#' Mutant groups in more detail when only `Input_gene` is defined: 
+#' Mutant groups in more detail when only `input_gene` is defined: 
 #' * `Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 #' * `HomDel` cell lines harbor one or more homozygous deleterious SNVs or have deep CN loss.
 #' * `T-HetDel` cell lines harbor two or more heterozygous deleterious SNVs/InDels with neutral or CN loss.
@@ -26,7 +26,7 @@
 #' * `Others` cell lines harbor deleterious SNVs with increased CN.
 #' 
 #' 
-#' If Input_AA_change` is also defined:
+#' If input_aa_change` is also defined:
 #' * `Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 #' * `HomAlt` cell lines harbor a homozygous alteration for the specified mutation.
 #' * `HetAlt` cell lines harbor a heterozygous alteration for the specified mutation.
@@ -36,56 +36,56 @@
 #' @examples
 #' \dontrun{
 #' # Looking for TP53 mutants in all cancer cell lines (pan-cancer search)
-#' select_cell_lines(Input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
+#' select_cell_lines(input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
 #' 
 #' select_cell_lines(
-#' Input_gene = "TP53", 
-#' Input_AA_change = "R175H", 
+#' input_gene = "TP53", 
+#' input_aa_change = "R175H", 
 #' data_dir = "/path/to/DepMap_data/")
 #' 
 #' # TP53 mutants only in SCLC subtypes
-#' select_cell_lines(Input_gene = "TP53", 
-#' Input_disease = "Lung Cancer", 
-#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+#' select_cell_lines(input_gene = "TP53", 
+#' input_disease = "Lung Cancer", 
+#' input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
 #' data_dir = "/path/to/DepMap_data/")
 #' 
-#' select_cell_lines(Input_gene = "TP53", 
-#' Input_AA_change = "R175H", 
-#' Input_disease = "Lung Cancer", 
-#' Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+#' select_cell_lines(input_gene = "TP53", 
+#' input_aa_change = "R175H", 
+#' input_disease = "Lung Cancer", 
+#' input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
 #' data_dir = "/path/to/DepMap_data/")
 #' 
 #' # All cancer cell lines that are from Lung Cancers
-#' select_cell_lines(Input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
+#' select_cell_lines(input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
 #' 
 #' }
 
-select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_disease = NULL, Input_disease_subtype = NULL, data_dir = NULL){
+select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_disease = NULL, input_disease_subtype = NULL, data_dir = NULL){
   
   # Print and check to see input
-  if(is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
+  if(is.null(c(input_gene, input_disease, input_disease_subtype))){
     stop("No input given. Please prvide a Hugo gene symbol and/or cancer type")
     
-  } else if(is.null(c(Input_gene, Input_disease)) & !is.null(Input_disease_subtype)){
+  } else if(is.null(c(input_gene, input_disease)) & !is.null(input_disease_subtype)){
     stop("No cancer context provided. Please define the `disease` argument.")
     
-  } else if(is.null(Input_gene) & !is.null(Input_AA_change)){
-    stop(paste0("AA change was provided, ", Input_AA_change,", but no gene was provided. Please define Input_gene!"))
+  } else if(is.null(input_gene) & !is.null(input_aa_change)){
+    stop(paste0("AA change was provided, ", input_aa_change,", but no gene was provided. Please define input_gene!"))
     
-  } else if(is.null(c(Input_disease, Input_disease_subtype)) & !is.null(Input_gene)){
-    cat(paste0("Selecting mutant groups for: ", Input_gene, " in all cancer cell lines"))
+  } else if(is.null(c(input_disease, input_disease_subtype)) & !is.null(input_gene)){
+    cat(paste0("Selecting mutant groups for: ", input_gene, " in all cancer cell lines"))
   
-  } else if(!is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
-    cat(paste0("Selecting mutant groups for: ", Input_gene, " in ", Input_disease,", ", Input_disease_subtype, " cell lines"))
+  } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
+    cat(paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease,", ", input_disease_subtype, " cell lines"))
     
-  } else if(is.null(Input_disease_subtype) & !is.null(c(Input_gene, Input_disease))){
-    cat(paste0("Selecting mutant groups for: ", Input_gene, " in ", Input_disease, " cell lines"))
+  } else if(is.null(input_disease_subtype) & !is.null(c(input_gene, input_disease))){
+    cat(paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease, " cell lines"))
     
-  } else if(is.null(Input_gene) & !is.null(c(Input_disease, Input_disease_subtype))){
-    cat(paste0("Selecting all ", Input_disease, ", ", Input_disease_subtype, " cancer cell lines"))
+  } else if(is.null(input_gene) & !is.null(c(input_disease, input_disease_subtype))){
+    cat(paste0("Selecting all ", input_disease, ", ", input_disease_subtype, " cancer cell lines"))
     
-  } else if(is.null(c(Input_gene, Input_disease_subtype)) & !is.null(Input_disease)){
-    cat(paste0("Selecting all ", Input_disease, " cancer cell lines"))
+  } else if(is.null(c(input_gene, input_disease_subtype)) & !is.null(input_disease)){
+    cat(paste0("Selecting all ", input_disease, " cancer cell lines"))
     
   } else {
     stop("Error with input.")
@@ -98,8 +98,8 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
   }
   
-  # If Input_gene is provided look for mutations:
-  if(!is.null(Input_gene)){
+  # If input_gene is provided look for mutations:
+  if(!is.null(input_gene)){
     
     # Load necessary data
     mut_calls <- copy_num_annot <- copy_num <- dep <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
@@ -110,36 +110,36 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
     
     # Check if input gene mutations exist
-    if(!any(mut_calls$Hugo_Symbol %in% Input_gene)|!any(copy_num_annot$GeneNames %in% Input_gene)){
-      stop(paste0("No mutations were found for: ", Input_gene,". Please check spelling and for valid Hugo Symbols"))
+    if(!any(mut_calls$Hugo_Symbol %in% input_gene)|!any(copy_num_annot$GeneNames %in% input_gene)){
+      stop(paste0("No mutations were found for: ", input_gene,". Please check spelling and for valid Hugo Symbols"))
     }
     # Convert to unique geneID
-    Input_geneID <- get_GeneNameID(Input_gene, data_dir = data_dir)
+    input_geneID <- get_GeneNameID(input_gene, data_dir = data_dir)
     
     # Get copy number
-    if(any(names(copy_num) %in% Input_geneID)){
+    if(any(names(copy_num) %in% input_geneID)){
       target_copy_num <- copy_num %>%
-        dplyr::select(.data$DepMap_ID, dplyr::all_of(Input_geneID)) %>%
+        dplyr::select(.data$DepMap_ID, dplyr::all_of(input_geneID)) %>%
         dplyr::filter(.data$DepMap_ID %in% dep$DepMap_ID) %>%
         dplyr::arrange(.data$DepMap_ID) %>%
         dplyr::mutate( Status = dplyr::case_when(
-          !!as.name(Input_geneID) <= 0.25 ~ "Deep_del",
-          !!as.name(Input_geneID) > 0.25 & !!as.name(Input_geneID) < 0.75 ~ "Loss",
-          !!as.name(Input_geneID) >= 0.75 & !!as.name(Input_geneID) < 1.25 ~ "Neutral",
-          !!as.name(Input_geneID) >= 1.25 ~ "Amplified",
+          !!as.name(input_geneID) <= 0.25 ~ "Deep_del",
+          !!as.name(input_geneID) > 0.25 & !!as.name(input_geneID) < 0.75 ~ "Loss",
+          !!as.name(input_geneID) >= 0.75 & !!as.name(input_geneID) < 1.25 ~ "Neutral",
+          !!as.name(input_geneID) >= 1.25 ~ "Amplified",
           TRUE ~ "Other"))
       
     } else {
       target_copy_num <- dep %>% 
         dplyr::select(.data$DepMap_ID) %>%
         dplyr::arrange(.data$DepMap_ID) %>%
-        dplyr::mutate(!!as.name(Input_geneID) := NA,
+        dplyr::mutate(!!as.name(input_geneID) := NA,
                       Status = "Unknown")
     }
     
     # Get ALL Mutations
     target_mut <- mut_calls %>%
-      dplyr::filter((.data$DepMap_ID %in% dep$DepMap_ID) & (.data$Hugo_Symbol %in% Input_gene))
+      dplyr::filter((.data$DepMap_ID %in% dep$DepMap_ID) & (.data$Hugo_Symbol %in% input_gene))
     
     # Only some mut_calls contain a "SangerRecalibWES_AC" column
     if(any(colnames(target_mut) %in% "SangerRecalibWES_AC")){
@@ -177,9 +177,9 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
     all_mutations_count_by_sample <- target_mut %>% dplyr::count(.data$DepMap_ID)
     
     # If specific mutations are defined 
-    if(!is.null(Input_AA_change)){
+    if(!is.null(input_aa_change)){
       select_muts <- target_mut %>% 
-        dplyr::filter(.data$Protein_Change %in% paste0("p.",Input_AA_change)) %>%
+        dplyr::filter(.data$Protein_Change %in% paste0("p.",input_aa_change)) %>%
         dplyr::select(.data$DepMap_ID:.data$Protein_Change, .data$Variant_annotation:.data$AC_Variant)
         
       
@@ -203,43 +203,43 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
         Groups <- summary %>% 
           dplyr::mutate(
             Group = dplyr::case_when(
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status == "Neutral") &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HomAlt_CNneutral"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNneutral"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status == "Amplified") &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HomAlt_CNamplified"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNamplified"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status %in% c("Loss","Deep_del")) &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HomAlt_CNloss"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNloss"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status == "Neutral") &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HetAlt_CNneutral"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNneutral"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status == "Amplified") &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HetAlt_CNamplified"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
+                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNamplified"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
                  (.data$CN_status %in% c("Loss","Deep_del")) &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HetAlt_CNloss"),
+                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNloss"),
               ((.data$Total_mutations == 0) &
-                 (.data$CN_status == "Neutral")) ~ paste0(Input_gene,"_", Input_AA_change, "_Control_CNneutral"),
+                 (.data$CN_status == "Neutral")) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNneutral"),
               ((.data$Total_mutations == 0) &
-                 (.data$CN_status %in% c("Loss","Deep_del"))) ~ paste0(Input_gene,"_", Input_AA_change, "_Control_CNloss"),
+                 (.data$CN_status %in% c("Loss","Deep_del"))) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNloss"),
               TRUE ~ "Others")) %>%
-          dplyr::mutate(GeneNameID = Input_geneID,
-                        GeneName = Input_gene)
+          dplyr::mutate(GeneNameID = input_geneID,
+                        GeneName = input_gene)
       } else {
         Groups <- summary %>% 
           dplyr::mutate(
             Group = dplyr::case_when(
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HomAlt"),
-              (.data$Protein_Change %in% paste0("p.",Input_AA_change) & 
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(Input_gene,"_", Input_AA_change, "_HetAlt"),
-              (.data$Total_mutations == 0) ~ paste0(Input_gene,"_", Input_AA_change, "_Control"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt"),
+              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt"),
+              (.data$Total_mutations == 0) ~ paste0(input_gene,"_", input_aa_change, "_Control"),
               TRUE ~ "Others")) %>%
-          dplyr::mutate(GeneNameID = Input_geneID,
-                        GeneName = Input_gene)
+          dplyr::mutate(GeneNameID = input_geneID,
+                        GeneName = input_gene)
       }
       
     } else {
@@ -287,28 +287,28 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
         Groups <- summary %>% 
           dplyr::mutate(
             Group = dplyr::case_when(
-              ((.data$CN_status == "Deep_del") | (.data$Del_hom_mut == TRUE)) ~ paste0(Input_gene,"_HomDel"),
+              ((.data$CN_status == "Deep_del") | (.data$Del_hom_mut == TRUE)) ~ paste0(input_gene,"_HomDel"),
               ((.data$Del_mutations > 1) & (.data$CN_status == "Neutral")) |
-                ((.data$Del_mutations == 1) & (.data$CN_status == "Loss")) ~ paste0(Input_gene,"_T-HetDel"),
+                ((.data$Del_mutations == 1) & (.data$CN_status == "Loss")) ~ paste0(input_gene,"_T-HetDel"),
               ((.data$Del_mutations == 1) & (.data$CN_status == "Neutral")) |
-                ((.data$Del_mutations == 0) & (.data$CN_status == "Loss")) ~ paste0(Input_gene,"_HetDel"),
+                ((.data$Del_mutations == 0) & (.data$CN_status == "Loss")) ~ paste0(input_gene,"_HetDel"),
               ((.data$Total_mutations == 0) & (.data$CN_status == "Neutral")) ~ "Control",
               ((.data$Total_mutations == 0) & (.data$CN_status == "Amplified")) ~ "Amplified",
               ((.data$Del_mutations == 1) & (.data$CN_status == "Amplified")) ~ "Others",
               TRUE ~ "Others")) %>%
-          dplyr::mutate(GeneNameID = Input_geneID,
-                        GeneName = Input_gene)
+          dplyr::mutate(GeneNameID = input_geneID,
+                        GeneName = input_gene)
       } else {
         Groups <- summary %>% 
           dplyr::mutate(
             Group = dplyr::case_when(
-              (.data$Del_hom_mut == TRUE) ~ paste0(Input_gene,"_HomDel"),
-              (.data$Del_mutations > 1) ~ paste0(Input_gene,"_T-HetDel"),
-              (.data$Del_mutations == 1) ~ paste0(Input_gene,"_HetDel"),
+              (.data$Del_hom_mut == TRUE) ~ paste0(input_gene,"_HomDel"),
+              (.data$Del_mutations > 1) ~ paste0(input_gene,"_T-HetDel"),
+              (.data$Del_mutations == 1) ~ paste0(input_gene,"_HetDel"),
               (.data$Total_mutations == 0) ~ "Control",
               TRUE ~ "Others")) %>%
-          dplyr::mutate(GeneNameID = Input_geneID,
-                        GeneName = Input_gene)
+          dplyr::mutate(GeneNameID = input_geneID,
+                        GeneName = input_gene)
       }
     }
   } else {
@@ -318,28 +318,28 @@ select_cell_lines <- function(Input_gene = NULL, Input_AA_change = NULL, Input_d
   }
   
   # Output based on input conditions
-  if(is.null(c(Input_disease, Input_disease_subtype)) & !is.null(Input_gene)){
+  if(is.null(c(input_disease, input_disease_subtype)) & !is.null(input_gene)){
     output <- Groups
     
-  } else if(is.null(Input_disease_subtype) & !is.null(c(Input_gene, Input_disease))){
+  } else if(is.null(input_disease_subtype) & !is.null(c(input_gene, input_disease))){
     output <- Groups %>% 
-      dplyr::filter(.data$disease %in% Input_disease)
+      dplyr::filter(.data$disease %in% input_disease)
     
-  } else if(is.null(Input_gene) & !is.null(c(Input_disease, Input_disease_subtype))){
+  } else if(is.null(input_gene) & !is.null(c(input_disease, input_disease_subtype))){
     output <- sample_annot %>% 
       dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, .data$primary_or_metastasis) %>%
-      dplyr::filter(.data$disease %in% Input_disease & 
-                      .data$disease_subtype %in% Input_disease_subtype)
+      dplyr::filter(.data$disease %in% input_disease & 
+                      .data$disease_subtype %in% input_disease_subtype)
   
-  } else if(is.null(c(Input_gene, Input_disease_subtype)) & !is.null(Input_disease)){
+  } else if(is.null(c(input_gene, input_disease_subtype)) & !is.null(input_disease)){
     output <- sample_annot %>% 
       dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, .data$primary_or_metastasis) %>%
-      dplyr::filter(.data$disease %in% Input_disease)
+      dplyr::filter(.data$disease %in% input_disease)
   
-  } else if(!is.null(c(Input_gene, Input_disease, Input_disease_subtype))){
+  } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
     output <- Groups %>% 
-      dplyr::filter(.data$disease %in% Input_disease &
-                      .data$disease_subtype %in% Input_disease_subtype)
+      dplyr::filter(.data$disease %in% input_disease &
+                      .data$disease_subtype %in% input_disease_subtype)
     
   } else {
     stop("Error with input.")

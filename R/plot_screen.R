@@ -20,60 +20,58 @@
 #' @importFrom ggplot2 ggplot aes scale_color_identity scale_size_identity scale_x_reverse theme_light ylab
 #' @importFrom ggrepel geom_label_repel
 
-plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL){
+plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL) {
   # Check data is provided
-  if(is.null(result_df)){
+  if (is.null(result_df)) {
     stop("No result data frame provided")
   }
   
-  # Arrange and rank 
+  # Arrange and rank
   plot_df <- result_df %>%
     dplyr::arrange(-.data$Interaction_score) %>%
     dplyr::filter(!is.na(.data$Interaction_score)) %>%
     dplyr::mutate(
       Rank = 1:length(.data$Interaction_score),
       color = dplyr::case_when(
-        .data$Pval >= 0.05 ~ "darkgray",
-        .data$Pval < 0.05 & .data$log2FC_by_median > 0 ~ "#882255",
-        .data$Pval < 0.05 & .data$log2FC_by_median < 0 ~ "#882255"))
-    
-  # Plot according to rank 
-  if(label_genes == TRUE){
-    if(is.null(label_n)){label_n = 1}
+        .data$Pval >= 0.05 ~ "darkgray", .data$Pval < 0.05 & .data$log2FC_by_median >
+          0 ~ "#882255", .data$Pval < 0.05 & .data$log2FC_by_median < 0 ~
+          "#882255"
+      )
+    )
+  
+  # Plot according to rank
+  if (label_genes == TRUE) {
+    if (is.null(label_n)) {
+      label_n = 1
+    }
     
     last <- nrow(plot_df)
     plot_df <- plot_df %>%
       dplyr::arrange(.data$Rank) %>%
       dplyr::mutate(
         label = dplyr::case_when(
-          .data$Rank %in% c(1:label_n) ~ TRUE,
-          .data$Rank %in% c((last-(label_n-1)):last) ~ TRUE,
-          TRUE ~ FALSE))
+          .data$Rank %in% c(1:label_n) ~
+            TRUE, .data$Rank %in% c((last - (label_n - 1)):last) ~
+            TRUE, TRUE ~ FALSE
+        )
+      )
     
     plot <- ggplot2::ggplot(plot_df, ggplot2::aes(x = .data$Rank, y = .data$Interaction_score)) +
-      ggplot2::geom_point(aes(color = .data$color, size = ifelse(.data$Pval < 0.05, 2, 1)))+
-      ggplot2::scale_color_identity() +
-      ggplot2::scale_size_identity() +
-      ggplot2::scale_x_reverse() +
-      ggrepel::geom_label_repel(ggplot2::aes(label = ifelse(.data$label, .data$GeneNames, "")),
-                                max.overlaps = Inf,
-                                force = 5,
-                                box.padding = 1,
-                                direction = "both",
-                                min.segment.length = ggplot2::unit(0, 'lines'),
-                                segment.color = 'grey50',
-                                color = "black") +
-      ggplot2::theme_light() +
-      ggplot2::ylab("Genetic interaction score")
+      ggplot2::geom_point(aes(color = .data$color, size = ifelse(.data$Pval < 0.05, 2, 1))) +
+      ggplot2::scale_color_identity() + ggplot2::scale_size_identity() + ggplot2::scale_x_reverse() +
+      ggrepel::geom_label_repel(
+        ggplot2::aes(label = ifelse(.data$label, .data$GeneNames, "")),
+        max.overlaps = Inf, force = 5, box.padding = 1, direction = "both",
+        min.segment.length = ggplot2::unit(0, "lines"),
+        segment.color = "grey50", color = "black"
+      ) +
+      ggplot2::theme_light() + ggplot2::ylab("Genetic interaction score")
     
   } else {
     plot <- ggplot2::ggplot(plot_df, ggplot2::aes(x = .data$Rank, y = .data$Interaction_score)) +
-      ggplot2::geom_point(aes(color = .data$color, size = ifelse(.data$Pval < 0.05, 2, 1)))+
-      ggplot2::scale_color_identity() +
-      ggplot2::scale_size_identity() +
-      ggplot2::scale_x_reverse() +
-      ggplot2::theme_light() +
-      ggplot2::ylab("Genetic interaction score")
+      ggplot2::geom_point(aes(color = .data$color, size = ifelse(.data$Pval < 0.05, 2, 1))) +
+      ggplot2::scale_color_identity() + ggplot2::scale_size_identity() + ggplot2::scale_x_reverse() +
+      ggplot2::theme_light() + ggplot2::ylab("Genetic interaction score")
   }
   print(plot)
 }

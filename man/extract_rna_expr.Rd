@@ -4,12 +4,12 @@
 \alias{extract_rna_expr}
 \title{Extract RNA expression data for given cell lines}
 \usage{
-extract_rna_expr(Input_samples = NULL, Input_genes = NULL, data_dir = NULL)
+extract_rna_expr(input_samples = NULL, input_genes = NULL, data_dir = NULL)
 }
 \arguments{
-\item{Input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
+\item{input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
 
-\item{Input_genes}{string Optional Hugo Symbol(s), Default: NULL}
+\item{input_genes}{string Optional Hugo Symbol(s), Default: NULL}
 
 \item{data_dir}{string Path to GINIR_data}
 }
@@ -26,8 +26,8 @@ See also \code{extract_protein_expr} to extract proteomics profile data
 \examples{
 \dontrun{
 extract_rna_expr(
-Input_samples = c("ACH-001642","ACH-000688"), 
-Input_genes = c("TP53","ARID1A"),
-data_dir = "/path/to/DepMap_data/")
+input_samples = c('ACH-001642','ACH-000688'), 
+input_genes = c('TP53','ARID1A'),
+data_dir = '/path/to/DepMap_data/')
 }
 }

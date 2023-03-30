@@ -2,13 +2,13 @@
 #' 
 #' @description Quick method to look up mutations of interest prior to using `select_cell_lines()`
 #' 
-#' @param Gene string, Hugo Symbol, Default: NULL
-#' @param Chr string, Default: NULL
-#' @param Start_bp integer, Default: NULL
-#' @param End_bp integer, Default: NULL
-#' @param Is_hotspot logical, TCGA or COSMIC hotspot, Default: NULL
-#' @param Is_damaging logical, Default: NULL 
-#' @param Variant_classification string, Select from the following: 3'UTR, 5'Flank, 5'UTR, 
+#' @param gene string, Hugo Symbol, Default: NULL
+#' @param chr string, Default: NULL
+#' @param start_bp integer, Default: NULL
+#' @param end_bp integer, Default: NULL
+#' @param is_hotspot logical, TCGA or COSMIC hotspot, Default: NULL
+#' @param is_damaging logical, Default: NULL 
+#' @param variant_classification string, Select from the following: 3'UTR, 5'Flank, 5'UTR, 
 #' De_novo_Start_OutOfFrame, Frame_Shift_Del, Frame_Shift_Ins, IGR, In_Frame_Del, In_Frame_Ins, 
 #' Intron, Missense_Mutation, Nonsense_Mutation, Nonstop_Mutation, Silent, Splice_Site, 
 #' Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins, Default: NULL
@@ -18,106 +18,141 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' list_available_mutations(Gene = "TP53", data_dir = "/path/to/DepMap_data/")
-#' list_available_mutations(Chr = 12, data_dir = "/path/to/DepMap_data/")
+#' list_available_mutations(gene = 'TP53', data_dir = '/path/to/DepMap_data/')
+#' list_available_mutations(chr = 12, data_dir = '/path/to/DepMap_data/')
 #' }
 #' 
 #' @rdname list_available_mutations
 #' @export 
 #' @importFrom dplyr filter select arrange distinct
-list_available_mutations <- function(Gene = NULL, 
-                             Chr = NULL, Start_bp = NULL, End_bp = NULL,
-                             Is_hotspot = NULL, 
-                             Is_damaging = NULL,
-                             Variant_classification = NULL,
-                             data_dir = NULL){
+list_available_mutations <- function(
+    gene = NULL, chr = NULL, start_bp = NULL, end_bp = NULL, is_hotspot = NULL, is_damaging = NULL,
+    variant_classification = NULL, data_dir = NULL
+) {
   
   # Print and check to see input
-  if(is.null(data_dir)){
-    stop(paste0("No directory to data was specified. Please provide path to DepMap data."))
+  if (is.null(data_dir)) {
+    stop(
+      paste0("No directory to data was specified. Please provide path to DepMap data.")
+    )
   }
-  if(!dir.exists(data_dir)){
-    stop(paste0("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."))
+  if (!dir.exists(data_dir)) {
+    stop(
+      paste0(
+        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
+      )
+    )
   }
-  if(is.null(c(Gene, Chr))){
+  if (is.null(c(gene, chr))) {
     stop("No input gene or region given. Please prvide a Hugo gene symbol.")
   }
   
   # Load necessary data
-  mut_calls <- NULL # see: https://support.bioconductor.org/p/24756/
-  load(paste0(data_dir, "/mut_calls.rda"), envir = environment())
+  mut_calls <- NULL  # see: https://support.bioconductor.org/p/24756/
+  load(
+    paste0(data_dir, "/mut_calls.rda"),
+    envir = environment()
+  )
   
-  # If Gene is provided look for mutations:
-  if(!is.null(Gene)){
+  # If gene is provided look for mutations:
+  if (!is.null(gene))
+  {
     # Check if input gene mutations exist
-    if(!any(mut_calls$Hugo_Symbol %in% Gene)){
-      stop(paste0("No mutations were found for: ", Gene,". Please check spelling and for valid Hugo Symbols"))
+    if (!any(mut_calls$Hugo_Symbol %in% gene)) {
+      stop(
+        paste0(
+          "No mutations were found for: ", gene, ". Please check spelling and for valid Hugo Symbols"
+        )
+      )
     }
     
     # Get ALL Mutations, and apply additional filters if they exist
     target_mut <- mut_calls %>%
-      dplyr::filter(.data$Hugo_Symbol %in% Gene) %>%
-      dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript, 
-                    .data$cDNA_Change:.data$COSMIChsCnt, 
-                    .data$Variant_annotation) %>%
+      dplyr::filter(.data$Hugo_Symbol %in% gene) %>%
+      dplyr::select(
+        .data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript,
+        .data$cDNA_Change:.data$COSMIChsCnt, .data$Variant_annotation
+      ) %>%
       dplyr::arrange(.data$Start_position) %>%
       dplyr::distinct()
     
-    if(!is.null(Chr)){
-      target_mut <- target_mut %>% dplyr::filter(.data$Chromosome %in% as.character(Chr))
+    if (!is.null(chr)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$Chromosome %in% as.character(chr))
     }
-    if(!is.null(Start_bp)){
-      target_mut <- target_mut %>% dplyr::filter(.data$Start_position >= Start_bp)
+    if (!is.null(start_bp)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$Start_position >= start_bp)
     }
-    if(!is.null(End_bp)){
-      target_mut <- target_mut %>% dplyr::filter(.data$End_position <= End_bp)
+    if (!is.null(end_bp)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$End_position <= end_bp)
     }
-    if(!is.null(Is_hotspot)){
-      target_mut <- target_mut %>% dplyr::filter(.data$isTCGAhotspot == Is_hotspot |
-                                                   .data$isCOSMIChotspot == Is_hotspot)
+    if (!is.null(is_hotspot)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(
+          .data$isTCGAhotspot == is_hotspot | .data$isCOSMIChotspot ==
+            is_hotspot
+        )
     }
-    if(!is.null(Is_damaging)){
-      target_mut <- target_mut %>% dplyr::filter(.data$isDeleterious == Is_damaging)
+    if (!is.null(is_damaging)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$isDeleterious == is_damaging)
     }
-    if(!is.null(Variant_classification)){
-      target_mut <- target_mut %>% dplyr::filter(.data$Variant_Classification %in% Variant_classification)
+    if (!is.null(variant_classification)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$Variant_Classification %in% variant_classification)
     }
-  } # End of: If Gene is provided look for mutations:
+  }  # End of: If gene is provided look for mutations:
   
-  # If no gene is provided, but Chr is provided
-  if(is.null(Gene) & !is.null(Chr)){
+  # If no gene is provided, but chr is provided
+  if (is.null(gene) &
+      !is.null(chr))
+  {
     
     # Check if input chr exists
-    if(!any(mut_calls$Chromosome %in% as.character(Chr))){
-      stop(paste0("No mutations were found for: ", Gene,". Please check spelling and for valid Hugo Symbols"))
+    if (!any(mut_calls$Chromosome %in% as.character(chr))) {
+      stop(
+        paste0(
+          "No mutations were found for: ", gene, ". Please check spelling and for valid Hugo Symbols"
+        )
+      )
     }
     
     # Get ALL Mutations, and apply additional filters if they exist
     target_mut <- mut_calls %>%
-      dplyr::filter(.data$Chromosome %in% as.character(Chr)) %>%
-      dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript, 
-                    .data$cDNA_Change:.data$COSMIChsCnt, 
-                    .data$Variant_annotation) %>%
+      dplyr::filter(.data$Chromosome %in% as.character(chr)) %>%
+      dplyr::select(
+        .data$DepMap_ID, .data$Hugo_Symbol:.data$Annotation_Transcript,
+        .data$cDNA_Change:.data$COSMIChsCnt, .data$Variant_annotation
+      ) %>%
       dplyr::arrange(.data$Start_position) %>%
       dplyr::distinct()
     
-    if(!is.null(Start_bp)){
-      target_mut <- target_mut %>% dplyr::filter(.data$Start_position >= Start_bp)
+    if (!is.null(start_bp)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$Start_position >= start_bp)
     }
-    if(!is.null(End_bp)){
-      target_mut <- target_mut %>% dplyr::filter(.data$End_position <= End_bp)
+    if (!is.null(end_bp)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$End_position <= end_bp)
     }
-    if(!is.null(Is_hotspot)){
-      target_mut <- target_mut %>% dplyr::filter(.data$isTCGAhotspot == Is_hotspot |
-                                                   .data$isCOSMIChotspot == Is_hotspot)
+    if (!is.null(is_hotspot)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(
+          .data$isTCGAhotspot == is_hotspot | .data$isCOSMIChotspot ==
+            is_hotspot
+        )
     }
-    if(!is.null(Is_damaging)){
-      target_mut <- target_mut %>% dplyr::filter(.data$isDeleterious == Is_damaging)
+    if (!is.null(is_damaging)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$isDeleterious == is_damaging)
     }
-    if(!is.null(Variant_classification)){
-      target_mut <- target_mut %>% dplyr::filter(.data$Variant_Classification %in% Variant_classification)
+    if (!is.null(variant_classification)) {
+      target_mut <- target_mut %>%
+        dplyr::filter(.data$Variant_Classification %in% variant_classification)
     }
-  } # End of: If no gene is provided, but Chr is provided
+  }  # End of: If no gene is provided, but chr is provided
   
   return(target_mut)
 }

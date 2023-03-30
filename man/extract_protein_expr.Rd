@@ -4,12 +4,12 @@
 \alias{extract_protein_expr}
 \title{Extract protein expression data for given cell lines}
 \usage{
-extract_protein_expr(Input_samples = NULL, Input_genes = NULL, data_dir = NULL)
+extract_protein_expr(input_samples = NULL, input_genes = NULL, data_dir = NULL)
 }
 \arguments{
-\item{Input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
+\item{input_samples}{string A vector of DepMap_ID(s) must be provided, Default: NULL}
 
-\item{Input_genes}{string Optional Hugo Symbol(s) encoding proteins of interest, Default: NULL}
+\item{input_genes}{string Optional Hugo Symbol(s) encoding proteins of interest, Default: NULL}
 
 \item{data_dir}{string Path to GINIR_data}
 }
@@ -26,8 +26,8 @@ See also \code{extract_protein_rna} to extract proteomics profile data
 \examples{
 \dontrun{
 extract_protein_expr(
-Input_samples = c("ACH-000004", "ACH-000146"), 
-Input_genes = c("ATM","TOP1"),
-data_dir = "/path/to/DepMap_data/")
+input_samples = c('ACH-000004', 'ACH-000146'), 
+input_genes = c('ATM','TOP1'),
+data_dir = '/path/to/DepMap_data/')
 }
 }

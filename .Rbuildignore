@@ -8,7 +8,7 @@
 ^tests/testthat/*\.csv$
 ^.*\.png$
 ^.*\.gz$
-^Additional_data$
-^Additional_data/*
+^DepMap_data_versions$
+^DepMap_data_versions/*
 ^Singularity$
 ^Singularity/*

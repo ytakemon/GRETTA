@@ -5,21 +5,21 @@
 \title{Select mutant groups based on input gene of interest}
 \usage{
 select_cell_lines(
-  Input_gene = NULL,
-  Input_AA_change = NULL,
-  Input_disease = NULL,
-  Input_disease_subtype = NULL,
+  input_gene = NULL,
+  input_aa_change = NULL,
+  input_disease = NULL,
+  input_disease_subtype = NULL,
   data_dir = NULL
 )
 }
 \arguments{
-\item{Input_gene}{string Hugo Symbol}
+\item{input_gene}{string Hugo Symbol}
 
-\item{Input_AA_change}{string Amino acid change (eg. "A387A"). Input_gene must be specified}
+\item{input_aa_change}{string Amino acid change (eg. "A387A"). input_gene must be specified}
 
-\item{Input_disease}{string Cancer type listed in \code{list_available_cancer_types()}}
+\item{input_disease}{string Cancer type listed in \code{list_available_cancer_types()}}
 
-\item{Input_disease_subtype}{string Cancer subtype listed in \code{list_available_cancer_subtypes()}}
+\item{input_disease_subtype}{string Cancer subtype listed in \code{list_available_cancer_subtypes()}}
 
 \item{data_dir}{string Path to GINIR_data}
 }
@@ -31,7 +31,7 @@ Data frame containing a summary of mutations found in cell lines and their contr
 \code{T-HetDel}, \code{HetDel}, \code{Amplified}, or \code{Others} (see details).
 }
 \details{
-Mutant groups in more detail when only \code{Input_gene} is defined:
+Mutant groups in more detail when only \code{input_gene} is defined:
 \itemize{
 \item \code{Control} cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 \item \code{HomDel} cell lines harbor one or more homozygous deleterious SNVs or have deep CN loss.
@@ -41,7 +41,7 @@ Mutant groups in more detail when only \code{Input_gene} is defined:
 \item \code{Others} cell lines harbor deleterious SNVs with increased CN.
 }
 
-If Input_AA_change` is also defined:
+If input_aa_change` is also defined:
 \itemize{
 \item \code{Control} cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 \item \code{HomAlt} cell lines harbor a homozygous alteration for the specified mutation.
@@ -53,27 +53,27 @@ If Input_AA_change` is also defined:
 \examples{
 \dontrun{
 # Looking for TP53 mutants in all cancer cell lines (pan-cancer search)
-select_cell_lines(Input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
+select_cell_lines(input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
 
 select_cell_lines(
-Input_gene = "TP53", 
-Input_AA_change = "R175H", 
+input_gene = "TP53", 
+input_aa_change = "R175H", 
 data_dir = "/path/to/DepMap_data/")
 
 # TP53 mutants only in SCLC subtypes
-select_cell_lines(Input_gene = "TP53", 
-Input_disease = "Lung Cancer", 
-Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+select_cell_lines(input_gene = "TP53", 
+input_disease = "Lung Cancer", 
+input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
 data_dir = "/path/to/DepMap_data/")
 
-select_cell_lines(Input_gene = "TP53", 
-Input_AA_change = "R175H", 
-Input_disease = "Lung Cancer", 
-Input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
+select_cell_lines(input_gene = "TP53", 
+input_aa_change = "R175H", 
+input_disease = "Lung Cancer", 
+input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
 data_dir = "/path/to/DepMap_data/")
 
 # All cancer cell lines that are from Lung Cancers
-select_cell_lines(Input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
+select_cell_lines(input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
 
 }
 }

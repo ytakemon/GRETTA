@@ -5,30 +5,30 @@
 \title{Search mutations detected in DepMap cancer cell lines}
 \usage{
 list_available_mutations(
-  Gene = NULL,
-  Chr = NULL,
-  Start_bp = NULL,
-  End_bp = NULL,
-  Is_hotspot = NULL,
-  Is_damaging = NULL,
-  Variant_classification = NULL,
+  gene = NULL,
+  chr = NULL,
+  start_bp = NULL,
+  end_bp = NULL,
+  is_hotspot = NULL,
+  is_damaging = NULL,
+  variant_classification = NULL,
   data_dir = NULL
 )
 }
 \arguments{
-\item{Gene}{string, Hugo Symbol, Default: NULL}
+\item{gene}{string, Hugo Symbol, Default: NULL}
 
-\item{Chr}{string, Default: NULL}
+\item{chr}{string, Default: NULL}
 
-\item{Start_bp}{integer, Default: NULL}
+\item{start_bp}{integer, Default: NULL}
 
-\item{End_bp}{integer, Default: NULL}
+\item{end_bp}{integer, Default: NULL}
 
-\item{Is_hotspot}{logical, TCGA or COSMIC hotspot, Default: NULL}
+\item{is_hotspot}{logical, TCGA or COSMIC hotspot, Default: NULL}
 
-\item{Is_damaging}{logical, Default: NULL}
+\item{is_damaging}{logical, Default: NULL}
 
-\item{Variant_classification}{string, Select from the following: 3'UTR, 5'Flank, 5'UTR,
+\item{variant_classification}{string, Select from the following: 3'UTR, 5'Flank, 5'UTR,
 De_novo_Start_OutOfFrame, Frame_Shift_Del, Frame_Shift_Ins, IGR, In_Frame_Del, In_Frame_Ins,
 Intron, Missense_Mutation, Nonsense_Mutation, Nonstop_Mutation, Silent, Splice_Site,
 Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins, Default: NULL}
@@ -43,8 +43,8 @@ Quick method to look up mutations of interest prior to using \code{select_cell_l
 }
 \examples{
 \dontrun{
-list_available_mutations(Gene = "TP53", data_dir = "/path/to/DepMap_data/")
-list_available_mutations(Chr = 12, data_dir = "/path/to/DepMap_data/")
+list_available_mutations(gene = 'TP53', data_dir = '/path/to/DepMap_data/')
+list_available_mutations(chr = 12, data_dir = '/path/to/DepMap_data/')
 }
 
 }
