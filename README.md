@@ -119,14 +119,6 @@ For this example you will need to call the following libraries
 
 ``` r
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 library(forcats)
 library(ggplot2)
 library(GRETA)
@@ -156,12 +148,12 @@ with quantitative proteomics data, and `1086` cell lines with
 CRISPR-Cas9 knockout screen data)
 
 ``` r
-# Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(Gene = "ARID1A", Is_hotspot = TRUE, data_dir = greta_data_dir) 
+## Find ARID1A hotspot mutations detected in all cell lines
+list_available_mutations(Gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
 ```
 
 ``` r
-# List all available cancer types
+## List all available cancer types
 list_available_cancer_types(data_dir = greta_data_dir)
 #>  [1] "Kidney Cancer"              "Leukemia"                  
 #>  [3] "Lung Cancer"                "Non-Cancerous"             
@@ -181,7 +173,7 @@ list_available_cancer_types(data_dir = greta_data_dir)
 #> [31] "Liver Cancer"               "Adrenal Cancer"            
 #> [33] "Embryonal Cancer"
 
-# List all available cancer subtypes
+## List all available cancer subtypes
 list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = greta_data_dir)
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"          
 #>  [2] "Small Cell Lung Cancer (SCLC)"                               
@@ -223,10 +215,10 @@ The cell line groups assigned by default are:
 -   `Others` cell lines harbor deleterious SNVs with increased CN.
 
 ``` r
-ARID1A_groups <- select_cell_lines(Input_gene = "ARID1A", data_dir = greta_data_dir)
+ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = greta_data_dir)
 #> Selecting mutant groups for: ARID1A in all cancer cell lines
 
-# Show number of cell lines in each group 
+## Show number of cell lines in each group 
 count(ARID1A_groups, Group)
 #> # A tibble: 5 × 2
 #>   Group               n
@@ -241,13 +233,13 @@ count(ARID1A_groups, Group)
 ### Optional filter for specific cancer types
 
 ``` r
-# Find pancreatic cancer cell lines with ARID1A mutations
-ARID1A_pancr_groups <- select_cell_lines(Input_gene = "ARID1A", 
-                                         Input_disease = "Pancreatic Cancer",
+## Find pancreatic cancer cell lines with ARID1A mutations
+ARID1A_pancr_groups <- select_cell_lines(input_gene = "ARID1A", 
+                                         input_disease = "Pancreatic Cancer",
                                          data_dir = greta_data_dir)
 #> Selecting mutant groups for: ARID1A in Pancreatic Cancer,  cell lines
 
-# Show number of cell lines in each group 
+## Show number of cell lines in each group 
 count(ARID1A_pancr_groups, Group)
 #> # A tibble: 4 × 2
 #>   Group             n
@@ -268,13 +260,13 @@ in `ARID1A_HomDel` mutant group have significantly less *ARID1A* RNA or
 protein expression compared to control cell lines.
 
 ``` r
-# Select only HomDel and Control cell lines
+## Select only HomDel and Control cell lines
 ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "Control"))
 
-# Get RNA expression 
+## Get RNA expression 
 ARID1A_rna_expr <- extract_rna_expr(
-  Input_samples = ARID1A_groups_subset$DepMap_ID, 
-  Input_genes = "ARID1A",
+  input_samples = ARID1A_groups_subset$DepMap_ID, 
+  input_genes = "ARID1A",
   data_dir = greta_data_dir)
 #> [1] "Following sample did not contain profile data: ACH-000047, ACH-000426, ACH-000658, ACH-000979, ACH-001039, ACH-001063, ACH-001065, ACH-001107, ACH-001126, ACH-001137, ACH-001205, ACH-001212, ACH-001227, ACH-001331, ACH-001544, ACH-001606, ACH-001639, ACH-001675, ACH-001955, ACH-001956, ACH-001957, ACH-002083, ACH-002106, ACH-002109, ACH-002110, ACH-002114, ACH-002116, ACH-002119, ACH-002140, ACH-002141, ACH-002143, ACH-002150, ACH-002156, ACH-002160, ACH-002161, ACH-002179, ACH-002181, ACH-002186, ACH-002189, ACH-002198, ACH-002202, ACH-002210, ACH-002212, ACH-002217, ACH-002228, ACH-002229, ACH-002230, ACH-002233, ACH-002234, ACH-002239, ACH-002243, ACH-002247, ACH-002249, ACH-002250, ACH-002257, ACH-002261, ACH-002263, ACH-002265, ACH-002269, ACH-002278, ACH-002280, ACH-002282, ACH-002283, ACH-002284, ACH-002285, ACH-002294, ACH-002295, ACH-002296, ACH-002297, ACH-002298, ACH-002304, ACH-002305, ACH-002399, ACH-002874, ACH-002875"
 ```
@@ -285,13 +277,13 @@ generation can be found on the [DepMap
 site](https://depmap.org/portal/).)
 
 ``` r
-# Get protein expression
+## Get protein expression
 ARID1A_prot_expr <- extract_protein_expr(
-  Input_samples = ARID1A_groups_subset$DepMap_ID,
-  Input_genes = "ARID1A",
+  input_samples = ARID1A_groups_subset$DepMap_ID,
+  input_genes = "ARID1A",
   data_dir = greta_data_dir)
 
-# Produces an error message since ARID1A protein data is not available
+## Produces an error message since ARID1A protein data is not available
 ```
 
 Using Welch’s t-test, we can check to see whether *ARID1A* RNA
@@ -299,14 +291,14 @@ expression (in TPM) is significantly reduced in `ARID1A_HomDel` cell
 lines compared to `Controls`.
 
 ``` r
-# Append groups and test differential expression
+## Append groups and test differential expression
 ARID1A_rna_expr <- left_join(
   ARID1A_rna_expr,
   ARID1A_groups_subset %>% select(DepMap_ID, Group)) %>%
   mutate(Group = fct_relevel(Group,"Control")) # show Control group first
 #> Joining, by = "DepMap_ID"
 
-# T-test 
+## T-test 
 t.test(ARID1A_8289 ~ Group, ARID1A_rna_expr)
 #> 
 #>  Welch Two Sample t-test
@@ -320,14 +312,14 @@ t.test(ARID1A_8289 ~ Group, ARID1A_rna_expr)
 #>       mean in group Control mean in group ARID1A_HomDel 
 #>                    4.635784                    4.053539
 
-# plot 
+## plot 
 ggplot(ARID1A_rna_expr, aes(x = Group, y = ARID1A_8289)) +
   geom_boxplot()
 ```
 
 <img src="man/figures/README-Check_expression_rna_stats-1.png" width="100%" />
 
-## Perform *in silico* genetic screen
+## Perform genome-wide *in silico* genetic screen
 
 After determining cell lines in the `ARID1A_HomDel` group has
 statistically significant reduction in RNA expression compared to
@@ -381,13 +373,14 @@ columns:
 > to process.
 
 ``` r
-ARID1A_mutant_IDs <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
-ARID1A_control_IDs <- ARID1A_groups %>% filter(Group %in% c("Control")) %>% pull(DepMap_ID)
+ARID1A_mutant_id <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
+ARID1A_control_id <- ARID1A_groups %>% filter(Group %in% c("Control")) %>% pull(DepMap_ID)
 
-# This can take several hours depending on number of lines/cores used. Best to run this overnight.
+## See warning above.
+## This can take several hours depending on number of lines/cores used. 
 screen_results <- GI_screen(
-  control_IDs = ARID1A_control_IDs, 
-  mutant_IDs = ARID1A_mutant_IDs,
+  control_id = ARID1A_control_id, 
+  mutant_id = ARID1A_mutant_id,
   core_num = 5, # depends on how many cores you have  
   output_dir = greta_output_dir, # Will save your results here as well as in the variable
   data_dir = greta_data_dir,
@@ -417,6 +410,21 @@ screen_results %>%
 We immediately see that *ARID1B*, a known synthetic lethal interaction
 of *ARID1A*, was a the top of this list.
 
+### Optiona: Performing a small-scale screen
+
+To perform a small in silico screen, a list of genes can be provided in
+the `gene_list =` argument.
+
+``` r
+small_screen_results <- GI_screen(
+  control_id = ARID1A_control_id, 
+  mutant_id = ARID1A_mutant_id,
+  gene_list = c("ARID1A", "ARID1B", "SMARCA2", "GAPDH", "SMARCC2"),
+  core_num = 5, # depends on how many cores you have  
+  output_dir = greta_output_dir, # Will save your results here as well as in the variable
+  data_dir = greta_data_dir) 
+```
+
 ## Visualize screen results
 
 Finally once the *in silico* screen is complete, results can be quickly
@@ -426,9 +434,9 @@ scores indicate potential alleviating genetic interactors. As expected,
 we identified *ARID1B* as a synthetic lethal interactor of *ARID1A*.
 
 ``` r
-# Visualize results, turn on gene labels, 
-# and label three genes each that are predicted to have 
-# lethal and alleviating genetic interactions, respectively
+## Visualize results, turn on gene labels, 
+## and label three genes each that are predicted to have 
+## lethal and alleviating genetic interactions, respectively
 
 plot_screen(result_df = screen_results, 
             label_genes = TRUE, 
@@ -469,15 +477,15 @@ co-essential genes.
 > `get_inflection_points()` took \~30 minutes to process.
 
 ``` r
-# Map co-essential genes
+## Map co-essential genes
 coess_df <- coessential_map(
-  Input_gene = "ARID1A", 
+  input_gene = "ARID1A", 
   core_num = 5, 
   data_dir = greta_data_dir, 
   output_dir = greta_output_dir,
   test = FALSE) # use TRUE to run a short test to make sure this process will run.
 
-# Calculate inflection points of positive and negative curve using co-essential gene results.
+## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)
 ```
 
@@ -485,7 +493,7 @@ Next, we annotate the data frame containing the co-essential network
 data and visualize.
 
 ``` r
-# Combine and annotate data frame containing co-essential genes
+## Combine and annotate data frame containing co-essential genes
 coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
 
 plot_coessential_genes(
@@ -502,7 +510,7 @@ known SWI/SNF subunits, namely *ARID1A*, *SMARCB1*, *SMARCE1*,
 *SMARCC1*, *SS18*, *DPF2*, *SMARCC2*, and *SMARCD2*.
 
 ``` r
-# Show top 10 co-essential genes. 
+## Show top 10 co-essential genes. 
 coess_annotated_df %>% arrange(Rank) %>% head(10)
 #> # A tibble: 10 × 13
 #>    GeneNameID_A GeneNa…¹ estim…² stati…³  p.value param…⁴ conf.…⁵ conf.…⁶ method
@@ -526,24 +534,22 @@ coess_annotated_df %>% arrange(Rank) %>% head(10)
 
 Instead of mapping for essentiality across all available cell lines,
 users can also subset by disease type using the option
-`Input_disease = ""`, or within a pre-selected group of cell lines using
-the option `Input_cell_lines = c()`. Below we provide an example of how
+`input_disease = ""`, or within a pre-selected group of cell lines using
+the option `input_cell_lines = c()`. Below we provide an example of how
 ARID1A essential genes are mapped for pancreatic cancers. **Note:**
 depending on the number of cell lines that are available after the
 subsetting step, the inflection point calculation and thresholds may not
 be optimal.
 
 ``` r
-# Map co-essential genes in pancreatic cancers only
+## Map co-essential genes in pancreatic cancers only
 coess_df <- coessential_map(
-  Input_gene = "ARID1A",
-  Input_disease = "Pancreatic Cancer",
-  core_num = 5, # Depending on how many cores you have access to, increase this value to shorten processing time.
+  input_gene = "ARID1A",
+  input_disease = "Pancreatic Cancer",
+  core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
   data_dir = greta_data_dir, 
   output_dir = greta_output_dir,
   test = FALSE)
-#> [1] "This may take a few mins... Consider running with a higher core numbers to speed up the analysis."
-#> [1] "Coessentiality mapping finished. Outputs were also written to: /projects/marralab/ytakemon_prj/DepMap/GRETA_troubleshooting//GINI_coessentiality_network_results.csv"
 ```
 
 # Session information
@@ -570,55 +576,59 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] GRETA_0.5.0   ggplot2_3.4.0 forcats_0.5.2 dplyr_1.0.10 
+#>  [1] GRETA_0.5.0     forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10   
+#>  [5] purrr_0.3.5     readr_2.1.3     tidyr_1.2.1     tibble_3.1.8   
+#>  [9] ggplot2_3.4.0   tidyverse_1.3.2
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] matrixStats_0.63.0            doMC_1.3.8                   
-#>  [3] bit64_4.0.5                   doParallel_1.0.17            
-#>  [5] httr_1.4.4                    tools_4.2.2                  
-#>  [7] backports_1.4.1               utf8_1.2.2                   
-#>  [9] R6_2.5.1                      nortest_1.0-4                
-#> [11] DBI_1.1.3                     colorspace_2.0-3             
-#> [13] withr_2.5.0                   tidyselect_1.2.0             
-#> [15] Exact_3.2                     bit_4.0.5                    
-#> [17] compiler_4.2.2                rcompanion_2.4.18            
-#> [19] cli_3.4.1                     expm_0.999-6                 
-#> [21] sandwich_3.0-2                inflection_1.3.6             
-#> [23] labeling_0.4.2                diptest_0.76-0               
-#> [25] scales_1.2.1                  lmtest_0.9-40                
-#> [27] mvtnorm_1.1-3                 readr_2.1.3                  
-#> [29] proxy_0.4-27                  multcompView_0.1-8           
-#> [31] stringr_1.4.1                 RootsExtremaInflections_1.2.1
-#> [33] digest_0.6.30                 rmarkdown_2.18               
-#> [35] pkgconfig_2.0.3               htmltools_0.5.3              
-#> [37] fastmap_1.1.0                 highr_0.9                    
-#> [39] rlang_1.0.6                   readxl_1.4.1                 
-#> [41] rstudioapi_0.14               generics_0.1.3               
-#> [43] farver_2.1.1                  zoo_1.8-11                   
-#> [45] vroom_1.6.0                   magrittr_2.0.3               
-#> [47] modeltools_0.2-23             Matrix_1.5-1                 
-#> [49] Rcpp_1.0.9                    DescTools_0.99.47            
-#> [51] munsell_0.5.0                 fansi_1.0.3                  
-#> [53] lifecycle_1.0.3               stringi_1.7.8                
-#> [55] multcomp_1.4-20               yaml_2.3.6                   
-#> [57] MASS_7.3-58.1                 rootSolve_1.8.2.3            
-#> [59] plyr_1.8.8                    grid_4.2.2                   
-#> [61] parallel_4.2.2                ggrepel_0.9.2                
-#> [63] crayon_1.5.2                  lmom_2.9                     
-#> [65] lattice_0.20-45               splines_4.2.2                
-#> [67] hms_1.1.2                     knitr_1.41                   
-#> [69] pillar_1.8.1                  boot_1.3-28                  
-#> [71] gld_2.6.6                     codetools_0.2-18             
-#> [73] stats4_4.2.2                  glue_1.6.2                   
-#> [75] evaluate_0.18                 data.table_1.14.6            
-#> [77] vctrs_0.5.1                   tzdb_0.3.0                   
-#> [79] foreach_1.5.2                 cellranger_1.1.0             
-#> [81] gtable_0.3.1                  purrr_0.3.5                  
-#> [83] tidyr_1.2.1                   assertthat_0.2.1             
-#> [85] xfun_0.35                     coin_1.4-2                   
-#> [87] libcoin_1.0-9                 broom_1.0.1                  
-#> [89] e1071_1.7-12                  class_7.3-20                 
-#> [91] survival_3.4-0                tibble_3.1.8                 
-#> [93] iterators_1.0.14              TH.data_1.1-1                
-#> [95] ellipsis_0.3.2
+#>   [1] matrixStats_0.63.0            fs_1.5.2                     
+#>   [3] doMC_1.3.8                    lubridate_1.9.0              
+#>   [5] doParallel_1.0.17             httr_1.4.4                   
+#>   [7] tools_4.2.2                   backports_1.4.1              
+#>   [9] utf8_1.2.2                    R6_2.5.1                     
+#>  [11] nortest_1.0-4                 DBI_1.1.3                    
+#>  [13] colorspace_2.0-3              withr_2.5.0                  
+#>  [15] tidyselect_1.2.0              Exact_3.2                    
+#>  [17] compiler_4.2.2                rcompanion_2.4.18            
+#>  [19] cli_3.4.1                     rvest_1.0.3                  
+#>  [21] expm_0.999-6                  xml2_1.3.3                   
+#>  [23] sandwich_3.0-2                labeling_0.4.2               
+#>  [25] inflection_1.3.6              diptest_0.76-0               
+#>  [27] scales_1.2.1                  lmtest_0.9-40                
+#>  [29] mvtnorm_1.1-3                 proxy_0.4-27                 
+#>  [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
+#>  [33] digest_0.6.30                 rmarkdown_2.18               
+#>  [35] pkgconfig_2.0.3               htmltools_0.5.3              
+#>  [37] highr_0.9                     dbplyr_2.2.1                 
+#>  [39] fastmap_1.1.0                 rlang_1.0.6                  
+#>  [41] readxl_1.4.1                  rstudioapi_0.14              
+#>  [43] farver_2.1.1                  generics_0.1.3               
+#>  [45] zoo_1.8-11                    jsonlite_1.8.3               
+#>  [47] googlesheets4_1.0.1           magrittr_2.0.3               
+#>  [49] modeltools_0.2-23             Matrix_1.5-1                 
+#>  [51] Rcpp_1.0.10                   DescTools_0.99.47            
+#>  [53] munsell_0.5.0                 fansi_1.0.3                  
+#>  [55] lifecycle_1.0.3               multcomp_1.4-20              
+#>  [57] stringi_1.7.8                 yaml_2.3.6                   
+#>  [59] MASS_7.3-58.1                 rootSolve_1.8.2.3            
+#>  [61] plyr_1.8.8                    grid_4.2.2                   
+#>  [63] parallel_4.2.2                ggrepel_0.9.2                
+#>  [65] crayon_1.5.2                  lmom_2.9                     
+#>  [67] lattice_0.20-45               splines_4.2.2                
+#>  [69] haven_2.5.1                   hms_1.1.2                    
+#>  [71] knitr_1.41                    pillar_1.8.1                 
+#>  [73] boot_1.3-28                   gld_2.6.6                    
+#>  [75] stats4_4.2.2                  codetools_0.2-18             
+#>  [77] reprex_2.0.2                  glue_1.6.2                   
+#>  [79] evaluate_0.18                 data.table_1.14.6            
+#>  [81] modelr_0.1.10                 vctrs_0.5.1                  
+#>  [83] tzdb_0.3.0                    foreach_1.5.2                
+#>  [85] cellranger_1.1.0              gtable_0.3.1                 
+#>  [87] assertthat_0.2.1              xfun_0.35                    
+#>  [89] coin_1.4-2                    libcoin_1.0-9                
+#>  [91] broom_1.0.1                   e1071_1.7-12                 
+#>  [93] class_7.3-20                  survival_3.4-0               
+#>  [95] googledrive_2.0.0             gargle_1.2.1                 
+#>  [97] iterators_1.0.14              timechange_0.1.1             
+#>  [99] TH.data_1.1-1                 ellipsis_0.3.2
 ```

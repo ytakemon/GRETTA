@@ -22,6 +22,7 @@ final_eval <- TRUE
 
 # Load library
 library(tidyverse)
+library(GRETA)
 ```
 
 # Introduction 
@@ -345,7 +346,7 @@ coess_annotated_df %>% arrange(Rank) %>% head(10)
 
 Instead of mapping for essentiality across all available cell lines, users can also subset by disease type using the option `input_disease = ""`, or within a pre-selected group of cell lines using the option `input_cell_lines = c()`. Below we provide an example of how ARID1A essential genes are mapped for pancreatic cancers. **Note:** depending on the number of cell lines that are available after the subsetting step, the inflection point calculation and thresholds may not be optimal. 
 
-```{r coess_for_panc, eval = final_eval}
+```{r coess_for_panc, eval = FALSE}
 ## Map co-essential genes in pancreatic cancers only
 coess_df <- coessential_map(
   input_gene = "ARID1A",

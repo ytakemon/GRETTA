@@ -10,6 +10,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -24,6 +25,10 @@ greta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_troubleshootin
 
 ## Flip the switch to evaluate all when ready for final render
 final_eval <- TRUE
+
+# Load library
+library(tidyverse)
+library(GRETA)
 ```
 
 # Introduction 
@@ -98,7 +103,7 @@ A singularity container has also been provided and instructions can be found [he
 
 For this example you will need to call the following libraries
 
-```{r libraries, eval = final_eval}
+```{r libraries, eval = FALSE}
 library(dplyr)
 library(forcats)
 library(ggplot2)
@@ -347,7 +352,7 @@ coess_annotated_df %>% arrange(Rank) %>% head(10)
 
 Instead of mapping for essentiality across all available cell lines, users can also subset by disease type using the option `input_disease = ""`, or within a pre-selected group of cell lines using the option `input_cell_lines = c()`. Below we provide an example of how ARID1A essential genes are mapped for pancreatic cancers. **Note:** depending on the number of cell lines that are available after the subsetting step, the inflection point calculation and thresholds may not be optimal. 
 
-```{r coess_for_panc, eval = final_eval}
+```{r coess_for_panc, eval = FALSE}
 ## Map co-essential genes in pancreatic cancers only
 coess_df <- coessential_map(
   input_gene = "ARID1A",
