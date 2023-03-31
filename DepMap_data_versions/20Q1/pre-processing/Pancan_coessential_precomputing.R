@@ -23,3 +23,9 @@ fit <- corr.test(
     method = "pearson",
     adjust = "BH", 
     ci = FALSE)
+
+#### SAVE pre-computed data for GRETA ! ----------------------------------------------------------
+GRETA_dir_20Q1 <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/20Q1/data/"
+
+# save data individually for GRETA 
+save(fit, file = paste0(GRETA_dir_20Q1, "pancan_coess_precomputed.rda"))

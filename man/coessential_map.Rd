@@ -51,10 +51,6 @@ Description of output data frame
 \item \code{statistic} - Pearson's correlation statistic. Output from \code{?cor.test}.
 \item \code{p.value} - P-value from Pearson's correlation statistic. Output from \code{?cor.test}.
 \item \code{parameter} - Degrees of freedom. Output from \code{?cor.test}.
-\item \code{conf.low} - Confidence interval low end. Output from \code{?cor.test}.
-\item \code{conf.high} - Confidence interval high end. Output from \code{?cor.test}.
-\item \code{method} - Type of cor.test used. Output from \code{?cor.test}.
-\item \code{alternative} - Alternative hypothesis selected. Output from \code{?cor.test}.
 \item \code{Rank} - Rank by correlation coefficient.
 \item \code{Padj_BH} - Benjamini-Hochberg adjusted p-value.
 }

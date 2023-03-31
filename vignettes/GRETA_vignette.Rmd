@@ -10,7 +10,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -233,7 +232,7 @@ At its core, `screen_results()` performs multiple Mann-Whitney U tests, comparin
 * `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median). Negative scores indicate lethal genetic interaction, and positive scores indicate alleviating genetic interaction.
 
 > **Warning**
-> This process may take a few hours depending on the number of cores assigned. In our example below, `GI_screen()` took ~2 hours to process. 
+> This process may take a few hours depending on the number of cores assigned. Our example below `GI_screen()` took ~2 hours to process. 
 
 ```{r run_screen, eval = FALSE}
 ARID1A_mutant_id <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -267,7 +266,7 @@ screen_results %>%
 
 We immediately see that *ARID1B*, a known synthetic lethal interaction of *ARID1A*, was a the top of this list.
 
-### Optiona: Performing a small-scale screen
+### Optional: Performing a small-scale screen
 
 To perform a small in silico screen, a list of genes can be provided in the `gene_list =` argument. 
 
@@ -306,7 +305,7 @@ Given that ARID1A is known subunit of the mammalian SWI/SNF complex ([Mashtalir 
 To determine co-essential genes, we will perform multiple Pearson correlation coefficient analyses between *ARID1A* KO effects and the KO effects of all 18,333 genes. A cut off will be determined by calculating the inflection point of the ranked coefficient curve. As expected find SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two co-essential genes. 
 
 > **Warning**
-> This process may take several minutes depending on the number of cores assigned. In our example below, `coessential_map()` + `get_inflection_points()` took ~30 minutes to process. 
+> This process may take several minutes. Our example below `coessential_map()` + `get_inflection_points()` took ~17 minutes to process. 
 
 ```{r load_prepared_results_coess, eval = final_eval, include = FALSE}
 load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
@@ -319,10 +318,8 @@ coess_inflection_df <- coess_inflection_df
 ## Map co-essential genes
 coess_df <- coessential_map(
   input_gene = "ARID1A", 
-  core_num = 5, 
   data_dir = greta_data_dir, 
-  output_dir = greta_output_dir,
-  test = FALSE) # use TRUE to run a short test to make sure this process will run.
+  output_dir = greta_output_dir) 
 
 ## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)

@@ -3,6 +3,7 @@
 - Upon loading GRETA into R, a welcome message is displayed to indicate package version and the latest DepMap data set that is available. 
 - Function arguments are now all lower case.
 - `GI_screen()` has a new argument `gene_list = ` to allow small-scale GI screens and reduce computational time. 
+- Default pan-cancer `coessential_map()` now uses pre-computed cor matrix to reduce computational time. This matrix is provided along with the DepMap data.
 - A vignette is now available and in a Bioconductor format to prepare for submission (same as readme). 
 
 # GRETA 0.5.0

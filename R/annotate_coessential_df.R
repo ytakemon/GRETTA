@@ -45,9 +45,9 @@ annotate_coessential_df <- function(input_coessential_df = NULL, input_inflectio
     dplyr::arrange(-.data$Rank) %>%
     dplyr::mutate(
       Candidate_gene = dplyr::case_when(
-        (.data$p.value < 0.05) & (.data$Rank >= input_inflection_points$Inflection_point_pos_byRank) ~
+        (.data$Padj_BH < 0.05) & (.data$Rank >= input_inflection_points$Inflection_point_pos_byRank) ~
           TRUE, 
-        (.data$p.value < 0.05) & (.data$Rank <= input_inflection_points$Inflection_point_neg_byRank) ~
+        (.data$Padj_BH < 0.05) & (.data$Rank <= input_inflection_points$Inflection_point_neg_byRank) ~
           TRUE, 
         TRUE ~ FALSE
       )

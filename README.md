@@ -369,8 +369,8 @@ columns:
     genetic interaction.
 
 > **Warning** This process may take a few hours depending on the number
-> of cores assigned. In our example below, `GI_screen()` took \~2 hours
-> to process.
+> of cores assigned. Our example below `GI_screen()` took \~2 hours to
+> process.
 
 ``` r
 ARID1A_mutant_id <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -410,7 +410,7 @@ screen_results %>%
 We immediately see that *ARID1B*, a known synthetic lethal interaction
 of *ARID1A*, was a the top of this list.
 
-### Optiona: Performing a small-scale screen
+### Optional: Performing a small-scale screen
 
 To perform a small in silico screen, a list of genes can be provided in
 the `gene_list =` argument.
@@ -472,18 +472,16 @@ the inflection point of the ranked coefficient curve. As expected find
 SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two
 co-essential genes.
 
-> **Warning** This process may take several minutes depending on the
-> number of cores assigned. In our example below, `coessential_map()` +
-> `get_inflection_points()` took \~30 minutes to process.
+> **Warning** This process may take several minutes. Our example below
+> `coessential_map()` + `get_inflection_points()` took \~17 minutes to
+> process.
 
 ``` r
 ## Map co-essential genes
 coess_df <- coessential_map(
   input_gene = "ARID1A", 
-  core_num = 5, 
   data_dir = greta_data_dir, 
-  output_dir = greta_output_dir,
-  test = FALSE) # use TRUE to run a short test to make sure this process will run.
+  output_dir = greta_output_dir) 
 
 ## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)
@@ -512,22 +510,21 @@ known SWI/SNF subunits, namely *ARID1A*, *SMARCB1*, *SMARCE1*,
 ``` r
 ## Show top 10 co-essential genes. 
 coess_annotated_df %>% arrange(Rank) %>% head(10)
-#> # A tibble: 10 × 13
-#>    GeneNameID_A GeneNa…¹ estim…² stati…³  p.value param…⁴ conf.…⁵ conf.…⁶ method
-#>    <chr>        <chr>      <dbl>   <dbl>    <dbl>   <int>   <dbl>   <dbl> <chr> 
-#>  1 ARID1A_8289  ARID1A_…   1      Inf    0           1084   1       1     Pears…
-#>  2 ARID1A_8289  SMARCB1…   0.477   17.9  6.32e-63    1084   0.430   0.522 Pears…
-#>  3 ARID1A_8289  SMARCE1…   0.399   14.3  8.34e-43    1084   0.348   0.448 Pears…
-#>  4 ARID1A_8289  SMARCC1…   0.369   13.1  2.61e-36    1084   0.316   0.419 Pears…
-#>  5 ARID1A_8289  SS18_67…   0.332   11.6  2.24e-29    1084   0.278   0.384 Pears…
-#>  6 ARID1A_8289  DPF2_59…   0.330   11.5  5.49e-29    1084   0.276   0.382 Pears…
-#>  7 ARID1A_8289  SMARCD2…   0.270    9.22 1.49e-19    1084   0.214   0.324 Pears…
-#>  8 ARID1A_8289  SMARCC2…   0.242    8.22 5.60e-16    1084   0.186   0.298 Pears…
-#>  9 ARID1A_8289  BCL2_596   0.231    7.82 1.24e-14    1084   0.174   0.287 Pears…
-#> 10 ARID1A_8289  CBFB_865   0.224    7.58 7.40e-14    1084   0.167   0.280 Pears…
-#> # … with 4 more variables: alternative <chr>, Rank <int>, Padj_BH <dbl>,
-#> #   Candidate_gene <lgl>, and abbreviated variable names ¹​GeneNameID_B,
-#> #   ²​estimate, ³​statistic, ⁴​parameter, ⁵​conf.low, ⁶​conf.high
+#> # A tibble: 10 × 9
+#>    GeneNameID_A GeneNa…¹ estim…² stati…³  p.value param…⁴  Rank  Padj_BH Candi…⁵
+#>    <chr>        <chr>      <dbl>   <dbl>    <dbl>   <dbl> <int>    <dbl> <lgl>  
+#>  1 ARID1A_8289  ARID1A_…   1      Inf    0           1086     1 0        TRUE   
+#>  2 ARID1A_8289  SMARCB1…   0.477   17.9  7.45e-59    1086     2 6.48e-55 TRUE   
+#>  3 ARID1A_8289  SMARCE1…   0.399   14.3  4.30e-39    1086     3 2.49e-35 TRUE   
+#>  4 ARID1A_8289  SMARCC1…   0.369   13.1  9.35e-33    1086     4 4.06e-29 TRUE   
+#>  5 ARID1A_8289  SS18_67…   0.332   11.6  4.85e-26    1086     5 1.69e-22 TRUE   
+#>  6 ARID1A_8289  DPF2_59…   0.330   11.5  1.15e-25    1086     6 3.33e-22 TRUE   
+#>  7 ARID1A_8289  SMARCD2…   0.270    9.22 1.10e-16    1086     7 2.73e-13 TRUE   
+#>  8 ARID1A_8289  SMARCC2…   0.242    8.22 2.34e-13    1086     8 5.09e-10 TRUE   
+#>  9 ARID1A_8289  BCL2_596   0.231    7.82 4.05e-12    1086     9 7.83e- 9 TRUE   
+#> 10 ARID1A_8289  CBFB_865   0.224    7.58 2.07e-11    1086    10 3.59e- 8 TRUE   
+#> # … with abbreviated variable names ¹​GeneNameID_B, ²​estimate, ³​statistic,
+#> #   ⁴​parameter, ⁵​Candidate_gene
 ```
 
 ### Optional filter for specific cancer types

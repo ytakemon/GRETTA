@@ -137,7 +137,7 @@ protein_annot <- tibble(GygiNames = colnames(protein)) %>%
          DepMap_ID = map_chr(GygiNames_celllines, GetID)) %>%
   select(GygiNames, DepMap_ID)
 
-#### SAVE Data for GINI! ----------------------------------------------------------
+#### SAVE Data for GRETA! ----------------------------------------------------------
 GRETA_dir_22Q2 <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/22Q2/data/"
 
 # save data individually for GRETA 
