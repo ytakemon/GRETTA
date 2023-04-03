@@ -296,7 +296,7 @@ ARID1A_rna_expr <- left_join(
   ARID1A_rna_expr,
   ARID1A_groups_subset %>% select(DepMap_ID, Group)) %>%
   mutate(Group = fct_relevel(Group,"Control")) # show Control group first
-#> Joining, by = "DepMap_ID"
+#> Joining with `by = join_by(DepMap_ID)`
 
 ## T-test 
 t.test(ARID1A_8289 ~ Group, ARID1A_rna_expr)
@@ -511,20 +511,19 @@ known SWI/SNF subunits, namely *ARID1A*, *SMARCB1*, *SMARCE1*,
 ## Show top 10 co-essential genes. 
 coess_annotated_df %>% arrange(Rank) %>% head(10)
 #> # A tibble: 10 × 9
-#>    GeneNameID_A GeneNa…¹ estim…² stati…³  p.value param…⁴  Rank  Padj_BH Candi…⁵
-#>    <chr>        <chr>      <dbl>   <dbl>    <dbl>   <dbl> <int>    <dbl> <lgl>  
-#>  1 ARID1A_8289  ARID1A_…   1      Inf    0           1086     1 0        TRUE   
-#>  2 ARID1A_8289  SMARCB1…   0.477   17.9  7.45e-59    1086     2 6.48e-55 TRUE   
-#>  3 ARID1A_8289  SMARCE1…   0.399   14.3  4.30e-39    1086     3 2.49e-35 TRUE   
-#>  4 ARID1A_8289  SMARCC1…   0.369   13.1  9.35e-33    1086     4 4.06e-29 TRUE   
-#>  5 ARID1A_8289  SS18_67…   0.332   11.6  4.85e-26    1086     5 1.69e-22 TRUE   
-#>  6 ARID1A_8289  DPF2_59…   0.330   11.5  1.15e-25    1086     6 3.33e-22 TRUE   
-#>  7 ARID1A_8289  SMARCD2…   0.270    9.22 1.10e-16    1086     7 2.73e-13 TRUE   
-#>  8 ARID1A_8289  SMARCC2…   0.242    8.22 2.34e-13    1086     8 5.09e-10 TRUE   
-#>  9 ARID1A_8289  BCL2_596   0.231    7.82 4.05e-12    1086     9 7.83e- 9 TRUE   
-#> 10 ARID1A_8289  CBFB_865   0.224    7.58 2.07e-11    1086    10 3.59e- 8 TRUE   
-#> # … with abbreviated variable names ¹​GeneNameID_B, ²​estimate, ³​statistic,
-#> #   ⁴​parameter, ⁵​Candidate_gene
+#>    GeneNameID_A GeneNameID_B estimate statistic  p.value parameter  Rank
+#>    <chr>        <chr>           <dbl>     <dbl>    <dbl>     <dbl> <int>
+#>  1 ARID1A_8289  ARID1A_8289     1        Inf    0             1086     1
+#>  2 ARID1A_8289  SMARCB1_6598    0.477     17.9  7.45e-59      1086     2
+#>  3 ARID1A_8289  SMARCE1_6605    0.399     14.3  4.30e-39      1086     3
+#>  4 ARID1A_8289  SMARCC1_6599    0.369     13.1  9.35e-33      1086     4
+#>  5 ARID1A_8289  SS18_6760       0.332     11.6  4.85e-26      1086     5
+#>  6 ARID1A_8289  DPF2_5977       0.330     11.5  1.15e-25      1086     6
+#>  7 ARID1A_8289  SMARCD2_6603    0.270      9.22 1.10e-16      1086     7
+#>  8 ARID1A_8289  SMARCC2_6601    0.242      8.22 2.34e-13      1086     8
+#>  9 ARID1A_8289  BCL2_596        0.231      7.82 4.05e-12      1086     9
+#> 10 ARID1A_8289  CBFB_865        0.224      7.58 2.07e-11      1086    10
+#> # ℹ 2 more variables: Padj_BH <dbl>, Candidate_gene <lgl>
 ```
 
 ### Optional filter for specific cancer types
@@ -573,59 +572,59 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETA_0.6.0     forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10   
-#>  [5] purrr_0.3.5     readr_2.1.3     tidyr_1.2.1     tibble_3.1.8   
-#>  [9] ggplot2_3.4.0   tidyverse_1.3.2
+#>  [1] GRETA_0.6.0     forcats_1.0.0   stringr_1.5.0   dplyr_1.1.1    
+#>  [5] purrr_1.0.1     readr_2.1.4     tidyr_1.3.0     tibble_3.2.1   
+#>  [9] ggplot2_3.4.1   tidyverse_1.3.2
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] matrixStats_0.63.0            fs_1.5.2                     
-#>   [3] doMC_1.3.8                    lubridate_1.9.0              
-#>   [5] doParallel_1.0.17             httr_1.4.4                   
-#>   [7] tools_4.2.2                   backports_1.4.1              
-#>   [9] utf8_1.2.2                    R6_2.5.1                     
-#>  [11] nortest_1.0-4                 DBI_1.1.3                    
-#>  [13] colorspace_2.0-3              withr_2.5.0                  
-#>  [15] tidyselect_1.2.0              Exact_3.2                    
-#>  [17] compiler_4.2.2                rcompanion_2.4.18            
-#>  [19] cli_3.4.1                     rvest_1.0.3                  
-#>  [21] expm_0.999-6                  xml2_1.3.3                   
-#>  [23] sandwich_3.0-2                labeling_0.4.2               
-#>  [25] inflection_1.3.6              diptest_0.76-0               
-#>  [27] scales_1.2.1                  lmtest_0.9-40                
-#>  [29] mvtnorm_1.1-3                 proxy_0.4-27                 
-#>  [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
-#>  [33] digest_0.6.30                 rmarkdown_2.18               
-#>  [35] pkgconfig_2.0.3               htmltools_0.5.3              
-#>  [37] highr_0.9                     dbplyr_2.2.1                 
-#>  [39] fastmap_1.1.0                 rlang_1.0.6                  
-#>  [41] readxl_1.4.1                  rstudioapi_0.14              
-#>  [43] farver_2.1.1                  generics_0.1.3               
-#>  [45] zoo_1.8-11                    jsonlite_1.8.3               
-#>  [47] googlesheets4_1.0.1           magrittr_2.0.3               
-#>  [49] modeltools_0.2-23             Matrix_1.5-1                 
-#>  [51] Rcpp_1.0.10                   DescTools_0.99.47            
-#>  [53] munsell_0.5.0                 fansi_1.0.3                  
-#>  [55] lifecycle_1.0.3               multcomp_1.4-20              
-#>  [57] stringi_1.7.8                 yaml_2.3.6                   
-#>  [59] MASS_7.3-58.1                 rootSolve_1.8.2.3            
-#>  [61] plyr_1.8.8                    grid_4.2.2                   
-#>  [63] parallel_4.2.2                ggrepel_0.9.2                
-#>  [65] crayon_1.5.2                  lmom_2.9                     
-#>  [67] lattice_0.20-45               splines_4.2.2                
-#>  [69] haven_2.5.1                   hms_1.1.2                    
-#>  [71] knitr_1.41                    pillar_1.8.1                 
-#>  [73] boot_1.3-28                   gld_2.6.6                    
-#>  [75] stats4_4.2.2                  codetools_0.2-18             
-#>  [77] reprex_2.0.2                  glue_1.6.2                   
-#>  [79] evaluate_0.18                 data.table_1.14.6            
-#>  [81] modelr_0.1.10                 vctrs_0.5.1                  
-#>  [83] tzdb_0.3.0                    foreach_1.5.2                
-#>  [85] cellranger_1.1.0              gtable_0.3.1                 
-#>  [87] assertthat_0.2.1              xfun_0.35                    
-#>  [89] coin_1.4-2                    libcoin_1.0-9                
-#>  [91] broom_1.0.1                   e1071_1.7-12                 
-#>  [93] class_7.3-20                  survival_3.4-0               
-#>  [95] googledrive_2.0.0             gargle_1.2.1                 
-#>  [97] iterators_1.0.14              timechange_0.1.1             
-#>  [99] TH.data_1.1-1                 ellipsis_0.3.2
+#>  [1] matrixStats_0.63.0            fs_1.5.2                     
+#>  [3] doMC_1.3.8                    lubridate_1.9.0              
+#>  [5] doParallel_1.0.17             httr_1.4.5                   
+#>  [7] tools_4.2.2                   backports_1.4.1              
+#>  [9] utf8_1.2.3                    R6_2.5.1                     
+#> [11] nortest_1.0-4                 DBI_1.1.3                    
+#> [13] colorspace_2.1-0              withr_2.5.0                  
+#> [15] tidyselect_1.2.0              Exact_3.2                    
+#> [17] compiler_4.2.2                rcompanion_2.4.21            
+#> [19] cli_3.6.1                     rvest_1.0.3                  
+#> [21] expm_0.999-7                  xml2_1.3.3                   
+#> [23] sandwich_3.0-2                labeling_0.4.2               
+#> [25] inflection_1.3.6              diptest_0.76-0               
+#> [27] scales_1.2.1                  lmtest_0.9-40                
+#> [29] mvtnorm_1.1-3                 proxy_0.4-27                 
+#> [31] multcompView_0.1-8            RootsExtremaInflections_1.2.1
+#> [33] digest_0.6.30                 rmarkdown_2.18               
+#> [35] pkgconfig_2.0.3               htmltools_0.5.3              
+#> [37] highr_0.9                     dbplyr_2.2.1                 
+#> [39] fastmap_1.1.0                 rlang_1.1.0                  
+#> [41] readxl_1.4.2                  rstudioapi_0.14              
+#> [43] farver_2.1.1                  generics_0.1.3               
+#> [45] zoo_1.8-11                    jsonlite_1.8.4               
+#> [47] googlesheets4_1.0.1           magrittr_2.0.3               
+#> [49] modeltools_0.2-23             Matrix_1.5-1                 
+#> [51] Rcpp_1.0.10                   DescTools_0.99.48            
+#> [53] munsell_0.5.0                 fansi_1.0.4                  
+#> [55] lifecycle_1.0.3               multcomp_1.4-23              
+#> [57] stringi_1.7.12                yaml_2.3.6                   
+#> [59] MASS_7.3-58.1                 rootSolve_1.8.2.3            
+#> [61] plyr_1.8.8                    grid_4.2.2                   
+#> [63] parallel_4.2.2                ggrepel_0.9.3                
+#> [65] crayon_1.5.2                  lmom_2.9                     
+#> [67] lattice_0.20-45               haven_2.5.1                  
+#> [69] splines_4.2.2                 hms_1.1.3                    
+#> [71] knitr_1.41                    pillar_1.9.0                 
+#> [73] boot_1.3-28                   gld_2.6.6                    
+#> [75] stats4_4.2.2                  codetools_0.2-18             
+#> [77] reprex_2.0.2                  glue_1.6.2                   
+#> [79] evaluate_0.18                 data.table_1.14.8            
+#> [81] modelr_0.1.10                 vctrs_0.6.1                  
+#> [83] tzdb_0.3.0                    foreach_1.5.2                
+#> [85] cellranger_1.1.0              gtable_0.3.3                 
+#> [87] assertthat_0.2.1              xfun_0.35                    
+#> [89] coin_1.4-2                    libcoin_1.0-9                
+#> [91] broom_1.0.4                   e1071_1.7-13                 
+#> [93] class_7.3-20                  survival_3.4-0               
+#> [95] googledrive_2.0.0             gargle_1.2.1                 
+#> [97] iterators_1.0.14              timechange_0.1.1             
+#> [99] TH.data_1.1-1
 ```
