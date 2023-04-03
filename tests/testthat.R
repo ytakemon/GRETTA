@@ -1,4 +1,4 @@
 library(testthat)
-library(GRETA)
+library(GRETTA)
 
-test_check("GRETA")
+test_check("GRETTA")

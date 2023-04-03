@@ -1,5 +1,5 @@
 test_that("GI_screen works", {
-  dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/20Q1/data"
+  dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/20Q1/data"
   
   Screen_results <- GI_screen(
     control_id = c("ACH-001354", "ACH-000274", "ACH-001799"), 

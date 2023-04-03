@@ -26,7 +26,7 @@ GI_screen(
 
 \item{output_dir}{string, Full path to where output file should be saved, Default: NULL}
 
-\item{data_dir}{string Path to GRETA_data}
+\item{data_dir}{string Path to GRETTA_data}
 
 \item{filename}{string name of file without the '.csv' extension.}
 
@@ -69,7 +69,7 @@ control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'),
 mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
 gene_list = c("ARID1A", "ARID1B", "SMARCA2"),
 core_num = 2, 
-output_dir = '~/Desktop/GRETA_test_dir/',
+output_dir = '~/Desktop/GRETTA_test_dir/',
 data_dir = '/path/to/DepMap_data/',
 test = TRUE) # turn on for shorter test runs
 

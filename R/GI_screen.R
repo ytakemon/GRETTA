@@ -8,7 +8,7 @@
 #' @param gene_list string, A vector containing a list of Hugo symbols to subset the screen and to perform a small in-silico screen, Default: NULL
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
-#' @param data_dir string Path to GRETA_data
+#' @param data_dir string Path to GRETTA_data
 #' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, For test_that to shorten computational time for testing
 #'
@@ -42,7 +42,7 @@
 #' mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
 #' gene_list = c("ARID1A", "ARID1B", "SMARCA2"),
 #' core_num = 2, 
-#' output_dir = '~/Desktop/GRETA_test_dir/',
+#' output_dir = '~/Desktop/GRETTA_test_dir/',
 #' data_dir = '/path/to/DepMap_data/',
 #' test = TRUE) # turn on for shorter test runs
 #' 
@@ -83,7 +83,7 @@ GI_screen <- function(
     doMC::registerDoMC(cores_detected/2)
   }
   if (is.null(output_dir)) {
-    output_dir <- paste0(getwd(), "/GRETA_", Sys.Date())
+    output_dir <- paste0(getwd(), "/GRETTA_", Sys.Date())
     print(paste0("No output directory specified. Creating: ", output_dir))
     dir.create(output_dir)
   }
@@ -105,7 +105,7 @@ GI_screen <- function(
   if (!is.null(filename)) {
     output_dir_and_filename <- paste0(output_dir, "/", filename, ".csv")
   } else {
-    output_dir_and_filename <- paste0(output_dir, "/GRETA_GI_screen_results.csv")
+    output_dir_and_filename <- paste0(output_dir, "/GRETTA_GI_screen_results.csv")
   }
   
   # Set cores:
@@ -186,10 +186,10 @@ GI_screen <- function(
   # Filter further if subsetting
   if(!is.null(gene_list)){
     select_dep_annot <- dep_annot %>% 
-      filter(GeneNames %in% gene_list)
+      filter(.data$GeneNames %in% gene_list)
     
     select_dep <- select_dep %>%
-      filter(GeneNameID %in% select_dep_annot$GeneNameID)
+      filter(.data$GeneNameID %in% select_dep_annot$GeneNameID)
   }
   
   # Need to define function. A fix for a strange bug:

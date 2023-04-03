@@ -137,21 +137,21 @@ protein_annot <- tibble(GygiNames = colnames(protein)) %>%
          DepMap_ID = map_chr(GygiNames_celllines, GetID)) %>%
   select(GygiNames, DepMap_ID)
 
-#### SAVE Data for GRETA! ----------------------------------------------------------
-GRETA_dir_22Q2 <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/22Q2/data/"
+#### SAVE Data for GRETTA! ----------------------------------------------------------
+GRETTA_dir_22Q2 <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
 
-# save data individually for GRETA 
-save(CCLE_exp_annot, file = paste0(GRETA_dir_22Q2, "CCLE_exp_annot.rda"))
-save(CCLE_exp, file = paste0(GRETA_dir_22Q2, "CCLE_exp.rda"))
-save(copy_num_annot, file = paste0(GRETA_dir_22Q2, "copy_num_annot.rda"))
-save(copy_num, file = paste0(GRETA_dir_22Q2, "copy_num.rda"))
-save(dep_annot, file = paste0(GRETA_dir_22Q2, "dep_annot.rda"))
-save(dep, file = paste0(GRETA_dir_22Q2, "dep.rda"))
-save(essential_genes, file = paste0(GRETA_dir_22Q2, "essential_genes.rda"))
-save(gene_effect, file = paste0(GRETA_dir_22Q2, "gene_effect.rda"))
-save(mut_calls, file = paste0(GRETA_dir_22Q2, "mut_calls.rda"))
-save(nonessential_genes, file = paste0(GRETA_dir_22Q2, "nonessential_genes.rda"))
-save(protein_annot, file = paste0(GRETA_dir_22Q2, "protein_annot.rda"))
-save(protein_nodup, file = paste0(GRETA_dir_22Q2, "protein_nodup.rda"))
-save(protein, file = paste0(GRETA_dir_22Q2, "protein.rda"))
-save(sample_annot, file = paste0(GRETA_dir_22Q2, "sample_annot.rda"))
+# save data individually for GRETTA 
+save(CCLE_exp_annot, file = paste0(GRETTA_dir_22Q2, "CCLE_exp_annot.rda"))
+save(CCLE_exp, file = paste0(GRETTA_dir_22Q2, "CCLE_exp.rda"))
+save(copy_num_annot, file = paste0(GRETTA_dir_22Q2, "copy_num_annot.rda"))
+save(copy_num, file = paste0(GRETTA_dir_22Q2, "copy_num.rda"))
+save(dep_annot, file = paste0(GRETTA_dir_22Q2, "dep_annot.rda"))
+save(dep, file = paste0(GRETTA_dir_22Q2, "dep.rda"))
+save(essential_genes, file = paste0(GRETTA_dir_22Q2, "essential_genes.rda"))
+save(gene_effect, file = paste0(GRETTA_dir_22Q2, "gene_effect.rda"))
+save(mut_calls, file = paste0(GRETTA_dir_22Q2, "mut_calls.rda"))
+save(nonessential_genes, file = paste0(GRETTA_dir_22Q2, "nonessential_genes.rda"))
+save(protein_annot, file = paste0(GRETTA_dir_22Q2, "protein_annot.rda"))
+save(protein_nodup, file = paste0(GRETTA_dir_22Q2, "protein_nodup.rda"))
+save(protein, file = paste0(GRETTA_dir_22Q2, "protein.rda"))
+save(sample_annot, file = paste0(GRETTA_dir_22Q2, "sample_annot.rda"))

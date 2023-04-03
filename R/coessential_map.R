@@ -53,6 +53,7 @@
 #' @importFrom readr write_csv
 #' @importFrom stats cor.test
 #' @importFrom tibble as_tibble
+#' @importFrom stringr str_detect
 
 coessential_map <- function(
     input_gene = NULL, input_disease = NULL, input_cell_lines = NULL, core_num = NULL,
@@ -107,22 +108,22 @@ coessential_map <- function(
     fit_est_long <- fit$r %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "estimate") %>%
-      dplyr::filter(str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
     
     fit_tstat_long <- fit$t %>%
-      tibble::as_tibble(., rownames = "GeneNameID_A") %>%
+      tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "statistic") %>%
-      dplyr::filter(str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
     
     fit_pval_long <- fit$p %>%
-      tibble::as_tibble(., rownames = "GeneNameID_A") %>%
+      tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "p.value") %>%
-      dplyr::filter(str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
     
     fit_param_long <- fit$n %>%
-      tibble::as_tibble(., rownames = "GeneNameID_A") %>%
+      tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "parameter") %>%
-      dplyr::filter(str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
     
     cor_df <- dplyr::left_join(fit_est_long, fit_tstat_long) %>%
       dplyr::left_join(fit_pval_long) %>%

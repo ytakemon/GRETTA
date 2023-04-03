@@ -4,7 +4,7 @@ author: "Yuka Takemon"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 vignette: >
   %\VignetteIndexEntry{An introduction to GRETTA}
-  %\VignetteKeywords{Genetics, SystemsBiology, Transcriptomics, Proteomics, BiomedicalInformatics, GenePrediction, FunctionalPrediction, GeneTarget, NetworkInference}
+  %\VignetteKeywords{Genetics, SystemsBiology, Transcriptomics, Proteomics, BiomedicalInformatics, GenePrediction, FunctionalPrediction, GeneTarget, Network, NetworkInference}
   %\VignettePackage{GRETTA}
   %\VignetteEngine{knitr::rmarkdown}
 output:
