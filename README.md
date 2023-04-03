@@ -1,6 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!--You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
+<!-- badges: start -->
+
+[![License: GPL
+v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![DOI](https://zenodo.org/badge/374398121.svg)](https://zenodo.org/badge/latestdoi/374398121)
+<!-- badges: end -->
+
+![](./GRETTA_hex_logo-02.png)
 
 # Introduction
 
