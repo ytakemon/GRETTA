@@ -1,20 +1,25 @@
 # GRETA 0.6.0
+
 - Version 0.5.0 was submitted to Bioinformatics and version 0.6.0 addresses several reviewer comments (detailed below).
 - Upon loading GRETA into R, a welcome message is displayed to indicate package version and the latest DepMap data set that is available. 
 - Function arguments are now all lower case.
 - `GI_screen()` has a new argument `gene_list = ` to allow small-scale GI screens and reduce computational time. 
 - Default pan-cancer `coessential_map()` now uses pre-computed cor matrix to reduce computational time. This matrix is provided along with the DepMap data.
 - A vignette is now available and in a Bioconductor format to prepare for submission (same as readme). 
+- GRETA is now GRETTA (with two T's) due conflict with existing package on CRAN.
 
 # GRETA 0.5.0
+
 - Default output file name from `GI_screen()` has been renamed.
 - Singularity definition file and tutorial file has been included as a supplement.
 
 # GRETA 0.4.1
+
 -   Users can now custom name their output files in `GI_screen()` and `coessential_map()` with the `output_filename =` option. 
 -   Technically I think this should be a minor version update, but it seemed too insignificant to go to v0.5.0. 
 
 # GRETA 0.4.0
+
 -   All GRETA functions are now compatible with multiple DepMap data versions (20Q1, 21Q4, and 22Q2)! 
 -   An FAQ section is now available [here](https://github.com/ytakemon/GRETA/wiki/Frequently-Asked-Questions).
 
