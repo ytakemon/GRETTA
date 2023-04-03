@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
 )
 
 ## Path to data to pre-processed data
-greta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
-greta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
+gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
 
 ## Flip the switch to evaluate all when ready for final render
 final_eval <- TRUE
@@ -107,8 +107,8 @@ library(GRETTA)
 Then, assign variable that point to where the `.rda` files are stored and where result files should go.
 
 ```{r data_path, eval = FALSE}
-greta_data_dir <- "/path/to/GRETTA_project/data/"
-greta_output_dir <- "/path/to/results/folder/"
+gretta_data_dir <- "/path/to/GRETTA_project/data/"
+gretta_output_dir <- "/path/to/results/folder/"
 ```
 
 ## Exploring cell lines 
@@ -119,15 +119,15 @@ Current DepMap data used by default is version 22Q2, which contains whole-genome
 
 ```{r listing_available_muts, eval = FALSE}
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
+list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
 ```
 
 ```{r listing_available_cancer_types, eval = final_eval}
 ## List all available cancer types
-list_available_cancer_types(data_dir = greta_data_dir)
+list_available_cancer_types(data_dir = gretta_data_dir)
 
 ## List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = greta_data_dir)
+list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
 ```
 
 ## Selecting mutant and control cell line groups
@@ -146,7 +146,7 @@ The cell line groups assigned by default are:
 * `Others` cell lines harbor deleterious SNVs with increased CN.
 
 ```{r select_groups, eval = final_eval}
-ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = greta_data_dir)
+ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = gretta_data_dir)
 
 ## Show number of cell lines in each group 
 count(ARID1A_groups, Group)
@@ -158,7 +158,7 @@ count(ARID1A_groups, Group)
 ## Find pancreatic cancer cell lines with ARID1A mutations
 ARID1A_pancr_groups <- select_cell_lines(input_gene = "ARID1A", 
                                          input_disease = "Pancreatic Cancer",
-                                         data_dir = greta_data_dir)
+                                         data_dir = gretta_data_dir)
 
 ## Show number of cell lines in each group 
 count(ARID1A_pancr_groups, Group)
@@ -176,7 +176,7 @@ ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "
 ARID1A_rna_expr <- extract_rna_expr(
   input_samples = ARID1A_groups_subset$DepMap_ID, 
   input_genes = "ARID1A",
-  data_dir = greta_data_dir)
+  data_dir = gretta_data_dir)
 ```
 
 Not all cell lines contain RNA and/or protein expression profiles, and not all proteins were detected by mass spectrometer. (Details on data generation can be found on the [DepMap site](https://depmap.org/portal/).)
@@ -186,7 +186,7 @@ Not all cell lines contain RNA and/or protein expression profiles, and not all p
 ARID1A_prot_expr <- extract_protein_expr(
   input_samples = ARID1A_groups_subset$DepMap_ID,
   input_genes = "ARID1A",
-  data_dir = greta_data_dir)
+  data_dir = gretta_data_dir)
 
 ## Produces an error message since ARID1A protein data is not available
 ```
@@ -239,14 +239,14 @@ screen_results <- GI_screen(
   control_id = ARID1A_control_id, 
   mutant_id = ARID1A_mutant_id,
   core_num = 5, # depends on how many cores you have  
-  output_dir = greta_output_dir, # Will save your results here as well as in the variable
-  data_dir = greta_data_dir,
+  output_dir = gretta_output_dir, # Will save your results here as well as in the variable
+  data_dir = gretta_data_dir,
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
 ```{r load_prepared_results, eval = final_eval, include = FALSE}
 ## Load prepared ARID1A screen result
-load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
+load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 ```
 
 We can quickly determine whether any lethal genetic interactions were predicted by `GRETTA`. We use a `Pval` cut off of 0.05 and rank based on the `Interaction_score`. 
@@ -270,8 +270,8 @@ small_screen_results <- GI_screen(
   mutant_id = ARID1A_mutant_id,
   gene_list = c("ARID1A", "ARID1B", "SMARCA2", "GAPDH", "SMARCC2"),
   core_num = 5, # depends on how many cores you have  
-  output_dir = greta_output_dir, # Will save your results here as well as in the variable
-  data_dir = greta_data_dir) 
+  output_dir = gretta_output_dir, # Will save your results here as well as in the variable
+  data_dir = gretta_data_dir) 
 ```
 
 ## Visualize screen results
@@ -302,16 +302,16 @@ To determine co-essential genes, we will perform multiple Pearson correlation co
 > This process may take several minutes. Our example below `coessential_map()` + `get_inflection_points()` took ~17 minutes to process. 
 
 ```{r load_prepared_results_coess, eval = final_eval, include = FALSE}
-load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
-load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
+load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
+load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
 ```
 
 ```{r coess_df, eval = FALSE}
 ## Map co-essential genes
 coess_df <- coessential_map(
   input_gene = "ARID1A", 
-  data_dir = greta_data_dir, 
-  output_dir = greta_output_dir) 
+  data_dir = gretta_data_dir, 
+  output_dir = gretta_output_dir) 
 
 ## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)
@@ -347,8 +347,8 @@ coess_df <- coessential_map(
   input_gene = "ARID1A",
   input_disease = "Pancreatic Cancer",
   core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
-  data_dir = greta_data_dir, 
-  output_dir = greta_output_dir,
+  data_dir = gretta_data_dir, 
+  output_dir = gretta_output_dir,
   test = FALSE)
 ```
 

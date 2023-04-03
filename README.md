@@ -128,8 +128,8 @@ Then, assign variable that point to where the `.rda` files are stored
 and where result files should go.
 
 ``` r
-greta_data_dir <- "/path/to/GRETTA_project/data/"
-greta_output_dir <- "/path/to/results/folder/"
+gretta_data_dir <- "/path/to/GRETTA_project/data/"
+gretta_output_dir <- "/path/to/results/folder/"
 ```
 
 ## Exploring cell lines
@@ -149,12 +149,12 @@ CRISPR-Cas9 knockout screen data)
 
 ``` r
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
+list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
 ```
 
 ``` r
 ## List all available cancer types
-list_available_cancer_types(data_dir = greta_data_dir)
+list_available_cancer_types(data_dir = gretta_data_dir)
 #>  [1] "Kidney Cancer"              "Leukemia"                  
 #>  [3] "Lung Cancer"                "Non-Cancerous"             
 #>  [5] "Sarcoma"                    "Lymphoma"                  
@@ -174,7 +174,7 @@ list_available_cancer_types(data_dir = greta_data_dir)
 #> [33] "Embryonal Cancer"
 
 ## List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = greta_data_dir)
+list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"          
 #>  [2] "Small Cell Lung Cancer (SCLC)"                               
 #>  [3] "Non-Small Cell Lung Cancer (NSCLC), Squamous Cell Carcinoma" 
@@ -215,7 +215,7 @@ The cell line groups assigned by default are:
 -   `Others` cell lines harbor deleterious SNVs with increased CN.
 
 ``` r
-ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = greta_data_dir)
+ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = gretta_data_dir)
 #> Selecting mutant groups for: ARID1A in all cancer cell lines
 
 ## Show number of cell lines in each group 
@@ -236,7 +236,7 @@ count(ARID1A_groups, Group)
 ## Find pancreatic cancer cell lines with ARID1A mutations
 ARID1A_pancr_groups <- select_cell_lines(input_gene = "ARID1A", 
                                          input_disease = "Pancreatic Cancer",
-                                         data_dir = greta_data_dir)
+                                         data_dir = gretta_data_dir)
 #> Selecting mutant groups for: ARID1A in Pancreatic Cancer,  cell lines
 
 ## Show number of cell lines in each group 
@@ -267,7 +267,7 @@ ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "
 ARID1A_rna_expr <- extract_rna_expr(
   input_samples = ARID1A_groups_subset$DepMap_ID, 
   input_genes = "ARID1A",
-  data_dir = greta_data_dir)
+  data_dir = gretta_data_dir)
 #> [1] "Following sample did not contain profile data: ACH-000047, ACH-000426, ACH-000658, ACH-000979, ACH-001039, ACH-001063, ACH-001065, ACH-001107, ACH-001126, ACH-001137, ACH-001205, ACH-001212, ACH-001227, ACH-001331, ACH-001544, ACH-001606, ACH-001639, ACH-001675, ACH-001955, ACH-001956, ACH-001957, ACH-002083, ACH-002106, ACH-002109, ACH-002110, ACH-002114, ACH-002116, ACH-002119, ACH-002140, ACH-002141, ACH-002143, ACH-002150, ACH-002156, ACH-002160, ACH-002161, ACH-002179, ACH-002181, ACH-002186, ACH-002189, ACH-002198, ACH-002202, ACH-002210, ACH-002212, ACH-002217, ACH-002228, ACH-002229, ACH-002230, ACH-002233, ACH-002234, ACH-002239, ACH-002243, ACH-002247, ACH-002249, ACH-002250, ACH-002257, ACH-002261, ACH-002263, ACH-002265, ACH-002269, ACH-002278, ACH-002280, ACH-002282, ACH-002283, ACH-002284, ACH-002285, ACH-002294, ACH-002295, ACH-002296, ACH-002297, ACH-002298, ACH-002304, ACH-002305, ACH-002399, ACH-002874, ACH-002875"
 ```
 
@@ -281,7 +281,7 @@ site](https://depmap.org/portal/).)
 ARID1A_prot_expr <- extract_protein_expr(
   input_samples = ARID1A_groups_subset$DepMap_ID,
   input_genes = "ARID1A",
-  data_dir = greta_data_dir)
+  data_dir = gretta_data_dir)
 
 ## Produces an error message since ARID1A protein data is not available
 ```
@@ -382,8 +382,8 @@ screen_results <- GI_screen(
   control_id = ARID1A_control_id, 
   mutant_id = ARID1A_mutant_id,
   core_num = 5, # depends on how many cores you have  
-  output_dir = greta_output_dir, # Will save your results here as well as in the variable
-  data_dir = greta_data_dir,
+  output_dir = gretta_output_dir, # Will save your results here as well as in the variable
+  data_dir = gretta_data_dir,
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
@@ -421,8 +421,8 @@ small_screen_results <- GI_screen(
   mutant_id = ARID1A_mutant_id,
   gene_list = c("ARID1A", "ARID1B", "SMARCA2", "GAPDH", "SMARCC2"),
   core_num = 5, # depends on how many cores you have  
-  output_dir = greta_output_dir, # Will save your results here as well as in the variable
-  data_dir = greta_data_dir) 
+  output_dir = gretta_output_dir, # Will save your results here as well as in the variable
+  data_dir = gretta_data_dir) 
 ```
 
 ## Visualize screen results
@@ -480,8 +480,8 @@ co-essential genes.
 ## Map co-essential genes
 coess_df <- coessential_map(
   input_gene = "ARID1A", 
-  data_dir = greta_data_dir, 
-  output_dir = greta_output_dir) 
+  data_dir = gretta_data_dir, 
+  output_dir = gretta_output_dir) 
 
 ## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)
@@ -543,8 +543,8 @@ coess_df <- coessential_map(
   input_gene = "ARID1A",
   input_disease = "Pancreatic Cancer",
   core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
-  data_dir = greta_data_dir, 
-  output_dir = greta_output_dir,
+  data_dir = gretta_data_dir, 
+  output_dir = gretta_output_dir,
   test = FALSE)
 ```
 

@@ -1,11 +1,11 @@
 ---
-title: "An introduction to GRETA"
+title: "An introduction to GRETTA"
 author: "Yuka Takemon"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 vignette: >
-  %\VignetteIndexEntry{An introduction to GRETA}
+  %\VignetteIndexEntry{An introduction to GRETTA}
   %\VignetteKeywords{Genetics, SystemsBiology, Transcriptomics, Proteomics, BiomedicalInformatics, GenePrediction, FunctionalPrediction, GeneTarget, NetworkInference}
-  %\VignettePackage{GRETA}
+  %\VignettePackage{GRETTA}
   %\VignetteEngine{knitr::rmarkdown}
 output:
   BiocStyle::html_document:
