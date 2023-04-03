@@ -3,11 +3,11 @@ library(tidyverse)
 library(psych)
 
 # Define paths
-greta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/20Q1/data/"
-greta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_troubleshooting/"
+GRETTA_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/20Q1/data/"
+GRETTA_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
 
 # Load data
-load(paste0(greta_data_dir, "/gene_effect.rda"))
+load(paste0(GRETTA_data_dir, "/gene_effect.rda"))
 
 # Pan cancer -------------------------------------------
 # Format as matrix
@@ -24,8 +24,8 @@ fit <- corr.test(
     adjust = "BH", 
     ci = FALSE)
 
-#### SAVE pre-computed data for GRETA ! ----------------------------------------------------------
-GRETA_dir_20Q1 <- "/projects/marralab/ytakemon_prj/DepMap/GRETA_data/20Q1/data/"
+#### SAVE pre-computed data for GRETTA ! ----------------------------------------------------------
+GRETTA_dir_20Q1 <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/20Q1/data/"
 
-# save data individually for GRETA 
-save(fit, file = paste0(GRETA_dir_20Q1, "pancan_coess_precomputed.rda"))
+# save data individually for GRETTA 
+save(fit, file = paste0(GRETTA_dir_20Q1, "pancan_coess_precomputed.rda"))
