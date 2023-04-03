@@ -5,7 +5,6 @@
 ^\.github$
 ^\.github/ISSUE_TEMPLATE$
 ^\.github/ISSUE_TEMPLATE/*\.md$
-^tests/testthat/*\.csv$
 ^.*\.png$
 ^.*\.gz$
 ^DepMap_data_versions$

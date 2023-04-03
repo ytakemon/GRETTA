@@ -11,7 +11,7 @@ GI_screen(
   core_num = NULL,
   output_dir = NULL,
   data_dir = NULL,
-  output_filename = NULL,
+  filename = NULL,
   test = FALSE
 )
 }
@@ -28,7 +28,7 @@ GI_screen(
 
 \item{data_dir}{string Path to GRETA_data}
 
-\item{output_filename}{string name of file without the '.csv' extension.}
+\item{filename}{string name of file without the '.csv' extension.}
 
 \item{test}{logical, For test_that to shorten computational time for testing}
 }

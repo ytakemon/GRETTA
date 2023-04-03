@@ -149,7 +149,7 @@ CRISPR-Cas9 knockout screen data)
 
 ``` r
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(Gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
+list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
 ```
 
 ``` r
@@ -573,7 +573,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETA_0.5.0     forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10   
+#>  [1] GRETA_0.6.0     forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10   
 #>  [5] purrr_0.3.5     readr_2.1.3     tidyr_1.2.1     tibble_3.1.8   
 #>  [9] ggplot2_3.4.0   tidyverse_1.3.2
 #> 

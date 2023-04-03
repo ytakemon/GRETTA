@@ -119,7 +119,7 @@ Current DepMap data used by default is version 22Q2, which contains whole-genome
 
 ```{r listing_available_muts, eval = FALSE}
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(Gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
+list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = greta_data_dir) 
 ```
 
 ```{r listing_available_cancer_types, eval = final_eval}
@@ -247,7 +247,6 @@ screen_results <- GI_screen(
 ```{r load_prepared_results, eval = final_eval, include = FALSE}
 ## Load prepared ARID1A screen result
 load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
-screen_results <- screen_results
 ```
 
 We can quickly determine whether any lethal genetic interactions were predicted by `GRETA`. We use a `Pval` cut off of 0.05 and rank based on the `Interaction_score`. 
@@ -305,8 +304,6 @@ To determine co-essential genes, we will perform multiple Pearson correlation co
 ```{r load_prepared_results_coess, eval = final_eval, include = FALSE}
 load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
 load(paste0(greta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
-coess_df <- coess_df
-coess_inflection_df <- coess_inflection_df
 ```
 
 ```{r coess_df, eval = FALSE}

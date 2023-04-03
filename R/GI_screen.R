@@ -9,7 +9,7 @@
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
 #' @param data_dir string Path to GRETA_data
-#' @param output_filename string name of file without the '.csv' extension. 
+#' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, For test_that to shorten computational time for testing
 #'
 #' @return A data frame containing results from the genetic screen. A copy is also saved to the 
@@ -65,7 +65,7 @@
 
 GI_screen <- function(
     control_id = NULL, mutant_id = NULL, gene_list = NULL, core_num = NULL, output_dir = NULL, data_dir = NULL,
-    output_filename = NULL, test = FALSE
+    filename = NULL, test = FALSE
 ) {
   
   # Check that essential inputs are given:
@@ -102,8 +102,8 @@ GI_screen <- function(
       )
     )
   }
-  if (!is.null(output_filename)) {
-    output_dir_and_filename <- paste0(output_dir, "/", output_filename, ".csv")
+  if (!is.null(filename)) {
+    output_dir_and_filename <- paste0(output_dir, "/", filename, ".csv")
   } else {
     output_dir_and_filename <- paste0(output_dir, "/GRETA_GI_screen_results.csv")
   }
@@ -204,7 +204,7 @@ GI_screen <- function(
   
   # Begin loop
   All_res <- each <- NULL
-  All_res <- foreach::foreach(each = 1:run, .combine = bind_rows) %dopar%
+  All_res <- foreach::foreach(each = seq_len(run), .combine = bind_rows) %dopar%
     {
       
       # Give feedback

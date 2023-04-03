@@ -10,7 +10,7 @@
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
 #' @param data_dir string Path to GINIR_data
-#' @param output_filename string name of file without the '.csv' extension. 
+#' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly 
 #' prior to running all 18,333 genes. Default: FALSE.
 #'
@@ -56,7 +56,7 @@
 
 coessential_map <- function(
     input_gene = NULL, input_disease = NULL, input_cell_lines = NULL, core_num = NULL,
-    output_dir = NULL, data_dir = NULL, output_filename = NULL, test = FALSE
+    output_dir = NULL, data_dir = NULL, filename = NULL, test = FALSE
 ) {
   
   # Check that essential inputs are given:
@@ -83,8 +83,8 @@ coessential_map <- function(
       )
     )
   }
-  if (!is.null(output_filename)) {
-    output_dir_and_filename <- paste0(output_dir, "/", output_filename, ".csv")
+  if (!is.null(filename)) {
+    output_dir_and_filename <- paste0(output_dir, "/", filename, ".csv")
   } else {
     output_dir_and_filename <- paste0(output_dir, "/GINI_coessentiality_network_results.csv")
   }
@@ -221,7 +221,7 @@ coessential_map <- function(
       run <- length(unique(AllGenes))
     }
     res <- each <- NULL
-    res <- foreach::foreach(each = 1:run, .combine = bind_rows) %dopar%
+    res <- foreach::foreach(each = seq_len(run), .combine = bind_rows) %dopar%
       {
         if (each == 1) {
           print(
