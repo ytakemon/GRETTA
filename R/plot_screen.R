@@ -10,9 +10,11 @@
 #' @md
 #' 
 #' @examples 
-#' \dontrun{
-#' plot_screen(sample_ARID1A_KO_screen, label_genes = TRUE, label_n = 3)
-#' }
+#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' 
+#' load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
+#' 
+#' plot_screen(screen_results, label_genes = FALSE)
 #' 
 #' @rdname plot_screen
 #' @export 

@@ -62,17 +62,15 @@ that there may be another factor contributing to this separation.
 }
 }
 \examples{
-\dontrun{
+gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
 
 Screen_results <- GI_screen(
 control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
 mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
 gene_list = c("ARID1A", "ARID1B", "SMARCA2"),
 core_num = 2, 
-output_dir = '~/Desktop/GRETTA_test_dir/',
-data_dir = '/path/to/DepMap_data/',
-test = TRUE) # turn on for shorter test runs
-
-}
+output_dir = gretta_output_dir,
+data_dir = gretta_data_dir)
 
 }

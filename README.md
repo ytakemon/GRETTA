@@ -70,18 +70,24 @@ section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-ho
 mkdir GRETTA_project
 cd GRETTA_project
 
-# Download data and data documentation from the web
-wget https://github.com/ytakemon/GRETTA/raw/main/DepMap_data_versions/22Q1/GRETTA_DepMap_22Q2_data.tar.gz
-wget https://github.com/ytakemon/GRETTA/raw/main/DepMap_data_versions/22Q1/GRETTA_DepMap_22Q2_data_document.tar.gz
+# Download data from the web
+wget https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2/GRETTA_DepMap_22Q2_data.tar.gz
 
 # Extract data and data documentation
 tar -zxvf GRETTA_DepMap_22Q2_data.tar.gz
-tar -zxvf GRETTA_DepMap_22Q2_data_document.tar.gz
 ```
 
 A singularity container has also been provided and instructions can be
 found
 [here](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
+
+### Additional DepMap versions
+
+In this example we use DepMap’s 2022 data release (22Q2). However, we
+also provide previous data released in 2020 (v20Q1) and 2021 (v21Q4),
+which are available at
+:`https://www.bcgsc.ca/downloads/ytakemon/GRETTA/`. We are hoping to
+make new data sets available as the are released by DepMap.
 
 # Workflows
 
@@ -148,8 +154,7 @@ One way to explore cell lines that are available in DepMap is through
 their [portal](https://depmap.org/portal/). However, there are some
 simple built-in methods in GRETTA to provide users with a way to glimpse
 the data using the series of `list_available` functions:
-`list_available_mutations()`, `list_available_cancer_types()`,
-`list_available_cancer_subtypes()`
+`list_mutations()`, `list_cancer_types()`, `list_cancer_subtypes()`
 
 Current DepMap data used by default is version 22Q2, which contains
 whole-genome sequencing or whole-exome sequencing annotations for `1771`
@@ -159,12 +164,12 @@ CRISPR-Cas9 knockout screen data)
 
 ``` r
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
+list_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
 ```
 
 ``` r
 ## List all available cancer types
-list_available_cancer_types(data_dir = gretta_data_dir)
+list_cancer_types(data_dir = gretta_data_dir)
 #>  [1] "Kidney Cancer"              "Leukemia"                  
 #>  [3] "Lung Cancer"                "Non-Cancerous"             
 #>  [5] "Sarcoma"                    "Lymphoma"                  
@@ -184,7 +189,7 @@ list_available_cancer_types(data_dir = gretta_data_dir)
 #> [33] "Embryonal Cancer"
 
 ## List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
+list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"          
 #>  [2] "Small Cell Lung Cancer (SCLC)"                               
 #>  [3] "Non-Small Cell Lung Cancer (NSCLC), Squamous Cell Carcinoma" 
@@ -274,11 +279,11 @@ protein expression compared to control cell lines.
 ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "Control"))
 
 ## Get RNA expression 
-ARID1A_rna_expr <- extract_rna_expr(
+ARID1A_rna_expr <- extract_rna(
   input_samples = ARID1A_groups_subset$DepMap_ID, 
   input_genes = "ARID1A",
   data_dir = gretta_data_dir)
-#> [1] "Following sample did not contain profile data: ACH-000047, ACH-000426, ACH-000658, ACH-000979, ACH-001039, ACH-001063, ACH-001065, ACH-001107, ACH-001126, ACH-001137, ACH-001205, ACH-001212, ACH-001227, ACH-001331, ACH-001544, ACH-001606, ACH-001639, ACH-001675, ACH-001955, ACH-001956, ACH-001957, ACH-002083, ACH-002106, ACH-002109, ACH-002110, ACH-002114, ACH-002116, ACH-002119, ACH-002140, ACH-002141, ACH-002143, ACH-002150, ACH-002156, ACH-002160, ACH-002161, ACH-002179, ACH-002181, ACH-002186, ACH-002189, ACH-002198, ACH-002202, ACH-002210, ACH-002212, ACH-002217, ACH-002228, ACH-002229, ACH-002230, ACH-002233, ACH-002234, ACH-002239, ACH-002243, ACH-002247, ACH-002249, ACH-002250, ACH-002257, ACH-002261, ACH-002263, ACH-002265, ACH-002269, ACH-002278, ACH-002280, ACH-002282, ACH-002283, ACH-002284, ACH-002285, ACH-002294, ACH-002295, ACH-002296, ACH-002297, ACH-002298, ACH-002304, ACH-002305, ACH-002399, ACH-002874, ACH-002875"
+#> Following sample did not contain profile data: ACH-000047, ACH-000426, ACH-000658, ACH-000979, ACH-001039, ACH-001063, ACH-001065, ACH-001107, ACH-001126, ACH-001137, ACH-001205, ACH-001212, ACH-001227, ACH-001331, ACH-001544, ACH-001606, ACH-001639, ACH-001675, ACH-001955, ACH-001956, ACH-001957, ACH-002083, ACH-002106, ACH-002109, ACH-002110, ACH-002114, ACH-002116, ACH-002119, ACH-002140, ACH-002141, ACH-002143, ACH-002150, ACH-002156, ACH-002160, ACH-002161, ACH-002179, ACH-002181, ACH-002186, ACH-002189, ACH-002198, ACH-002202, ACH-002210, ACH-002212, ACH-002217, ACH-002228, ACH-002229, ACH-002230, ACH-002233, ACH-002234, ACH-002239, ACH-002243, ACH-002247, ACH-002249, ACH-002250, ACH-002257, ACH-002261, ACH-002263, ACH-002265, ACH-002269, ACH-002278, ACH-002280, ACH-002282, ACH-002283, ACH-002284, ACH-002285, ACH-002294, ACH-002295, ACH-002296, ACH-002297, ACH-002298, ACH-002304, ACH-002305, ACH-002399, ACH-002874, ACH-002875
 ```
 
 Not all cell lines contain RNA and/or protein expression profiles, and
@@ -288,7 +293,7 @@ site](https://depmap.org/portal/).)
 
 ``` r
 ## Get protein expression
-ARID1A_prot_expr <- extract_protein_expr(
+ARID1A_prot_expr <- extract_prot(
   input_samples = ARID1A_groups_subset$DepMap_ID,
   input_genes = "ARID1A",
   data_dir = gretta_data_dir)
@@ -502,9 +507,9 @@ data and visualize.
 
 ``` r
 ## Combine and annotate data frame containing co-essential genes
-coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
+coess_annotated_df <- annotate_coess(coess_df, coess_inflection_df)
 
-plot_coessential_genes(
+plot_coess(
   result_df = coess_annotated_df, 
   inflection_df = coess_inflection_df,
   label_genes = TRUE, # Should gene names be labeled?

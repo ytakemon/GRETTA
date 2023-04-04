@@ -31,10 +31,13 @@ common cell line aliases to DepMap's unique gene name and cell line identifiers,
 
 }}
 \examples{
-\dontrun{
-get_GeneNameID('A1CF', data_dir = '/path/to/DepMap_data/')
-}
-\dontrun{
-get_DepMapID('JURKAT', data_dir = '/path/')
-}
+gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+
+get_GeneNameID('A1CF', data_dir = gretta_data_dir)
+
+gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+
+get_DepMapID('JURKAT', data_dir = gretta_data_dir)
+
 }

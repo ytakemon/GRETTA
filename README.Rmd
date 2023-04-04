@@ -67,16 +67,18 @@ DepMap 22Q2 data and the data documentation files are provided above and can be 
 mkdir GRETTA_project
 cd GRETTA_project
 
-# Download data and data documentation from the web
-wget https://github.com/ytakemon/GRETTA/raw/main/DepMap_data_versions/22Q1/GRETTA_DepMap_22Q2_data.tar.gz
-wget https://github.com/ytakemon/GRETTA/raw/main/DepMap_data_versions/22Q1/GRETTA_DepMap_22Q2_data_document.tar.gz
+# Download data from the web
+wget https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2/GRETTA_DepMap_22Q2_data.tar.gz
 
 # Extract data and data documentation
 tar -zxvf GRETTA_DepMap_22Q2_data.tar.gz
-tar -zxvf GRETTA_DepMap_22Q2_data_document.tar.gz
 ```
 
 A singularity container has also been provided and instructions can be found [here](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
+
+### Additional DepMap versions
+
+In this example we use DepMap's 2022 data release (22Q2). However, we also provide previous data released in 2020 (v20Q1) and 2021 (v21Q4), which are available at :`https://www.bcgsc.ca/downloads/ytakemon/GRETTA/`. We are hoping to make new data sets available as the are released by DepMap.
 
 # Workflows 
 
@@ -121,21 +123,21 @@ gretta_output_dir <- "/path/to/results/folder/"
 
 ## Exploring cell lines 
 
-One way to explore cell lines that are available in DepMap is through their [portal](https://depmap.org/portal/). However, there are some simple built-in methods in GRETTA to provide users with a way to glimpse the data using the series of `list_available` functions: `list_available_mutations()`, `list_available_cancer_types()`, `list_available_cancer_subtypes()`
+One way to explore cell lines that are available in DepMap is through their [portal](https://depmap.org/portal/). However, there are some simple built-in methods in GRETTA to provide users with a way to glimpse the data using the series of `list_available` functions: `list_mutations()`, `list_cancer_types()`, `list_cancer_subtypes()`
 
 Current DepMap data used by default is version 22Q2, which contains whole-genome sequencing or whole-exome sequencing annotations for `1771` cancer cell lines (`1406` cell lines with RNA-seq data, `375` cell lines with quantitative proteomics data, and `1086` cell lines with CRISPR-Cas9 knockout screen data)
 
 ```{r listing_available_muts, eval = FALSE}
 ## Find ARID1A hotspot mutations detected in all cell lines
-list_available_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
+list_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
 ```
 
 ```{r listing_available_cancer_types, eval = final_eval}
 ## List all available cancer types
-list_available_cancer_types(data_dir = gretta_data_dir)
+list_cancer_types(data_dir = gretta_data_dir)
 
 ## List all available cancer subtypes
-list_available_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
+list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
 ```
 
 ## Selecting mutant and control cell line groups
@@ -181,7 +183,7 @@ Of the three mutant cancer cell line groups `ARID1A_HomDel`, `ARID1A_T-HetDel`, 
 ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "Control"))
 
 ## Get RNA expression 
-ARID1A_rna_expr <- extract_rna_expr(
+ARID1A_rna_expr <- extract_rna(
   input_samples = ARID1A_groups_subset$DepMap_ID, 
   input_genes = "ARID1A",
   data_dir = gretta_data_dir)
@@ -191,7 +193,7 @@ Not all cell lines contain RNA and/or protein expression profiles, and not all p
 
 ```{r Check_expression_protein, eval = FALSE}
 ## Get protein expression
-ARID1A_prot_expr <- extract_protein_expr(
+ARID1A_prot_expr <- extract_prot(
   input_samples = ARID1A_groups_subset$DepMap_ID,
   input_genes = "ARID1A",
   data_dir = gretta_data_dir)
@@ -329,9 +331,9 @@ Next, we annotate the data frame containing the co-essential network data and vi
 
 ```{r combine_n_visualize, eval = final_eval}
 ## Combine and annotate data frame containing co-essential genes
-coess_annotated_df <- annotate_coessential_df(coess_df, coess_inflection_df)
+coess_annotated_df <- annotate_coess(coess_df, coess_inflection_df)
 
-plot_coessential_genes(
+plot_coess(
   result_df = coess_annotated_df, 
   inflection_df = coess_inflection_df,
   label_genes = TRUE, # Should gene names be labeled?

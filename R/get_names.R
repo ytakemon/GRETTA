@@ -14,9 +14,10 @@
 #' 
 #' @export
 #' @examples
-#' \dontrun{
-#' get_GeneNameID('A1CF', data_dir = '/path/to/DepMap_data/')
-#' }
+#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' 
+#' get_GeneNameID('A1CF', data_dir = gretta_data_dir)
+#' 
 get_GeneNameID <- function(gene_name, data_dir) {
   if (is.null(data_dir)) {
     stop(
@@ -74,9 +75,11 @@ get_GeneNameID <- function(gene_name, data_dir) {
 #' 
 #' @export
 #' @examples
-#' \dontrun{
-#' get_DepMapID('JURKAT', data_dir = '/path/')
-#' }
+#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+#' 
+#' get_DepMapID('JURKAT', data_dir = gretta_data_dir)
+#' 
 get_DepMapID <- function(sample_name, data_dir) {
   # Load necessary data
   protein_annot <- sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/

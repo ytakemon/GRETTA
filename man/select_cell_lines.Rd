@@ -51,29 +51,10 @@ If input_aa_change` is also defined:
 }
 }
 \examples{
-\dontrun{
-# Looking for TP53 mutants in all cancer cell lines (pan-cancer search)
-select_cell_lines(input_gene = "TP53", data_dir = "/path/to/DepMap_data/")
-
-select_cell_lines(
-input_gene = "TP53", 
-input_aa_change = "R175H", 
-data_dir = "/path/to/DepMap_data/")
-
-# TP53 mutants only in SCLC subtypes
-select_cell_lines(input_gene = "TP53", 
-input_disease = "Lung Cancer", 
-input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
-data_dir = "/path/to/DepMap_data/")
+gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
 
 select_cell_lines(input_gene = "TP53", 
-input_aa_change = "R175H", 
 input_disease = "Lung Cancer", 
-input_disease_subtype = "Small Cell Lung Cancer (SCLC)",
-data_dir = "/path/to/DepMap_data/")
+data_dir = gretta_data_dir)
 
-# All cancer cell lines that are from Lung Cancers
-select_cell_lines(input_disease = "Lung Cancer", data_dir = "/path/to/DepMap_data/")
-
-}
 }
