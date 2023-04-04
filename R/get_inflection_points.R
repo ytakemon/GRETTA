@@ -47,7 +47,7 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   y_pos <- subset_df_pos$estimate
   fit_pos <- RootsExtremaInflections::inflexi(
     x_pos, y_pos, 1, length(x_pos),
-    5, 5, plots = F, doparallel = F
+    5, 5, plots = FALSE, doparallel = FALSE
   )
   fit_pos$an
   fit_pos$finfl
@@ -62,7 +62,7 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   y_neg <- subset_df_neg$estimate
   fit_neg <- RootsExtremaInflections::inflexi(
     x_neg, y_neg, 1, length(x_neg),
-    5, 5, plots = F, doparallel = F
+    5, 5, plots = FALSE, doparallel = FALSE
   )
   fit_neg$an
   fit_neg$finfl

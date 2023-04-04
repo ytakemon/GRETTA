@@ -46,7 +46,7 @@ plot_coessential_genes <- function(result_df = NULL, inflection_df = NULL, label
   # Extract genes to label if indicated
   if (label_genes == TRUE) {
     if (is.null(label_n)) {
-      label_n = 1
+      label_n <- 1
     }
     
     pos_gene <- plot_df %>%

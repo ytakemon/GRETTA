@@ -254,8 +254,8 @@ GI_screen <- function(
                       2)) {
           
           fit_pval <- stats::wilcox.test(
-            DepProb ~ CellType, df, paired = F, alternative = "two.sided",
-            conf.int = T, na.action = "na.omit"
+            DepProb ~ CellType, df, paired = FALSE, alternative = "two.sided",
+            conf.int = TRUE, na.action = "na.omit"
           )$p.value
           
           # If group size is < 3 cliffDelta will have error: missing

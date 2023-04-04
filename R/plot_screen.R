@@ -42,7 +42,7 @@ plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL) {
   # Plot according to rank
   if (label_genes == TRUE) {
     if (is.null(label_n)) {
-      label_n = 1
+      label_n <- 1
     }
     
     last <- nrow(plot_df)

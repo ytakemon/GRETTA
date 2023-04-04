@@ -133,7 +133,7 @@ coessential_map <- function(
     output <- cor_df %>%
       dplyr::arrange(-.data$estimate, .data$p.value) %>%
       dplyr::mutate(
-        Rank = order(-.data$estimate, decreasing = F),
+        Rank = order(-.data$estimate, decreasing = FALSE),
         Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))
       ) %>%
       readr::write_csv(file = output_dir_and_filename)
@@ -264,7 +264,7 @@ coessential_map <- function(
     output <- res %>%
       dplyr::arrange(-.data$estimate, .data$p.value) %>%
       dplyr::mutate(
-        Rank = order(-.data$estimate, decreasing = F),
+        Rank = order(-.data$estimate, decreasing = FALSE),
         Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))) %>%
       dplyr::select(.data$GeneNameID_A, .data$GeneNameID_B, .data$estimate, 
                     .data$statistic, .data$parameter, .data$Rank, .data$Padj_BH) %>%
