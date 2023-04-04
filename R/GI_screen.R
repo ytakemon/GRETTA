@@ -77,14 +77,14 @@ GI_screen <- function(
   }
   if (is.null(core_num)) {
     cores_detected <- parallel::detectCores()
-    print("No cores specified")
-    print(paste0("Detected: ", cores_detected, " cores"))
-    print(paste0("Using: ", cores_detected/2, " cores"))
+    message("No cores specified")
+    message(paste0("Detected: ", cores_detected, " cores"))
+    message(paste0("Using: ", cores_detected/2, " cores"))
     doMC::registerDoMC(cores_detected/2)
   }
   if (is.null(output_dir)) {
     output_dir <- paste0(getwd(), "/GRETTA_", Sys.Date())
-    print(paste0("No output directory specified. Creating: ", output_dir))
+    message(paste0("No output directory specified. Creating: ", output_dir))
     dir.create(output_dir)
   }
   if (!dir.exists(output_dir)) {
@@ -209,11 +209,11 @@ GI_screen <- function(
       
       # Give feedback
       if (each == 1) {
-        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+        message(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
       } else if (each == length(unique(select_dep$GeneNameID))) {
-        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+        message(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
       } else if (each%%1000 == 0) {
-        print(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
+        message(paste0("Processing ", each, " of ", length(unique(select_dep$GeneNameID))))
       }
       
       # Get each gene
@@ -337,7 +337,7 @@ GI_screen <- function(
   output %>%
     readr::write_csv(file = output_dir_and_filename)
   
-  print(
+  message(
     paste0(
       "In-silico genetic interaction screen finished. Outputs were also written to: ",
       output_dir_and_filename

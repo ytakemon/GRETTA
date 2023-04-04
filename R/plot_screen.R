@@ -73,5 +73,5 @@ plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL) {
       ggplot2::scale_color_identity() + ggplot2::scale_size_identity() + ggplot2::scale_x_reverse() +
       ggplot2::theme_light() + ggplot2::ylab("Genetic interaction score")
   }
-  print(plot)
+  return(plot)
 }

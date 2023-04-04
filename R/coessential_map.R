@@ -66,7 +66,7 @@ coessential_map <- function(
   }
   if (is.null(output_dir)) {
     output_dir <- paste0(getwd(), "/GINIR_", Sys.Date())
-    print(paste0("No output directory specified. Creating: ", output_dir))
+    message(paste0("No output directory specified. Creating: ", output_dir))
     dir.create(output_dir)
   }
   if (!dir.exists(output_dir)) {
@@ -138,7 +138,7 @@ coessential_map <- function(
       ) %>%
       readr::write_csv(file = output_dir_and_filename)
     
-    print(
+    message(
       paste0(
         "Coessentiality mapping finished. Outputs were also written to: ", output_dir_and_filename
       )
@@ -151,9 +151,9 @@ coessential_map <- function(
     # Detect cores if not defined
     if (is.null(core_num)) {
       cores_detected <- parallel::detectCores()
-      print("No cores specified")
-      print(paste0("Detected: ", cores_detected, " cores"))
-      print(paste0("Using: ", cores_detected/2, " cores"))
+      message("No cores specified")
+      message(paste0("Detected: ", cores_detected, " cores"))
+      message(paste0("Using: ", cores_detected/2, " cores"))
       doMC::registerDoMC(cores_detected/2)
     }
     
@@ -213,7 +213,7 @@ coessential_map <- function(
     `%dopar%` <- foreach::`%dopar%`
     
     # Begin loop
-    print(
+    message(
       "This may take a few mins... Consider running with a higher core numbers to speed up the analysis."
     )
     if (test == TRUE) {
@@ -225,21 +225,21 @@ coessential_map <- function(
     res <- foreach::foreach(each = seq_len(run), .combine = bind_rows) %dopar%
       {
         if (each == 1) {
-          print(
+          message(
             paste0(
               "Processing ", each, " of ", length(AllGenes),
               "\n"
             )
           )
         } else if (each == length(AllGenes)) {
-          print(
+          message(
             paste0(
               "Processing ", each, " of ", length(AllGenes),
               "\n"
             )
           )
         } else if (each%%1000 == 0) {
-          print(
+          message(
             paste0(
               "Processing ", each, " of ", length(AllGenes),
               "\n"
@@ -270,7 +270,7 @@ coessential_map <- function(
                     .data$statistic, .data$parameter, .data$Rank, .data$Padj_BH) %>%
       readr::write_csv(file = output_dir_and_filename)
     
-    print(
+    message(
       paste0(
         "Coessentiality mapping finished. Outputs were also written to: ", output_dir_and_filename
       )

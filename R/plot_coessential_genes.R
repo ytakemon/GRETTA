@@ -97,5 +97,5 @@ plot_coessential_genes <- function(result_df = NULL, inflection_df = NULL, label
     ggplot2::theme_light() + ggplot2::scale_x_reverse() + ggplot2::theme(text = ggplot2::element_text(size = 12)) +
     ggplot2::ylab("Pearson correlation coefficient") +
     ggplot2::xlab("")
-  print(plot)
+  return(plot)
 }

@@ -73,19 +73,24 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     stop(paste0("AA change was provided, ", input_aa_change,", but no gene was provided. Please define input_gene!"))
     
   } else if(is.null(c(input_disease, input_disease_subtype)) & !is.null(input_gene)){
-    cat(paste0("Selecting mutant groups for: ", input_gene, " in all cancer cell lines"))
+    GRETTA_says <- paste0("Selecting mutant groups for: ", input_gene, " in all cancer cell lines")
+    message(GRETTA_says)
   
   } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
-    cat(paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease,", ", input_disease_subtype, " cell lines"))
+    GRETTA_says <-  paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease,", ", input_disease_subtype, " cell lines")
+    message(GRETTA_says)
     
   } else if(is.null(input_disease_subtype) & !is.null(c(input_gene, input_disease))){
-    cat(paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease, " cell lines"))
+    GRETTA_says <- paste0("Selecting mutant groups for: ", input_gene, " in ", input_disease, " cell lines")
+    message(GRETTA_says)
     
   } else if(is.null(input_gene) & !is.null(c(input_disease, input_disease_subtype))){
-    cat(paste0("Selecting all ", input_disease, ", ", input_disease_subtype, " cancer cell lines"))
+    GRETTA_says <- paste0("Selecting all ", input_disease, ", ", input_disease_subtype, " cancer cell lines")
+    message(GRETTA_says)
     
   } else if(is.null(c(input_gene, input_disease_subtype)) & !is.null(input_disease)){
-    cat(paste0("Selecting all ", input_disease, " cancer cell lines"))
+    GRETTA_says <- paste0("Selecting all ", input_disease, " cancer cell lines")
+    message(GRETTA_says)
     
   } else {
     stop("Error with input.")
@@ -348,7 +353,9 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
   # Check if output has both control and mutants
   # Print quick summary if no mutants were found
   if(!any(stringr::str_detect(output$Group, "Del|Alt")) | !any(stringr::str_detect(output$Group, "Control"))){
-    cat(paste0("No mutants or controls found! \nCheck results and consider using different criteria"))
+    GRETTA_says <- paste0("No mutants or controls found! \nCheck results and consider using different criteria")
+    message(GRETTA_says)
+    
   } 
   
   output <- output %>% dplyr::arrange(.data$DepMap_ID)

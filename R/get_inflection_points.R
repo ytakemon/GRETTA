@@ -35,14 +35,14 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   }
   
   # Calculate inflection point
-  print("This may take a few mins...")
+  message("This may take a few mins...")
   inflection_points <- NULL
   
   # Positive curve
   subset_df_pos <- input_coessential_df %>%
     dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
     dplyr::filter(.data$estimate > 0)
-  print("Calculating inflection point of positive curve.\n")
+  message("Calculating inflection point of positive curve.\n")
   x_pos <- subset_df_pos$Rank
   y_pos <- subset_df_pos$estimate
   fit_pos <- RootsExtremaInflections::inflexi(
@@ -57,7 +57,7 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   subset_df_neg <- input_coessential_df %>%
     dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
     dplyr::filter(.data$estimate < 0)
-  print("Calculating inflection point of negative curve.\n")
+  message("Calculating inflection point of negative curve.\n")
   x_neg <- subset_df_neg$Rank
   y_neg <- subset_df_neg$estimate
   fit_neg <- RootsExtremaInflections::inflexi(
