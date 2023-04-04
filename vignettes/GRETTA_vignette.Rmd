@@ -24,9 +24,6 @@ knitr::opts_chunk$set(
 gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
 gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
 
-## Flip the switch to evaluate all when ready for final render
-final_eval <- TRUE
-
 # Load library
 library(dplyr)
 library(forcats)
@@ -133,7 +130,7 @@ Current DepMap data used by default is version 22Q2, which contains whole-genome
 list_mutations(gene = "ARID1A", is_hotspot = TRUE, data_dir = gretta_data_dir) 
 ```
 
-```{r listing_available_cancer_types, eval = final_eval}
+```{r listing_available_cancer_types, eval = TRUE}
 ## List all available cancer types
 list_cancer_types(data_dir = gretta_data_dir)
 
@@ -156,7 +153,7 @@ The cell line groups assigned by default are:
 * `Amplified` cell lines harbor no SNVs/InDels with increased CN.
 * `Others` cell lines harbor deleterious SNVs with increased CN.
 
-```{r select_groups, eval = final_eval}
+```{r select_groups, eval = TRUE}
 ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = gretta_data_dir)
 
 ## Show number of cell lines in each group 
@@ -165,7 +162,7 @@ count(ARID1A_groups, Group)
 
 ### Optional filter for specific cancer types
 
-```{r select_groups_option, eval = final_eval}
+```{r select_groups_option, eval = TRUE}
 ## Find pancreatic cancer cell lines with ARID1A mutations
 ARID1A_pancr_groups <- select_cell_lines(input_gene = "ARID1A", 
                                          input_disease = "Pancreatic Cancer",
@@ -179,7 +176,7 @@ count(ARID1A_pancr_groups, Group)
 
 Of the three mutant cancer cell line groups `ARID1A_HomDel`, `ARID1A_T-HetDel`, and `ARID1A_HetDel`, cancer cell lines with `ARID1A_HomDel` mutations are most likely to result in a loss or reduced expression of *ARID1A*. Therefore, we want to check whether cell lines in `ARID1A_HomDel` mutant group have significantly less *ARID1A* RNA or protein expression compared to control cell lines.
 
-```{r Check_expression_rna, eval = final_eval}
+```{r Check_expression_rna, eval = TRUE}
 ## Select only HomDel and Control cell lines
 ARID1A_groups_subset <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel", "Control"))
 
@@ -203,7 +200,7 @@ ARID1A_prot_expr <- extract_prot(
 ```
 Using Welch's t-test, we can check to see whether *ARID1A* RNA expression (in TPM) is significantly reduced in `ARID1A_HomDel` cell lines compared to `Controls`. 
 
-```{r Check_expression_rna_stats, eval = final_eval}
+```{r Check_expression_rna_stats, eval = TRUE}
 ## Append groups and test differential expression
 ARID1A_rna_expr <- left_join(
   ARID1A_rna_expr,
@@ -255,14 +252,14 @@ screen_results <- GI_screen(
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
-```{r load_prepared_results, eval = final_eval, include = FALSE}
+```{r load_prepared_results, eval = TRUE, include = FALSE}
 ## Load prepared ARID1A screen result
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 ```
 
 We can quickly determine whether any lethal genetic interactions were predicted by `GRETTA`. We use a `Pval` cut off of 0.05 and rank based on the `Interaction_score`. 
 
-```{r checkout_res, eval = final_eval}
+```{r checkout_res, eval = TRUE}
 screen_results %>% 
   filter(Pval < 0.05) %>%
   arrange(-Interaction_score) %>% 
@@ -289,7 +286,7 @@ small_screen_results <- GI_screen(
 
 Finally once the *in silico* screen is complete, results can be quickly visualized using `plot_screen()`. Positive genetic interaction scores indicate potential synthetic lethal genetic interactors, and negative scores indicate potential alleviating genetic interactors. As expected, we identified *ARID1B* as a synthetic lethal interactor of *ARID1A*.
 
-```{r plot, eval = final_eval}
+```{r plot, eval = TRUE}
 ## Visualize results, turn on gene labels, 
 ## and label three genes each that are predicted to have 
 ## lethal and alleviating genetic interactions, respectively
@@ -312,7 +309,7 @@ To determine co-essential genes, we will perform multiple Pearson correlation co
 > **Warning**
 > This process may take several minutes. Our example below `coessential_map()` + `get_inflection_points()` took ~17 minutes to process. 
 
-```{r load_prepared_results_coess, eval = final_eval, include = FALSE}
+```{r load_prepared_results_coess, eval = TRUE, include = FALSE}
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
 ```
@@ -330,7 +327,7 @@ coess_inflection_df <- get_inflection_points(coess_df)
 
 Next, we annotate the data frame containing the co-essential network data and visualize. 
 
-```{r combine_n_visualize, eval = final_eval}
+```{r combine_n_visualize, eval = TRUE}
 ## Combine and annotate data frame containing co-essential genes
 coess_annotated_df <- annotate_coess(coess_df, coess_inflection_df)
 
@@ -343,7 +340,7 @@ plot_coess(
 
 We also see that the top ten *ARID1A* co-essential genes include eight known SWI/SNF subunits, namely *ARID1A*, *SMARCB1*, *SMARCE1*, *SMARCC1*, *SS18*, *DPF2*, *SMARCC2*, and *SMARCD2*.
 
-```{r top10_coess, eval = final_eval}
+```{r top10_coess, eval = TRUE}
 ## Show top 10 co-essential genes. 
 coess_annotated_df %>% arrange(Rank) %>% head(10)
 ```

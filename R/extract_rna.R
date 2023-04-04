@@ -11,8 +11,8 @@
 #' @details See also `extract_prot` to extract proteomics profile data
 #' 
 #' @examples 
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-#' gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 #' 
 #' extract_rna(
 #' input_samples = c('ACH-001642','ACH-000688'), 
@@ -23,57 +23,39 @@
 #' @export 
 #' @importFrom dplyr filter select
 
-extract_rna <- function(input_samples = NULL, input_genes = NULL, data_dir = NULL) {
+extract_rna <- function(input_samples = NULL, input_genes = NULL,
+                        data_dir = NULL) {
   
   # Print and check to see input was provided
   if (is.null(input_samples)) {
     stop("No samples given. Please input sample DepMap_ID")
   }
   if (is.null(data_dir)) {
-    stop(
-      paste0("No directory to data was specified. Please provide path to DepMap data.")
-    )
+    stop("No directory to data was specified. Please provide path to DepMap data.")
   }
   if (!dir.exists(data_dir)) {
-    stop(
-      paste0(
-        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
-      )
-    )
+    stop("DepMap data directory does not exists.",
+         "Please check again and provide the full path to the DepMap data directory.")
   }
   
   # Load necessary data
   CCLE_exp <- CCLE_exp_annot <- sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-  load(
-    paste0(data_dir, "/CCLE_exp.rda"),
-    envir = environment()
-  )
-  load(
-    paste0(data_dir, "/CCLE_exp_annot.rda"),
-    envir = environment()
-  )
-  load(
-    paste0(data_dir, "/sample_annot.rda"),
-    envir = environment()
-  )
+  load(paste0(data_dir, "/CCLE_exp.rda"), envir = environment())
+  load(paste0(data_dir, "/CCLE_exp_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Check if inputs are recognized
   if (!all(input_samples %in% sample_annot$DepMap_ID)) {
-    stop(
-      paste0(
-        input_samples[!input_samples %in% sample_annot$DepMap_ID], ", not recognized as a valid sample"
-      )
-    )
+    stop(input_samples[!input_samples %in% sample_annot$DepMap_ID],
+         ", not recognized as a valid sample")
   }
   if (!all(input_genes %in% CCLE_exp_annot$GeneNames)) {
-    stop(
-      paste0(
-        input_genes[!input_genes %in% CCLE_exp_annot$GeneNames], ", not recognized. Please check spelling or remove gene name from input"
-      )
-    )
+    stop(input_genes[!input_genes %in% CCLE_exp_annot$GeneNames],
+         ", not recognized. Please check spelling or remove gene name from input")
   }
   
-  # If no input gene is given, give full expr table
+  # If no input gene is given, give full expr
+  # table
   if (is.null(input_genes)) {
     res <- CCLE_exp %>%
       dplyr::filter(.data$DepMap_ID %in% input_samples)
@@ -81,16 +63,19 @@ extract_rna <- function(input_samples = NULL, input_genes = NULL, data_dir = NUL
     return(res)
   }
   
-  # Otherwise, provide only expr of genes of interst
+  # Otherwise, provide only expr of genes of
+  # interst
   res <- CCLE_exp %>%
-    dplyr::select(.data$DepMap_ID, get_GeneNameID(input_genes, data_dir = data_dir)) %>%
+    dplyr::select(.data$DepMap_ID, get_GeneNameID(input_genes,
+                                                  data_dir = data_dir)) %>%
     dplyr::filter(.data$DepMap_ID %in% input_samples)
   
-  # Notify if some samples do not have expression data
+  # Notify if some samples do not have
+  # expression data
   if (!all(input_samples %in% res$DepMap_ID)) {
-    GRETTA_says <- paste0(
-        "Following sample did not contain profile data: ", paste0(input_samples[!input_samples %in% res$DepMap_ID], collapse = ", ")
-      )
+    GRETTA_says <- paste0("Following sample did not contain RNA data: ",
+                          paste0(input_samples[!input_samples %in%
+                                                 res$DepMap_ID], collapse = ", "))
     message(GRETTA_says)
     return(res)
     

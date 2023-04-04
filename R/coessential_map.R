@@ -29,12 +29,12 @@
 #' @md
 #' 
 #' @examples 
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-#' gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 #' 
 #' coess_df <- coessential_map(
-#' input_gene = "ARID1A",
-#' input_disease = "Pancreatic Cancer",
+#' input_gene = 'ARID1A',
+#' input_disease = 'Pancreatic Cancer',
 #' core_num = 2,
 #' data_dir = gretta_data_dir, 
 #' output_dir = gretta_output_dir,
@@ -56,10 +56,9 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-coessential_map <- function(
-    input_gene = NULL, input_disease = NULL, input_cell_lines = NULL, core_num = NULL,
-    output_dir = NULL, data_dir = NULL, filename = NULL, test = FALSE
-) {
+coessential_map <- function(input_gene = NULL, input_disease = NULL,
+                            input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
+                            data_dir = NULL, filename = NULL, test = FALSE) {
   
   # Check that essential inputs are given:
   if (is.null(input_gene)) {
@@ -67,64 +66,65 @@ coessential_map <- function(
   }
   if (is.null(output_dir)) {
     output_dir <- paste0(getwd(), "/GINIR_", Sys.Date())
-    message(paste0("No output directory specified. Creating: ", output_dir))
+    message("No output directory specified. Creating: ",
+            output_dir)
     dir.create(output_dir)
   }
   if (!dir.exists(output_dir)) {
     stop("Output directory does not exist. Please provide full path to directory.")
   }
   if (is.null(data_dir)) {
-    stop(
-      paste0("No directory to data was specified. Please provide path to DepMap data.")
-    )
+    stop("No directory to data was specified. Please provide path to DepMap data.")
   }
   if (!dir.exists(data_dir)) {
-    stop(
-      paste0(
-        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
-      )
-    )
+    stop("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory.")
   }
   if (!is.null(filename)) {
-    output_dir_and_filename <- paste0(output_dir, "/", filename, ".csv")
+    output_dir_and_filename <- paste0(output_dir,
+                                      "/", filename, ".csv")
   } else {
-    output_dir_and_filename <- paste0(output_dir, "/GINI_coessentiality_network_results.csv")
+    output_dir_and_filename <- paste0(output_dir,
+                                      "/GINI_coessentiality_network_results.csv")
   }
   
-  if(is.null(c(input_disease, input_cell_lines))){
+  if (is.null(c(input_disease, input_cell_lines))) {
     
     # Do this for a default pan-cancer map
     # Load necessary data
-    cat(
-      "Performing default pan-cancer essentiality mapping for:", input_gene,"\n",
-      "For this analysis, core_num is ignored."
-    )
+    message("Performing default pan-cancer essentiality mapping for:",
+            input_gene, "\n", "For this analysis, core_num is ignored.")
     
     fit <- NULL  # see: https://support.bioconductor.org/p/24756/
-    load(
-      paste0(data_dir, "pancan_coess_precomputed.rda"),
-      envir = environment()
-    )
+    load(paste0(data_dir, "pancan_coess_precomputed.rda"),
+         envir = environment())
     
     fit_est_long <- fit$r %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
-      tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "estimate") %>%
-      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      tidyr::pivot_longer(-.data$GeneNameID_A,
+                          names_to = "GeneNameID_B", values_to = "estimate") %>%
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A,
+                                        paste0(input_gene, "_")))
     
     fit_tstat_long <- fit$t %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
-      tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "statistic") %>%
-      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      tidyr::pivot_longer(-.data$GeneNameID_A,
+                          names_to = "GeneNameID_B", values_to = "statistic") %>%
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A,
+                                        paste0(input_gene, "_")))
     
     fit_pval_long <- fit$p %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
-      tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "p.value") %>%
-      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      tidyr::pivot_longer(-.data$GeneNameID_A,
+                          names_to = "GeneNameID_B", values_to = "p.value") %>%
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A,
+                                        paste0(input_gene, "_")))
     
     fit_param_long <- fit$n %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
-      tidyr::pivot_longer(-.data$GeneNameID_A, names_to = "GeneNameID_B", values_to = "parameter") %>%
-      dplyr::filter(stringr::str_detect(.data$GeneNameID_A, paste0(input_gene,"_")))
+      tidyr::pivot_longer(-.data$GeneNameID_A,
+                          names_to = "GeneNameID_B", values_to = "parameter") %>%
+      dplyr::filter(stringr::str_detect(.data$GeneNameID_A,
+                                        paste0(input_gene, "_")))
     
     cor_df <- dplyr::left_join(fit_est_long, fit_tstat_long) %>%
       dplyr::left_join(fit_pval_long) %>%
@@ -133,18 +133,14 @@ coessential_map <- function(
     # save and return output
     output <- cor_df %>%
       dplyr::arrange(-.data$estimate, .data$p.value) %>%
-      dplyr::mutate(
-        Rank = order(-.data$estimate, decreasing = FALSE),
-        Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))
-      ) %>%
+      dplyr::mutate(Rank = order(-.data$estimate,
+                                 decreasing = FALSE), Padj_BH = p.adjust(.data$p.value,
+                                                                         method = "BH", n = (length(.data$p.value)))) %>%
       readr::write_csv(file = output_dir_and_filename)
     
-    message(
-      paste0(
-        "Coessentiality mapping finished. Outputs were also written to: ", output_dir_and_filename
-      )
-    )
-    return(output) 
+    message("Coessentiality mapping finished. Outputs were also written to: ",
+            output_dir_and_filename)
+    return(output)
     
   } else {
     
@@ -153,21 +149,17 @@ coessential_map <- function(
     if (is.null(core_num)) {
       cores_detected <- parallel::detectCores()
       message("No cores specified")
-      message(paste0("Detected: ", cores_detected, " cores"))
-      message(paste0("Using: ", cores_detected/2, " cores"))
+      message("Detected: ", cores_detected, " cores")
+      message("Using: ", cores_detected/2, " cores")
       doMC::registerDoMC(cores_detected/2)
     }
     
     # Load necessary data
     gene_effect <- sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-    load(
-      paste0(data_dir, "/gene_effect.rda"),
-      envir = environment()
-    )
-    load(
-      paste0(data_dir, "/sample_annot.rda"),
-      envir = environment()
-    )
+    load(paste0(data_dir, "/gene_effect.rda"),
+         envir = environment())
+    load(paste0(data_dir, "/sample_annot.rda"),
+         envir = environment())
     
     # Set cores:
     if (!is.null(core_num)) {
@@ -176,107 +168,99 @@ coessential_map <- function(
     
     if (!is.null(input_disease)) {
       selected_cell_lines <- sample_annot %>%
-        dplyr::filter(.data$DepMap_ID %in% gene_effect$DepMap_ID, .data$disease %in% input_disease) %>%
+        dplyr::filter(.data$DepMap_ID %in%
+                        gene_effect$DepMap_ID, .data$disease %in%
+                        input_disease) %>%
         dplyr::pull(.data$DepMap_ID)
     } else if (!is.null(input_cell_lines)) {
       selected_cell_lines <- sample_annot %>%
-        dplyr::filter(
-          .data$DepMap_ID %in% gene_effect$DepMap_ID, .data$DepMap_ID %in%
-            input_cell_lines
-        ) %>%
+        dplyr::filter(.data$DepMap_ID %in%
+                        gene_effect$DepMap_ID, .data$DepMap_ID %in%
+                        input_cell_lines) %>%
         dplyr::pull(.data$DepMap_ID)
     } else {
-      stop(paste("Following may not be available:",input_disease, "\n or \n", input_cell_lines))
+      stop("Following may not be available:",
+           input_disease, "\n or \n", input_cell_lines)
     }
     
-    # account for differences between DepMap versions
+    # account for differences between DepMap
+    # versions
     if (ncol(gene_effect) == 3) {
       AllGenes <- unique(gene_effect$GeneNameID)
       gene_effect_long <- gene_effect %>%
-        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines)
+        dplyr::filter(.data$DepMap_ID %in%
+                        selected_cell_lines)
       
     } else if (ncol(gene_effect) > 3) {
       AllGenes <- colnames(gene_effect)[-1]  # removes DepMap_ID column  
       gene_effect_long <- gene_effect %>%
-        tidyr::pivot_longer(
-          cols = matches("\\d"),
-          names_to = "GeneNameID", values_to = "Effect_score"
-        ) %>%
-        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines)
+        tidyr::pivot_longer(cols = matches("\\d"),
+                            names_to = "GeneNameID", values_to = "Effect_score") %>%
+        dplyr::filter(.data$DepMap_ID %in%
+                        selected_cell_lines)
       
     }
     
-    Gene_A_GeneNameID <- get_GeneNameID(input_gene, data_dir = data_dir)
+    Gene_A_GeneNameID <- get_GeneNameID(input_gene,
+                                        data_dir = data_dir)
     Gene_A_effect <- gene_effect_long %>%
       dplyr::filter(.data$GeneNameID == Gene_A_GeneNameID)
     
-    # Need to define function. A fix for a strange bug:
+    # Need to define function. A fix for a
+    # strange bug:
     `%dopar%` <- foreach::`%dopar%`
     
     # Begin loop
-    message(
-      "This may take a few mins... Consider running with a higher core numbers to speed up the analysis."
-    )
+    message("This may take a few mins... Consider running with a higher core numbers to speed up the analysis.")
     if (test == TRUE) {
       run <- 10
     } else {
       run <- length(unique(AllGenes))
     }
     res <- each <- NULL
-    res <- foreach::foreach(each = seq_len(run), .combine = bind_rows) %dopar%
-      {
-        if (each == 1) {
-          message(
-            paste0(
-              "Processing ", each, " of ", length(AllGenes),
-              "\n"
-            )
-          )
-        } else if (each == length(AllGenes)) {
-          message(
-            paste0(
-              "Processing ", each, " of ", length(AllGenes),
-              "\n"
-            )
-          )
-        } else if (each%%1000 == 0) {
-          message(
-            paste0(
-              "Processing ", each, " of ", length(AllGenes),
-              "\n"
-            )
-          )
-        }
-        
-        Gene_B_effect <- gene_effect_long %>%
-          dplyr::filter(.data$GeneNameID == AllGenes[each])
-        
-        res_pearson <- cor.test(
-          Gene_A_effect$Effect_score, Gene_B_effect$Effect_score, alternative = "two.sided",
-          method = "pearson", na.action = "na.omit") %>%
-          broom::tidy() %>%
-          dplyr::mutate(GeneNameID_A = Gene_A_GeneNameID, GeneNameID_B = AllGenes[each]) %>%
-          dplyr::select(.data$GeneNameID_A, .data$GeneNameID_B, tidyr::everything())
-        
-        res_pearson
-      }
+    res <- foreach::foreach(each = seq_len(run),
+                            .combine = bind_rows) %dopar% {
+                              if (each == 1) {
+                                message("Processing ", each, " of ",
+                                        length(AllGenes), "\n")
+                              } else if (each == length(AllGenes)) {
+                                message("Processing ", each, " of ",
+                                        length(AllGenes), "\n")
+                              } else if (each%%1000 == 0) {
+                                message("Processing ", each, " of ",
+                                        length(AllGenes), "\n")
+                              }
+                              
+                              Gene_B_effect <- gene_effect_long %>%
+                                dplyr::filter(.data$GeneNameID == AllGenes[each])
+                              
+                              res_pearson <- cor.test(Gene_A_effect$Effect_score,
+                                                      Gene_B_effect$Effect_score, alternative = "two.sided",
+                                                      method = "pearson", na.action = "na.omit") %>%
+                                broom::tidy() %>%
+                                dplyr::mutate(GeneNameID_A = Gene_A_GeneNameID,
+                                              GeneNameID_B = AllGenes[each]) %>%
+                                dplyr::select(.data$GeneNameID_A, .data$GeneNameID_B,
+                                              tidyr::everything())
+                              
+                              res_pearson
+                            }
     
     # save and return output
     output <- res %>%
       dplyr::arrange(-.data$estimate, .data$p.value) %>%
-      dplyr::mutate(
-        Rank = order(-.data$estimate, decreasing = FALSE),
-        Padj_BH = p.adjust(.data$p.value, method = "BH", n = (length(.data$p.value)))) %>%
-      dplyr::select(.data$GeneNameID_A, .data$GeneNameID_B, .data$estimate, 
-                    .data$statistic, .data$parameter, .data$Rank, .data$Padj_BH) %>%
+      dplyr::mutate(Rank = order(-.data$estimate,
+                                 decreasing = FALSE), 
+                    Padj_BH = p.adjust(.data$p.value,
+                                       method = "BH", n = (length(.data$p.value)))) %>%
+      dplyr::select(.data$GeneNameID_A, .data$GeneNameID_B,
+                    .data$estimate, .data$statistic, .data$parameter,
+                    .data$Rank, .data$Padj_BH) %>%
       readr::write_csv(file = output_dir_and_filename)
     
-    message(
-      paste0(
-        "Coessentiality mapping finished. Outputs were also written to: ", output_dir_and_filename
-      )
-    )
-    return(output) 
+    message("Coessentiality mapping finished. Outputs were also written to: ",
+            output_dir_and_filename)
+    return(output)
   }
 }
 

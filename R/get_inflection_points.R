@@ -45,10 +45,9 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   message("Calculating inflection point of positive curve.\n")
   x_pos <- subset_df_pos$Rank
   y_pos <- subset_df_pos$estimate
-  fit_pos <- RootsExtremaInflections::inflexi(
-    x_pos, y_pos, 1, length(x_pos),
-    5, 5, plots = FALSE, doparallel = FALSE
-  )
+  fit_pos <- RootsExtremaInflections::inflexi(x_pos,
+                                              y_pos, 1, length(x_pos), 5, 5, plots = FALSE,
+                                              doparallel = FALSE)
   fit_pos$an
   fit_pos$finfl
   inflection_point_pos <- fit_pos$finfl[2]
@@ -60,15 +59,13 @@ get_inflection_points <- function(input_coessential_df = NULL) {
   message("Calculating inflection point of negative curve.\n")
   x_neg <- subset_df_neg$Rank
   y_neg <- subset_df_neg$estimate
-  fit_neg <- RootsExtremaInflections::inflexi(
-    x_neg, y_neg, 1, length(x_neg),
-    5, 5, plots = FALSE, doparallel = FALSE
-  )
+  fit_neg <- RootsExtremaInflections::inflexi(x_neg,
+                                              y_neg, 1, length(x_neg), 5, 5, plots = FALSE,
+                                              doparallel = FALSE)
   fit_neg$an
   fit_neg$finfl
   inflection_point_neg <- fit_neg$finfl[2]
   
-  res <- tibble::tibble(
-    Inflection_point_pos_byRank = inflection_point_pos, Inflection_point_neg_byRank = inflection_point_neg
-  )
+  res <- tibble::tibble(Inflection_point_pos_byRank = inflection_point_pos,
+                        Inflection_point_neg_byRank = inflection_point_neg)
 }

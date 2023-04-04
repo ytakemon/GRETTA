@@ -24,8 +24,8 @@ FUNCTION_DESCRIPTION
 See also \code{extract_protein_rna} to extract proteomics profile data
 }
 \examples{
-gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 
 extract_prot(
 input_samples = c('ACH-000004', 'ACH-000146'), 

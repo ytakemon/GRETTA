@@ -56,12 +56,12 @@ Description of output data frame
 }
 }
 \examples{
-gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 
 coess_df <- coessential_map(
-input_gene = "ARID1A",
-input_disease = "Pancreatic Cancer",
+input_gene = 'ARID1A',
+input_disease = 'Pancreatic Cancer',
 core_num = 2,
 data_dir = gretta_data_dir, 
 output_dir = gretta_output_dir,

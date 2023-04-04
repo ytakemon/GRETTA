@@ -42,8 +42,8 @@ A data frame containing mutations matching criteria of input arguments
 Quick method to look up mutations of interest prior to using \code{select_cell_lines()}
 }
 \examples{
-gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 
 list_mutations(
 gene = 'TP53', 

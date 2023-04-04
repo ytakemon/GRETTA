@@ -12,18 +12,15 @@
 #' 
 #' @export
 #' @examples
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-#' gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 #' 
 #' list_cancer_types(data_dir = gretta_data_dir)
 #' 
 list_cancer_types <- function(data_dir) {
   # Load necessary data
   sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-  load(
-    paste0(data_dir, "/sample_annot.rda"),
-    envir = environment()
-  )
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Main
   sample_annot %>%
@@ -38,29 +35,22 @@ list_cancer_types <- function(data_dir) {
 #' @importFrom rlang .data
 #' @export
 #' @examples
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
 #' 
 #' list_cancer_subtypes('Lung Cancer', data_dir = gretta_data_dir)
 #' 
 list_cancer_subtypes <- function(input_disease, data_dir) {
   if (is.null(data_dir)) {
-    stop(
-      paste0("No directory to data was specified. Please provide path to DepMap data.")
-    )
+    stop("No directory to data was specified. ",
+         "Please provide path to DepMap data.")
   }
   if (!dir.exists(data_dir)) {
-    stop(
-      paste0(
-        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
-      )
-    )
+    stop("DepMap data directory does not exists. ",
+         "Please check again and provide the full path to the DepMap data directory.")
   }
   # Load necessary data
   sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-  load(
-    paste0(data_dir, "/sample_annot.rda"),
-    envir = environment()
-  )
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Main
   sample_annot %>%

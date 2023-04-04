@@ -11,8 +11,8 @@
 #' @details See also `extract_protein_rna` to extract proteomics profile data
 #' 
 #' @examples 
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-#' gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 #' 
 #' extract_prot(
 #' input_samples = c('ACH-000004', 'ACH-000146'), 
@@ -24,93 +24,71 @@
 #' @importFrom dplyr select contains left_join filter
 #' @importFrom tidyr pivot_longer
 
-extract_prot <- function(input_samples = NULL, input_genes = NULL, data_dir = NULL) {
+extract_prot <- function(input_samples = NULL, input_genes = NULL,
+                         data_dir = NULL) {
   
   # Print and check to see input was provided
   if (is.null(input_samples)) {
     stop("No samples given. Please input sample DepMap_ID")
   }
   if (is.null(data_dir)) {
-    stop(
-      paste0("No directory to data was specified. Please provide path to DepMap data.")
-    )
+    stop("No directory to data was specified. Please provide path to DepMap data.")
   }
   if (!dir.exists(data_dir)) {
-    stop(
-      paste0(
-        "DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory."
-      )
-    )
+    stop("DepMap data directory does not exists. Please check again and provide the full path to the DepMap data directory.")
   }
   
   # Load necessary data
   protein_annot <- protein_nodup <- sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-  load(
-    paste0(data_dir, "/sample_annot.rda"),
-    envir = environment()
-  )
-  load(
-    paste0(data_dir, "/protein_nodup.rda"),
-    envir = environment()
-  )
-  load(
-    paste0(data_dir, "/protein_annot.rda"),
-    envir = environment()
-  )
+  load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_nodup.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_annot.rda"), envir = environment())
   
   # Check if inputs are recognized
   if (!all(input_samples %in% sample_annot$DepMap_ID)) {
-    stop(
-      paste0(
-        input_samples[!input_samples %in% sample_annot$DepMap_ID], ", not recognized as a valid sample"
-      )
-    )
+    stop(input_samples[!input_samples %in% sample_annot$DepMap_ID],
+         ", not recognized as a valid sample")
   }
   if (!all(input_genes %in% protein_nodup$Gene_Symbol)) {
-    stop(
-      paste0(
-        input_genes[!input_genes %in% protein_nodup$Gene_Symbol], ", not recognized or protein expression is not available. Please check spelling or remove gene name from input"
-      )
-    )
+    stop(input_genes[!input_genes %in% protein_nodup$Gene_Symbol],
+         ", not recognized or protein expression is not available. Please check spelling or remove gene name from input")
   }
   
-  # If no input gene is given, give full expr table
+  # If no input gene is given, give full expr
+  # table
   if (is.null(input_genes)) {
     res <- protein_nodup %>%
-      dplyr::select(
-        .data$Gene_Symbol, .data$Description, .data$Uniprot, .data$Uniprot_Acc,
-        dplyr::contains("_TenPx")
-      ) %>%
-      tidyr::pivot_longer(
-        -c(.data$Gene_Symbol, .data$Description, .data$Uniprot, .data$Uniprot_Acc),
-        names_to = "Gygi_ID", values_to = "protein_expr"
-      ) %>%
+      dplyr::select(.data$Gene_Symbol, .data$Description,
+                    .data$Uniprot, .data$Uniprot_Acc, dplyr::contains("_TenPx")) %>%
+      tidyr::pivot_longer(-c(.data$Gene_Symbol,
+                             .data$Description, .data$Uniprot, .data$Uniprot_Acc),
+                          names_to = "Gygi_ID", values_to = "protein_expr") %>%
       dplyr::left_join(protein_annot, by = c(Gygi_ID = "GygiNames")) %>%
       dplyr::select(.data$DepMap_ID, dplyr::everything())
     
     return(res)
   }
   
-  # Otherwise, provide only expr of genes of interst
+  # Otherwise, provide only expr of genes of
+  # interst
   res <- protein_nodup %>%
     dplyr::filter(.data$Gene_Symbol %in% input_genes) %>%
-    dplyr::select(
-      .data$Gene_Symbol, .data$Description, .data$Uniprot, .data$Uniprot_Acc,
-      dplyr::contains("_TenPx")
-    ) %>%
-    tidyr::pivot_longer(
-      -c(.data$Gene_Symbol, .data$Description, .data$Uniprot, .data$Uniprot_Acc),
-      names_to = "Gygi_ID", values_to = "protein_expr"
-    ) %>%
+    dplyr::select(.data$Gene_Symbol, .data$Description,
+                  .data$Uniprot, .data$Uniprot_Acc, dplyr::contains("_TenPx")) %>%
+    tidyr::pivot_longer(-c(.data$Gene_Symbol, .data$Description,
+                           .data$Uniprot, .data$Uniprot_Acc), names_to = "Gygi_ID",
+                        values_to = "protein_expr") %>%
     dplyr::left_join(protein_annot, by = c(Gygi_ID = "GygiNames")) %>%
-    dplyr::filter(.data$DepMap_ID %in% input_samples,) %>%
+    dplyr::filter(.data$DepMap_ID %in% input_samples,
+    ) %>%
     dplyr::select(.data$DepMap_ID, dplyr::everything())
   
-  # Notify if some samples do not have expression data
+  # Notify if some samples do not have
+  # expression data
   if (!all(input_samples %in% res$DepMap_ID)) {
-    GRETTA_says <- paste0(
-      "Following sample did not contain profile data: ", paste0(input_samples[!input_samples %in% res$DepMap_ID], collapse = ", ")
-    )
+    GRETTA_says <- paste0("Following sample did not contain protein data: ",
+                          paste0(input_samples[!input_samples %in%
+                                                 res$DepMap_ID], collapse = ", "))
     message(GRETTA_says)
     return(res)
   } else {

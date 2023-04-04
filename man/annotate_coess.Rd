@@ -28,14 +28,14 @@ or below (negative curve) of the inflection point.
 }
 }
 \examples{
-gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
-gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
+gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
 
 load(paste0(
-gretta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), 
+gretta_data_dir,'/sample_22Q2_ARID1A_coessential_result.rda'), 
 envir = environment())
 load(paste0(
-gretta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), 
+gretta_data_dir,'/sample_22Q2_ARID1A_coessential_inflection.rda'), 
 envir = environment())
 
 annotated_df <- annotate_coess(coess_df, coess_inflection_df)

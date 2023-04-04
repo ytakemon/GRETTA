@@ -33,7 +33,7 @@ plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL) {
     dplyr::arrange(-.data$Interaction_score) %>%
     dplyr::filter(!is.na(.data$Interaction_score)) %>%
     dplyr::mutate(
-      Rank = 1:length(.data$Interaction_score),
+      Rank = seq_len(length(.data$Interaction_score)),
       color = dplyr::case_when(
         .data$Pval >= 0.05 ~ "darkgray", .data$Pval < 0.05 & .data$log2FC_by_median >
           0 ~ "#882255", .data$Pval < 0.05 & .data$log2FC_by_median < 0 ~
@@ -52,7 +52,7 @@ plot_screen <- function(result_df = NULL, label_genes = FALSE, label_n = NULL) {
       dplyr::arrange(.data$Rank) %>%
       dplyr::mutate(
         label = dplyr::case_when(
-          .data$Rank %in% c(1:label_n) ~
+          .data$Rank %in% seq_len(label_n) ~
             TRUE, .data$Rank %in% c((last - (label_n - 1)):last) ~
             TRUE, TRUE ~ FALSE
         )
