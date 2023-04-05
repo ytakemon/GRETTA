@@ -52,7 +52,9 @@ have a request please submit an
 
 ## Requirements
 
-GRETTA is supported and compatible for R versions \>= 4.2.0.
+-   GRETTA is supported and compatible for R versions \>= 4.2.0.
+-   12G of space to store one DepMap data set with and an additional 11G
+    of temporary space to for .tar.gz prior to extraction.
 
 # Installation
 
@@ -249,7 +251,15 @@ count(ARID1A_groups, Group)
 #> 5 Others             66
 ```
 
-### Optional filter for specific cancer types
+### Optional cell line filters
+
+There are several additional filters that can be combined together to
+narrow down your search. These
+
+-   `input_aa_change` - by amino acid change (eg. “p.Q515\*“).
+-   `input_disease` - by disease type (eg. “Pancreatic Cancer”)
+-   `input_disease_subtype` - by disease subtype (eg. “Ductal
+    Adenosquamous Carcinoma”)
 
 ``` r
 ## Find pancreatic cancer cell lines with ARID1A mutations
@@ -551,16 +561,39 @@ Instead of mapping for essentiality across all available cell lines,
 users can also subset by disease type using the option
 `input_disease = ""`, or within a pre-selected group of cell lines using
 the option `input_cell_lines = c()`. Below we provide an example of how
-ARID1A essential genes are mapped for pancreatic cancers. **Note:**
-depending on the number of cell lines that are available after the
-subsetting step, the inflection point calculation and thresholds may not
-be optimal.
+ARID1A essential genes are mapped for pancreatic cancers.
+
+> **Warning** Depending on the number of cell lines that are available
+> after the subsetting step, the inflection point calculation and
+> thresholds may not be optimal. Please use caution when interpreting
+> these results.
 
 ``` r
 ## Map co-essential genes in pancreatic cancers only
 coess_df <- coessential_map(
   input_gene = "ARID1A",
   input_disease = "Pancreatic Cancer",
+  core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
+  data_dir = gretta_data_dir, 
+  output_dir = gretta_output_dir,
+  test = FALSE)
+```
+
+### Optional filter for custom cell lines
+
+We can also map essentiality across a manually defined list of cell
+lines using the `input_cell_lines = c()` option.
+
+> **Warning** Depending on the number of cell lines provided, the
+> inflection point may not be calculated. Please use caution when
+> interpreting these results.
+
+``` r
+custom_lines <- c("ACH-000001", "ACH-000002", "ACH-000003",...)
+
+coess_df <- coessential_map(
+  input_gene = "ARID1A",
+  input_cell_lines = custom_lines,
   core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
   data_dir = gretta_data_dir, 
   output_dir = gretta_output_dir,
