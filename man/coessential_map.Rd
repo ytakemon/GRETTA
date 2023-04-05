@@ -28,7 +28,7 @@ Will perform pan-cancer analyses (all cell lines) by default, Default: NULL}
 
 \item{output_dir}{string, Full path to where output file should be saved, Default: NULL}
 
-\item{data_dir}{string Path to GINIR_data}
+\item{data_dir}{string Path to GRETTA_data}
 
 \item{filename}{string name of file without the '.csv' extension.}
 

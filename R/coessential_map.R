@@ -9,7 +9,7 @@
 #' Will perform pan-cancer analyses (all cell lines) by default, Default: NULL
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
-#' @param data_dir string Path to GINIR_data
+#' @param data_dir string Path to GRETTA_data
 #' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly 
 #' prior to running all 18,333 genes. Default: FALSE.
@@ -65,7 +65,7 @@ coessential_map <- function(input_gene = NULL, input_disease = NULL,
     stop("No control IDs detected")
   }
   if (is.null(output_dir)) {
-    output_dir <- paste0(getwd(), "/GINIR_", Sys.Date())
+    output_dir <- paste0(getwd(), "/GRETTA_", Sys.Date())
     message("No output directory specified. Creating: ",
             output_dir)
     dir.create(output_dir)
@@ -84,7 +84,7 @@ coessential_map <- function(input_gene = NULL, input_disease = NULL,
                                       "/", filename, ".csv")
   } else {
     output_dir_and_filename <- paste0(output_dir,
-                                      "/GINI_coessentiality_network_results.csv")
+                                      "/GRETTA_coessentiality_network_results.csv")
   }
   
   if (is.null(c(input_disease, input_cell_lines))) {

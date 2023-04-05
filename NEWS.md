@@ -1,3 +1,7 @@
+# GRETTA 0.99.0
+
+- Pre-release for Bioconductor submission
+
 # GRETTA 0.6.0
 
 - Version 0.5.0 was submitted to Bioinformatics and version 0.6.0 addresses several reviewer comments (detailed below).
