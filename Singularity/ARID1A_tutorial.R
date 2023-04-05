@@ -82,6 +82,3 @@ plot_coess(
 dev.off()
 
 message("Results are save in: ", gretta_output_dir)
-
-
-singularity run gretta_latest.sif tutorial.R 20 data/
