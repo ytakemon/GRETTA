@@ -1,0 +1,33 @@
+# Singularity definition for a R 4.2.0 with GRETTA package and data
+
+# Pulling from pre-made rocker container containing R-4.2.0 and tidyverse, devtools pre-installed.
+BootStrap: docker
+From: rocker/verse:4.2.0
+    
+%environment
+    export LC_ALL=C.UTF-8
+
+%help
+    This container contains R-4.2.0 with GRETTA R package and its dependencies pre-installed. 
+    Accompanying DepMap data can be found at /opt/GRETTA/output/.
+    
+    See following link for a detailed tutorial: https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity
+    
+    Singularity recipe file can be found at: https://github.com/ytakemon/GRETTA/tree/main/Singularity
+
+    Important directories
+    DepMap data are located in: /opt/GRETTA/data/
+    GRETTA outputs can be directed to: /opt/GRETTA/output/
+
+%labels
+  Author: Yuka Takemon
+  Contact: ytakemon@bcgsc.ca 
+
+%post
+    # install additional packages
+    R --no-echo -e 'devtools::install_github("ytakemon/GRETTA")'
+
+%runscript
+    # Run Rscript provided 
+    # Eg. To run the tutorial with 20 threads using: `singularity run GRETTA.sif ARID1A_tutorial.R 20 /full/path/to/data`
+    exec Rscript $@
