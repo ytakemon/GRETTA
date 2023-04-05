@@ -48,6 +48,10 @@ A please find the citation using `citation("GRETTA")` and include the DOI at the
 
 Please check the [FAQ section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions) for additional information and if you cannot find your answer there or have a request please submit an [issue](https://github.com/ytakemon/GRETTA/issues).
 
+## Requirements
+
+GRETTA is supported and compatible for R versions >= 4.2.0. 
+
 # Installation
 
 You can install the GRETTA package from [GitHub](https://github.com) with:
