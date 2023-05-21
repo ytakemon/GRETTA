@@ -56,8 +56,8 @@ Description of output data frame
 }
 }
 \examples{
-gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+gretta_data_dir <- './GRETTA_example/'
+gretta_output_dir <- './GRETTA_example_output/'
 
 coess_df <- coessential_map(
 input_gene = 'ARID1A',

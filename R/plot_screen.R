@@ -10,7 +10,8 @@
 #' @md
 #' 
 #' @examples 
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
 #' load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 #' 

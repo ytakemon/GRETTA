@@ -11,12 +11,12 @@
 #' @details See also `extract_protein_rna` to extract proteomics profile data
 #' 
 #' @examples 
-#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
 #' extract_prot(
 #' input_samples = c('ACH-000004', 'ACH-000146'), 
-#' input_genes = c('ATM'),
+#' input_genes = c('CIC'),
 #' data_dir = gretta_data_dir)
 #' 
 #' @rdname extract_prot

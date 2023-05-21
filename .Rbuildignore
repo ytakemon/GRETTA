@@ -4,6 +4,7 @@
 ^\.Rproj\.user$
 ^\.github$
 ^\.github/ISSUE_TEMPLATE$
+^\.git
 ^\.github/ISSUE_TEMPLATE/*\.md$
 ^.*\.png$
 ^.*\.gz$
@@ -11,3 +12,5 @@
 ^DepMap_data_versions/*
 ^Singularity$
 ^Singularity/*
+^\.git$
+^\./\.git$

@@ -1,3 +1,8 @@
+# GRETTA 0.99.1
+
+- Added smaller example data to pass bioconductor pre-check. 
+- Example data is now loaded using `download_example_data()`
+
 # GRETTA 0.99.0
 
 - Pre-release for Bioconductor submission

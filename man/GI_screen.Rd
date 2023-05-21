@@ -62,8 +62,9 @@ that there may be another factor contributing to this separation.
 }
 }
 \examples{
-gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+download_example_data(".")
+gretta_data_dir <- './GRETTA_example/'
+gretta_output_dir <- './GRETTA_example_output/'
 
 Screen_results <- GI_screen(
 control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 

@@ -17,11 +17,11 @@
 #' @return A data frame containing mutations matching criteria of input arguments
 #' 
 #' @examples 
-#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
 #' list_mutations(
-#' gene = 'TP53', 
+#' gene = 'ARID1A', 
 #' is_damaging = TRUE,
 #' data_dir = gretta_data_dir)
 #' 

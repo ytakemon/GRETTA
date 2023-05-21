@@ -35,8 +35,9 @@
 #' @md
 #' 
 #' @examples 
-#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+#' download_example_data(".")
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
 #' Screen_results <- GI_screen(
 #' control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
@@ -178,7 +179,7 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
   
   # For testing short loops:
   if (test == TRUE) {
-    run <- 10
+    run <- 3
   } else if (test == FALSE) {
     run <- length(unique(select_dep$GeneNameID))
   }

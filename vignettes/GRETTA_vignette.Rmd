@@ -20,10 +20,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-## Path to data to pre-processed data
-gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
-gretta_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
-
 # Load library
 library(dplyr)
 library(forcats)
@@ -108,7 +104,7 @@ In this example we use DepMap's 2022 data release (22Q2). However, we also provi
 
 *ARID1A* encodes a member of the chromatin remodeling SWItch/Sucrose Non-Fermentable (SWI/SNF) complex and is a frequently mutated gene in cancer. It is known that *ARID1A* and its homolog, *ARID1B*, are synthetic lethal to one another: The dual loss of ARID1A and its homolog, ARID1B, in a cell is lethal; however, the loss of either gene alone is not  ([Helming et al., 2014](https://doi.org/10.1038/nm.3480)). This example will demonstrate how we can identify synthetic lethal interactors of *ARID1A* using `GRETTA` and predict this known interaction.
 
-For this example you will need to call the following libraries
+For this example you will need to call the following libraries. If you they are not installed yet use `install.packages()` (eg. `install.packages("dplyr")`).
 
 ```{r libraries, eval = FALSE}
 library(dplyr)
@@ -117,11 +113,20 @@ library(ggplot2)
 library(GRETTA)
 ```
 
+## Download example data
+
+A small data set has been created for this tutorial and can be downloaded using the following code. 
+
+```{r download_data}
+path <- getwd()
+download_example_data(path)
+```
+
 Then, assign variable that point to where the `.rda` files are stored and where result files should go.
 
-```{r data_path, eval = FALSE}
-gretta_data_dir <- "/path/to/GRETTA_project/data/"
-gretta_output_dir <- "/path/to/results/folder/"
+```{r data_path}
+gretta_data_dir <- paste0(path,"/GRETTA_example/")
+gretta_output_dir <- paste0(path,"/GRETTA_example_output/")
 ```
 
 ## Exploring cell lines 
@@ -246,7 +251,7 @@ At its core, `screen_results()` performs multiple Mann-Whitney U tests, comparin
 * `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median). Negative scores indicate lethal genetic interaction, and positive scores indicate alleviating genetic interaction.
 
 > **Warning**
-> This process may take a few hours depending on the number of cores assigned. Our example below `GI_screen()` took ~2 hours to process. 
+> This process may take a few hours depending on the number of cores assigned. Our example below `GI_screen()` took ~2 hours to process. To save time, we have preprocessed this step for you.
 
 ```{r run_screen, eval = FALSE}
 ARID1A_mutant_id <- ARID1A_groups %>% filter(Group %in% c("ARID1A_HomDel")) %>% pull(DepMap_ID)
@@ -263,7 +268,7 @@ screen_results <- GI_screen(
   test = FALSE) # use TRUE to run a short test to make sure all will run overnight.
 ```
 
-```{r load_prepared_results, eval = TRUE, include = FALSE}
+```{r load_prepared_results, eval = TRUE}
 ## Load prepared ARID1A screen result
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 ```
@@ -318,12 +323,7 @@ Given that ARID1A is known subunit of the mammalian SWI/SNF complex ([Mashtalir 
 To determine co-essential genes, we will perform multiple Pearson correlation coefficient analyses between *ARID1A* KO effects and the KO effects of all 18,333 genes. A cut off will be determined by calculating the inflection point of the ranked coefficient curve. As expected find SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two co-essential genes. 
 
 > **Warning**
-> This process may take several minutes. Our example below `coessential_map()` + `get_inflection_points()` took ~17 minutes to process. 
-
-```{r load_prepared_results_coess, eval = TRUE, include = FALSE}
-load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
-load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
-```
+> This process may take several minutes. Our example below `coessential_map()` + `get_inflection_points()` took ~17 minutes to process. To save time we have pre-processed this setp for you.
 
 ```{r coess_df, eval = FALSE}
 ## Map co-essential genes
@@ -334,6 +334,12 @@ coess_df <- coessential_map(
 
 ## Calculate inflection points of positive and negative curve using co-essential gene results.
 coess_inflection_df <- get_inflection_points(coess_df)
+```
+
+```{r load_prepared_results_coess, eval = TRUE, include = FALSE}
+# Load pre-processed results
+load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_result.rda"), envir = environment())
+load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_coessential_inflection.rda"), envir = environment())
 ```
 
 Next, we annotate the data frame containing the co-essential network data and visualize. 

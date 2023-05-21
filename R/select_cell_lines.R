@@ -34,9 +34,10 @@
 #' * `Others` cell lines that do not meet above criteria.
 #' 
 #' @examples
-#' gretta_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data"
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
-#' select_cell_lines(input_gene = "TP53", 
+#' select_cell_lines(input_gene = "ARID1A", 
 #' input_disease = "Lung Cancer", 
 #' data_dir = gretta_data_dir)
 #' 

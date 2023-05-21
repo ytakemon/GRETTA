@@ -29,8 +29,8 @@
 #' @md
 #' 
 #' @examples 
-#' gretta_data_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data'
-#' gretta_output_dir <- '/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/'
+#' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
 #' 
 #' coess_df <- coessential_map(
 #' input_gene = 'ARID1A',
@@ -213,7 +213,7 @@ coessential_map <- function(input_gene = NULL, input_disease = NULL,
     # Begin loop
     message("This may take a few mins... Consider running with a higher core numbers to speed up the analysis.")
     if (test == TRUE) {
-      run <- 10
+      run <- 1
     } else {
       run <- length(unique(AllGenes))
     }
