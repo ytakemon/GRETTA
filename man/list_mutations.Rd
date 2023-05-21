@@ -45,6 +45,10 @@ Quick method to look up mutations of interest prior to using \code{select_cell_l
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
 
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
+
 list_mutations(
 gene = 'ARID1A', 
 is_damaging = TRUE,

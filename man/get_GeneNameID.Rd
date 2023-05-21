@@ -32,11 +32,20 @@ common cell line aliases to DepMap's unique gene name and cell line identifiers,
 }}
 \examples{
 gretta_data_dir <- './GRETTA_example/'
+gretta_output_dir <- './GRETTA_example_output/'
+
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
 
 get_GeneNameID('A1CF', data_dir = gretta_data_dir)
 
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
+
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
 
 get_DepMapID('JURKAT', data_dir = gretta_data_dir)
 

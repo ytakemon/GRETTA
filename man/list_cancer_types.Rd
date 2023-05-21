@@ -29,6 +29,10 @@ string A vector containing unique cancer types available
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
 
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
+
 list_cancer_types(data_dir = gretta_data_dir)
 
 gretta_data_dir <- './GRETTA_example/'

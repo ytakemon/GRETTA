@@ -26,6 +26,12 @@ Description of output data frame
 }
 }
 \examples{
+gretta_data_dir <- './GRETTA_example/'
+gretta_output_dir <- './GRETTA_example_output/'
+
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
 
 inflection_points <- get_inflection_points(input_coessential_df = coess_df, test = TRUE)
 

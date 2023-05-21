@@ -15,6 +15,11 @@
 #' @export
 #' @examples
 #' gretta_data_dir <- './GRETTA_example/'
+#' gretta_output_dir <- './GRETTA_example_output/'
+#' 
+#' if(!dir.exists(gretta_data_dir)){
+#'   download_example_data(".")
+#' }
 #' 
 #' get_GeneNameID('A1CF', data_dir = gretta_data_dir)
 #' 
@@ -70,6 +75,10 @@ get_GeneNameID <- function(gene_name, data_dir) {
 #' @examples
 #' gretta_data_dir <- './GRETTA_example/'
 #' gretta_output_dir <- './GRETTA_example_output/'
+#' 
+#' if(!dir.exists(gretta_data_dir)){
+#'   download_example_data(".")
+#' }
 #' 
 #' get_DepMapID('JURKAT', data_dir = gretta_data_dir)
 #' 

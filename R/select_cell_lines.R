@@ -37,6 +37,10 @@
 #' gretta_data_dir <- './GRETTA_example/'
 #' gretta_output_dir <- './GRETTA_example_output/'
 #' 
+#' if(!dir.exists(gretta_data_dir)){
+#'   download_example_data(".")
+#' }
+#' 
 #' select_cell_lines(input_gene = "ARID1A", 
 #' input_disease = "Lung Cancer", 
 #' data_dir = gretta_data_dir)
