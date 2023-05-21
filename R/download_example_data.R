@@ -38,7 +38,7 @@ download_example_data <- function(path = NULL, test = FALSE) {
       url13 <- "https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2_sample/sample_annot.rda"
       url14 <- "https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2_sample/gene_effect.rda"
       
-      cache <- tools::R_user_dir("testing", which = "cache")
+      cache <- tools::R_user_dir("GRETTA", which = "cache")
       bfc <- BiocFileCache::BiocFileCache(cache, ask = FALSE)
       pathsToLoad <- BiocFileCache::bfcrpath(bfc, c(url1, url2, url3, url4, url5, url6, url7,
                                                     url8, url9, url10, url11, url12, url13, url14))
