@@ -32,6 +32,10 @@
 #' gretta_data_dir <- './GRETTA_example/'
 #' gretta_output_dir <- './GRETTA_example_output/'
 #' 
+#' if(!dir.exists(gretta_data_dir)){
+#'   download_example_data(".")
+#' }
+#' 
 #' coess_df <- coessential_map(
 #' input_gene = 'ARID1A',
 #' input_disease = 'Pancreatic Cancer',

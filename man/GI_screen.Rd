@@ -62,9 +62,16 @@ that there may be another factor contributing to this separation.
 }
 }
 \examples{
-download_example_data(".")
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
+
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
+
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
 
 Screen_results <- GI_screen(
 control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 

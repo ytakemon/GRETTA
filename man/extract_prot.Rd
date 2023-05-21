@@ -27,6 +27,10 @@ See also \code{extract_protein_rna} to extract proteomics profile data
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
 
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
+
 extract_prot(
 input_samples = c('ACH-000004', 'ACH-000146'), 
 input_genes = c('CIC'),

@@ -23,6 +23,10 @@ Generates a ranked scatter plot of genetic interaction scores from \code{GINI_sc
 gretta_data_dir <- './GRETTA_example/'
 gretta_output_dir <- './GRETTA_example_output/'
 
+if(!dir.exists(gretta_data_dir)){
+  download_example_data(".")
+}
+
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 
 plot_screen(screen_results, label_genes = FALSE)
