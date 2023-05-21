@@ -3,7 +3,7 @@ options(tibble.width = Inf)
 # Clean up data and package them in .RData according to usage type (ie dep comparison, etc.)
 library(pacman)
 p_load(tidyverse, janitor)
-DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/22Q2/"
+DepMap_dir <- "./DepMap/22Q2/"
 
 # Essential genes -----------------------------------------------------------------------
 # Load files
@@ -138,7 +138,7 @@ protein_annot <- tibble(GygiNames = colnames(protein)) %>%
   select(GygiNames, DepMap_ID)
 
 #### SAVE Data for GRETTA! ----------------------------------------------------------
-GRETTA_dir_22Q2 <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/22Q2/data/"
+GRETTA_dir_22Q2 <- "./DepMap/GRETTA_data/22Q2/data/"
 
 # save data individually for GRETTA 
 save(CCLE_exp_annot, file = paste0(GRETTA_dir_22Q2, "CCLE_exp_annot.rda"))

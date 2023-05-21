@@ -3,8 +3,8 @@ library(tidyverse)
 library(psych)
 
 # Define paths
-GRETTA_data_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/21Q4/data/"
-GRETTA_output_dir <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_troubleshooting/"
+GRETTA_data_dir <- "./DepMap/GRETTA_data/21Q4/data/"
+GRETTA_output_dir <- "./DepMap/GRETTA_troubleshooting/"
 
 # Load data
 load(paste0(GRETTA_data_dir, "/gene_effect.rda"))
@@ -27,7 +27,7 @@ fit <- corr.test(
     ci = FALSE)
 
 #### SAVE pre-computed data for GRETTA ! ----------------------------------------------------------
-GRETTA_dir_21Q4 <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/21Q4/data/"
+GRETTA_dir_21Q4 <- "./GRETTA_data/21Q4/data/"
 
 # save data individually for GRETTA 
 save(fit, file = paste0(GRETTA_dir_21Q4, "pancan_coess_precomputed.rda"))

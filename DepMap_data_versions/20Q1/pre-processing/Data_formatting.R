@@ -2,7 +2,7 @@ options(tibble.width = Inf)
 
 # Clean up data and package them in .RData according to usage type (ie dep comparison, etc.)
 library(tidyverse)
-DepMap_dir <- "/projects/marralab/ytakemon_prj/DepMap/20Q1/"
+DepMap_dir <- "./DepMap/20Q1/"
 
 # Essential genes -----------------------------------------------------------------------
 # Load files
@@ -135,7 +135,7 @@ gene_effect <- gene_effect %>%
 
 
 #### SAVE Data for GINI! ----------------------------------------------------------
-GRETTA_dir_21Q4 <- "/projects/marralab/ytakemon_prj/DepMap/GRETTA_data/21Q4/data/"
+GRETTA_dir_21Q4 <- "./DepMap/GRETTA_data/21Q4/data/"
 
 # save data individually for GRETTA 
 save(CCLE_exp_annot, file = paste0(GRETTA_dir_21Q4, "CCLE_exp_annot.rda"))
