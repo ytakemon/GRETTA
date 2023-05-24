@@ -1,3 +1,6 @@
+# GRETTA 0.99.2
+- Removed all instances of lab path to pass bioconductor pre-check. 
+
 # GRETTA 0.99.1
 
 - Added smaller example data to pass bioconductor pre-check. 
