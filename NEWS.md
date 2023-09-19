@@ -1,3 +1,6 @@
+# GRETTA 0.99.3
+- Untracked files unrelated to R package devel that caused errors in bioconductor checks.
+
 # GRETTA 0.99.2
 - Removed all instances of lab path to pass bioconductor pre-check. 
 
