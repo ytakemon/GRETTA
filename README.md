@@ -380,7 +380,7 @@ ggplot(ARID1A_rna_expr, aes(x = Group, y = ARID1A_8289)) +
   geom_boxplot()
 ```
 
-<img src="man/figures/README-Check_expression_rna_stats-1.png" width="100%" />
+<img src="inst/figures/README-Check_expression_rna_stats-1.png" width="100%" />
 
 ## Perform genome-wide *in silico* genetic screen
 
@@ -512,7 +512,7 @@ plot_screen(result_df = screen_results,
 #> Warning: Removed 7 rows containing missing values (`geom_point()`).
 ```
 
-<img src="man/figures/README-plot-1.png" width="100%" />
+<img src="inst/figures/README-plot-1.png" width="100%" />
 
 # Example: Identifying *ARID1A* co-essential genes
 
@@ -569,7 +569,7 @@ plot_coess(
   label_n = 3) # Number of genes to display from each end
 ```
 
-<img src="man/figures/README-combine_n_visualize-1.png" width="100%" />
+<img src="inst/figures/README-combine_n_visualize-1.png" width="100%" />
 
 We also see that the top ten *ARID1A* co-essential genes include eight
 known SWI/SNF subunits, namely *ARID1A*, *SMARCB1*, *SMARCE1*,
