@@ -1,3 +1,6 @@
+# GRETTA 0.99.4
+- Fixing path for figures in README to pass bioconductor warnings
+
 # GRETTA 0.99.3
 - Untracked files unrelated to R package devel that caused errors in bioconductor checks.
 
