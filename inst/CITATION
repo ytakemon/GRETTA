@@ -2,23 +2,23 @@ citHeader("To cite GRETTA in publications use:")
 
 citEntry(
   entry    = "Manual",
-  title    = "GRETTA: A Genetic interaction and essentiality mapper",
+  title    = "GRETTA: an R package for mapping in silico genetic interaction and essentiality networks",
   author   = as.person(c("Yuka Takemon", "Marco A. Marra")),
-  doi = "10.5281/zenodo.6940757",
+  doi = "10.1093/bioinformatics/btad381",
   year     = 2022,
-  url      = "https://github.com/ytakemon/GRETTA",
-  textVersion = paste("Takemon, Yuka and Marra, Marco A. (2022). GRETTA: A Genetic interaction and essentiality mapper. https://doi.org/10.5281/zenodo.6940757 ")
+  url      = "https://doi.org/10.1093/bioinformatics/btad381",
+  textVersion = paste("Takemon, Yuka and Marra, Marco A. GRETTA: an R package for mapping in silico genetic interaction and essentiality networks. Bioinformatics, Volume 39, Issue 6, June 2023, btad381. https://doi.org/10.1093/bioinformatics/btad381")
 )
 
 note <- sprintf("R package version %s", meta$Version)
 
 bibentry(bibtype = "Manual",
-         title = "{GRETTA}: A Genetic interaction and essentiality mapper.",
+         title = "{GRETTA}: an R package for mapping in silico genetic interaction and essentiality networks.",
          author = c(person("Yuka", "Takemon"), person("Marco A.", "Marra")),
-         year = "2022",
+         year = "2023",
          note = note,
-	 url = "https://github.com/ytakemon/GRETTA")
+	 url = "https://doi.org/10.1093/bioinformatics/btad381")
 
-textVersion = paste0("Yuka Takemon, (2022)",
-  "GRETTA: A Genetic interaction and essentiality mapper.",
-  "https://github.com/ytakemon/GRETTA")
+textVersion = paste0("Takemon, Yuka and Marra, Marco A. (2023)",
+  "GRETTA: an R package for mapping in silico genetic interaction and essentiality networks",
+  "https://doi.org/10.1093/bioinformatics/btad381")
