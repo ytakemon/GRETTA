@@ -1,3 +1,7 @@
+# GRETTA 0.99.5
+- `coessential_map()`, `get_inflection_point()`, and `anntate_coess()` now handle multiple input genes.
+- Introducing `common_coefs()` to map the Pearson's coefficient between all input genes.
+
 # GRETTA 0.99.4
 - Fixing path for figures in README to pass bioconductor warnings
 

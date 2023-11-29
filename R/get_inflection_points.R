@@ -30,7 +30,7 @@
 #' @importFrom RootsExtremaInflections inflexi
 
 get_inflection_points <- function(input_coessential_df = NULL, test = FALSE) {
-  if(test == FALSE){
+  if (test == FALSE) {
     # Checkpoint
     if (is.null(input_coessential_df)) {
       stop("No coessential dataframe found!")
@@ -39,43 +39,60 @@ get_inflection_points <- function(input_coessential_df = NULL, test = FALSE) {
       stop("Input is not a dataframe, please check the input")
     }
     
-    # Calculate inflection point
-    message("This may take a few mins...")
-    inflection_points <- NULL
+    All_res <- NULL
+    gene_list <- unique(input_coessential_df$GeneNameID_A)
+    for(g in seq_len(length(gene_list))){
+      # g <- 1
+      gene <- gene_list[g]
+      
+      # Calculate inflection point
+      message(gene, " selected. This may take a few mins...")
+      inflection_points <- NULL
+      
+      # Positive curve
+      subset_df_pos <- input_coessential_df %>%
+        dplyr::filter(.data$GeneNameID_A %in% gene) %>%
+        dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
+        dplyr::filter(.data$estimate > 0)
+      message("Calculating inflection point of positive curve.\n")
+      x_pos <- subset_df_pos$Rank
+      y_pos <- subset_df_pos$estimate
+      fit_pos <- RootsExtremaInflections::inflexi(x_pos,
+                                                  y_pos, 1, length(x_pos), 5, 5,
+                                                  plots = FALSE,
+                                                  doparallel = FALSE
+      )
+      fit_pos$an
+      fit_pos$finfl
+      inflection_point_pos <- fit_pos$finfl[2]
+      
+      # Negative curve
+      subset_df_neg <- input_coessential_df %>%
+        dplyr::filter(.data$GeneNameID_A %in% gene) %>%
+        dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
+        dplyr::filter(.data$estimate < 0)
+      message("Calculating inflection point of negative curve.\n")
+      x_neg <- subset_df_neg$Rank
+      y_neg <- subset_df_neg$estimate
+      fit_neg <- RootsExtremaInflections::inflexi(x_neg,
+                                                  y_neg, 1, length(x_neg), 5, 5,
+                                                  plots = FALSE,
+                                                  doparallel = FALSE
+      )
+      fit_neg$an
+      fit_neg$finfl
+      inflection_point_neg <- fit_neg$finfl[2]
+      
+      res <- tibble::tibble(
+        GeneNameID_A = gene,
+        Inflection_point_pos_byRank = inflection_point_pos,
+        Inflection_point_neg_byRank = inflection_point_neg
+      )
+      All_res <- dplyr::bind_rows(All_res, res)
+    }
     
-    # Positive curve
-    subset_df_pos <- input_coessential_df %>%
-      dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
-      dplyr::filter(.data$estimate > 0)
-    message("Calculating inflection point of positive curve.\n")
-    x_pos <- subset_df_pos$Rank
-    y_pos <- subset_df_pos$estimate
-    fit_pos <- RootsExtremaInflections::inflexi(x_pos,
-                                                y_pos, 1, length(x_pos), 5, 5, plots = FALSE,
-                                                doparallel = FALSE)
-    fit_pos$an
-    fit_pos$finfl
-    inflection_point_pos <- fit_pos$finfl[2]
-    
-    # Negative curve
-    subset_df_neg <- input_coessential_df %>%
-      dplyr::arrange(.data$estimate, .data$Padj_BH) %>%
-      dplyr::filter(.data$estimate < 0)
-    message("Calculating inflection point of negative curve.\n")
-    x_neg <- subset_df_neg$Rank
-    y_neg <- subset_df_neg$estimate
-    fit_neg <- RootsExtremaInflections::inflexi(x_neg,
-                                                y_neg, 1, length(x_neg), 5, 5, plots = FALSE,
-                                                doparallel = FALSE)
-    fit_neg$an
-    fit_neg$finfl
-    inflection_point_neg <- fit_neg$finfl[2]
-    
-    res <- tibble::tibble(Inflection_point_pos_byRank = inflection_point_pos,
-                          Inflection_point_neg_byRank = inflection_point_neg)
-    return(res)
-  } else{
+    return(All_res)
+  } else {
     message("This tool requires correlation coefficients to be calculated.")
   }
-  
 }

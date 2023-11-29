@@ -4,7 +4,6 @@
 .Rdata
 .httr-oauth
 Reminders.R
-inst/doc
 DepMap_data_versions/20Q1/.gitattributes
 GRETTA.Rproj
 Singularity/Singularity.GRETTA.def

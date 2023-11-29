@@ -1,8 +1,9 @@
-#' @title Perform co-essentially mapping
+#' @title Perform Pearson coefficient mapping of all pairs
 #' 
-#' @description Performs multiple correlation coefficient analyses and determines cut to identify most likely co-essential genes.
+#' @description Performs Pearson correlation coefficient analyses between all gene pairs. Input parameters should match those
+#' used to run `annotate_coess()`.
 #' 
-#' @param input_genes string, A vector containing one or more Hugo Symbol, Default: NULL
+#' @param input_genes string, A vector containing one or more "Hugo Symbol_NCBIID", Default: NULL
 #' @param input_disease string, A vector one or more disease contexts, Will perform pan-cancer analyses 
 #' (all cell lines) by default, Default: NULL
 #' @param input_cell_lines string, A vector DepMap_IDs for which co-essentiality mapping will be performed on. 
@@ -12,7 +13,7 @@
 #' @param data_dir string Path to GRETTA_data
 #' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly 
-#' prior to running all 18,333 genes. Default: FALSE.
+#' prior to running all genes. Default: FALSE.
 #'
 #' @return A data frame containing Pearson correlation coefficients. A copy is also saved to the 
 #' directory defined in `output_dir`.
@@ -24,8 +25,6 @@
 #' * `statistic` - Pearson's correlation statistic. Output from `?cor.test`.
 #' * `p.value` - P-value from Pearson's correlation statistic. Output from `?cor.test`.
 #' * `parameter` - Degrees of freedom. Output from `?cor.test`.
-#' * `Rank` - Rank by correlation coefficient. 
-#' * `Padj_BH` - Benjamini-Hochberg adjusted p-value.
 #' @md
 #' 
 #' @examples 
@@ -36,8 +35,8 @@
 #'   download_example_data(".")
 #' }
 #' 
-#' coess_df <- coessential_map(
-#' input_gene = 'ARID1A',
+#' coess_df <- common_coefs(
+#' input_gene = c("ARID1A", "SMARCB1"),
 #' input_disease = 'Pancreatic Cancer',
 #' core_num = 2,
 #' data_dir = gretta_data_dir, 
@@ -60,9 +59,10 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-coessential_map <- function(input_genes = NULL, input_disease = NULL,
-                            input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
-                            data_dir = NULL, filename = NULL, test = FALSE) {
+
+common_coefs <- function(input_genes = NULL, input_disease = NULL,
+                         input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
+                         data_dir = NULL, filename = NULL, test = FALSE) {
   # Check that essential inputs are given:
   if (is.null(input_genes)) {
     stop("No control IDs detected")
@@ -101,7 +101,7 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
     # Load necessary data
     message(
       "Performing default pan-cancer essentiality mapping for:",
-      paste(input_genes, collapse= ", "), "\n", "For this analysis, core_num is ignored."
+      paste(input_genes, collapse = ", "), "\n", "For this analysis, core_num is ignored."
     )
     
     fit <- NULL # see: https://support.bioconductor.org/p/24756/
@@ -109,37 +109,47 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
          envir = environment()
     )
     
-    Gene_A_GeneNameID <- get_GeneNameID(input_genes,
-                                        data_dir = data_dir
-    )
+    Gene_A_GeneNameID <- input_genes
     
     fit_est_long <- fit$r %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "estimate"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(
+        GeneNameID_A %in% Gene_A_GeneNameID,
+        GeneNameID_B %in% Gene_A_GeneNameID,
+      )
     
     fit_tstat_long <- fit$t %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "statistic"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(
+        GeneNameID_A %in% Gene_A_GeneNameID,
+        GeneNameID_B %in% Gene_A_GeneNameID,
+      )
     
     fit_pval_long <- fit$p %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "p.value"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(
+        GeneNameID_A %in% Gene_A_GeneNameID,
+        GeneNameID_B %in% Gene_A_GeneNameID,
+      )
     
     fit_param_long <- fit$n %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "parameter"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(
+        GeneNameID_A %in% Gene_A_GeneNameID,
+        GeneNameID_B %in% Gene_A_GeneNameID,
+      )
     
     cor_df <- dplyr::left_join(fit_est_long, fit_tstat_long) %>%
       dplyr::left_join(fit_pval_long) %>%
@@ -150,10 +160,8 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
       dplyr::arrange(.data$GeneNameID_A) %>%
       dplyr::group_by(.data$GeneNameID_A) %>%
       dplyr::arrange(.data$GeneNameID_A, -.data$estimate, .data$p.value) %>%
-      dplyr::mutate(Rank = order(-.data$estimate,
-                                 decreasing = FALSE
-      ), Padj_BH = p.adjust(.data$p.value,
-                            method = "BH", n = (length(.data$p.value))
+      dplyr::mutate(Padj_BH = p.adjust(.data$p.value,
+                                       method = "BH", n = (length(.data$p.value))
       )) %>%
       readr::write_csv(file = output_dir_and_filename)
     
@@ -209,29 +217,31 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
     # account for differences between DepMap
     # versions
     if (ncol(gene_effect) == 3) {
-      AllGenes <- unique(gene_effect$GeneNameID)
       gene_effect_long <- gene_effect %>%
-        dplyr::filter(.data$DepMap_ID %in%
-                        selected_cell_lines)
+        dplyr::filter(
+          .data$DepMap_ID %in% selected_cell_lines,
+          .data$GeneNameID %in% input_genes
+        )
+      AllGenes <- unique(gene_effect_long$GeneNameID)
     } else if (ncol(gene_effect) > 3) {
-      AllGenes <- colnames(gene_effect)[-1] # removes DepMap_ID column
       gene_effect_long <- gene_effect %>%
         tidyr::pivot_longer(
           cols = matches("\\d"),
           names_to = "GeneNameID", values_to = "Effect_score"
         ) %>%
-        dplyr::filter(.data$DepMap_ID %in%
-                        selected_cell_lines)
+        dplyr::filter(
+          .data$DepMap_ID %in% selected_cell_lines,
+          .data$GeneNameID %in% input_genes
+        )
+      AllGenes <- unique(gene_effect_long$GeneNameID)
     }
     
     All_res <- NULL
-    for(g in seq_len(length(input_genes))){
+    for (g in seq_len(length(input_genes))) {
       # g <- 1
       select_gene <- input_genes[g]
       
-      Gene_A_GeneNameID <- get_GeneNameID(select_gene,
-                                          data_dir = data_dir
-      )
+      Gene_A_GeneNameID <- select_gene
       Gene_A_effect <- gene_effect_long %>%
         dplyr::filter(.data$GeneNameID == Gene_A_GeneNameID)
       
@@ -297,25 +307,21 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
       dplyr::group_by(.data$GeneNameID_A) %>%
       dplyr::arrange(.data$GeneNameID_A, -.data$estimate, .data$p.value) %>%
       dplyr::mutate(
-        Rank = order(-.data$estimate,
-                     decreasing = FALSE
-        ),
         Padj_BH = p.adjust(.data$p.value,
                            method = "BH", n = (length(.data$p.value))
         )
       ) %>%
       dplyr::select(
         .data$GeneNameID_A, .data$GeneNameID_B,
-        .data$estimate, .data$statistic, .data$parameter,
-        .data$Rank, .data$p.value, .data$Padj_BH
+        .data$estimate, .data$statistic, .data$parameter, 
+        .data$p.value, .data$Padj_BH
       ) %>%
       readr::write_csv(file = output_dir_and_filename)
     
     message(
-      "Coessentiality mapping finished. Outputs were also written to: ",
+      "Coefficient calculations are finished. Outputs were also written to: ",
       output_dir_and_filename
     )
     return(output)
   }
-  }
-
+}
