@@ -83,7 +83,7 @@ annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL) 
       message("No candidates... Manually selecting top ", top_n, " candidates.")
       
     }
-    All_res <- All_res %>% mutate(
+    All_res <- All_res %>% dplyr::ungroup() %>% dplyr::mutate(
       Candidate_gene = rep(c(rep(TRUE, top), rep(FALSE, middle), rep(TRUE, top)), length(unique(input_ess$GeneNameID_A)))
     )
   }
