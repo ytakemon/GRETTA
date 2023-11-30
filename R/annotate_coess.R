@@ -7,6 +7,8 @@
 #' @param input_inflec data frame, A data frame output from get_inflection_points(), Default: NULL
 #' @param top_n vector, The number of top/bottom candidates to select (eg. if 10 there will be top top 
 #' co-essential and 10 anti-essential genes), Default: NULL
+#' @param use_inflection logical, TRUE to use inflection points as threshold in input_inflec or 
+#' FALSE to use top_n as cutoff , Default: TRUE
 #' 
 #' @return The input data frame containing co-essential correlation coefficients will be annotated with an additional column 
 #' `Candidate_gene` to indicate whether the gene is considered to a possible co-essential gene.
@@ -39,7 +41,7 @@
 #' @importFrom dplyr mutate filter pull rename arrange case_when
 #' @importFrom tibble tibble
 
-annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL) {
+annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL, use_inflection = TRUE) {
   # Checkpoint
   if (is.null(input_ess)) {
     stop("No coessential dataframe found!")
@@ -73,19 +75,27 @@ annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL) 
     All_res <- dplyr::bind_rows(All_res, res)
   }
   
+  # Check if manual threshold is needed
   candidate <- All_res %>% dplyr::filter(.data$Candidate_gene)
-  top <- top_n
-  middle <- 18333 - (top_n *2)
   if(length(unique(input_ess$GeneNameID_A)) == nrow(candidate)){
+    use_inflection == FALSE
+    top <- top_n
+    middle <- 18333 - (top_n * 2)
+    message("Only ", nrow(candidate), " candidates. Selecting candidates based on input \n")
+  } 
+  
+  # If using a manual threshold
+  if(use_inflection == FALSE){
     if (is.null(top_n)) {
-      stop("No candidates... Please add a number for top candidates")
+      stop("Manually  selecting candidates... Error: No input in top_n \n")
     } else {
-      message("No candidates... Manually selecting top ", top_n, " candidates.")
-      
+      message("Selecting top and bottom ", top_n, " candidates.")
     }
     All_res <- All_res %>% dplyr::ungroup() %>% dplyr::mutate(
       Candidate_gene = rep(c(rep(TRUE, top), rep(FALSE, middle), rep(TRUE, top)), length(unique(input_ess$GeneNameID_A)))
     )
+  } else {
+    message("Selecting candidates based on inflection points.")
   }
   
   return(All_res)

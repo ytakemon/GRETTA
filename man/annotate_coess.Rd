@@ -4,7 +4,12 @@
 \alias{annotate_coess}
 \title{Combine and annotate co-essential dataframe}
 \usage{
-annotate_coess(input_ess = NULL, input_inflec = NULL, top_n = NULL)
+annotate_coess(
+  input_ess = NULL,
+  input_inflec = NULL,
+  top_n = NULL,
+  use_inflection = TRUE
+)
 }
 \arguments{
 \item{input_ess}{data frame, A data frame output from \code{coessential_map()}, Default: NULL}
@@ -13,6 +18,9 @@ annotate_coess(input_ess = NULL, input_inflec = NULL, top_n = NULL)
 
 \item{top_n}{vector, The number of top/bottom candidates to select (eg. if 10 there will be top top
 co-essential and 10 anti-essential genes), Default: NULL}
+
+\item{use_inflection}{logical, TRUE to use inflection points as threshold in input_inflec or
+FALSE to use top_n as cutoff , Default: TRUE}
 }
 \value{
 The input data frame containing co-essential correlation coefficients will be annotated with an additional column
