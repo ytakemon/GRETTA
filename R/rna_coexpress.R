@@ -44,7 +44,7 @@
 #' output_dir = gretta_output_dir,
 #' test = TRUE)
 #' 
-#' @rdname coessential_map
+#' @rdname rna_coexpress
 #' @export 
 #' @importFrom parallel detectCores
 #' @importFrom doMC registerDoMC
@@ -60,7 +60,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-RNA_coexpress <- function(input_genes = NULL, input_disease = NULL,
+rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
                           input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
                           data_dir = NULL, filename = NULL, test = FALSE) {
   # Check that essential inputs are given:

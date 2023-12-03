@@ -1,20 +1,25 @@
 # GRETTA 0.99.5
+
 - `anntate_coess()` was renamed to `anntate_df()`
 - `coessential_map()`, `get_inflection_point()`, and `anntate_coess()` can now handle multiple input genes.
 
 ## New functions!:
+
 Introducing:
 
 - `common_coefs()` to map the Pearson's coefficient between all input genes.
 - `rna_coexpress()` to perform co-expression analysis for mRNA.
 
 # GRETTA 0.99.4
+
 - Fixing path for figures in README to pass bioconductor warnings
 
 # GRETTA 0.99.3
+
 - Untracked files unrelated to R package devel that caused errors in bioconductor checks.
 
 # GRETTA 0.99.2
+
 - Removed all instances of lab path to pass bioconductor pre-check. 
 
 # GRETTA 0.99.1
