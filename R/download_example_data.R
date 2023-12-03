@@ -17,7 +17,7 @@
 #' @rdname download_example_data
 #' @export 
 #' @importFrom tools R_user_dir
-#' @importFrom BiocFileCache BiocFileCache bfcrpath
+#' @importFrom BiocFileCache bfcrpath
 
 download_example_data <- function(path = NULL, test = FALSE) {
     

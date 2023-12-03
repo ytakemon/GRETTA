@@ -67,7 +67,7 @@ coess_df <- coessential_map(
 coess_inflection_df <- get_inflection_points(coess_df)
 
 # Combine and annotate data frame containing co-essential genes
-coess_annotated_df <- annotate_coess(coess_df, coess_inflection_df)
+coess_annotated_df <- annotate_df(coess_df, coess_inflection_df)
 
 # Plot ranked co-/anti-essential candidates 
 message("Plotting ranked candidate co-/anti-essential genes.")

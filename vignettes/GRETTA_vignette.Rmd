@@ -348,7 +348,7 @@ Next, we annotate the data frame containing the co-essential network data and vi
 
 ```{r combine_n_visualize, eval = TRUE}
 ## Combine and annotate data frame containing co-essential genes
-coess_annotated_df <- annotate_coess(coess_df, coess_inflection_df)
+coess_annotated_df <- annotate_df(coess_df, coess_inflection_df)
 
 plot_coess(
   result_df = coess_annotated_df, 

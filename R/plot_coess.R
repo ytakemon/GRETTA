@@ -1,8 +1,8 @@
 #' @title Plot coessential genes
 #' 
-#' @description Generates a ranked scatter plot of cossential genes from `annotate_coessential_df` outputs
+#' @description Generates a ranked scatter plot of cossential genes from `annotate` outputs
 #' 
-#' @param result_df data frame, A data frame output from `annotate_coessential_df()`, Default: NULL
+#' @param result_df data frame, A data frame output from `annotate_df()`, Default: NULL
 #' @param inflection_df data frame, A data frame output from `get_inflection_points()`, Default: NULL
 #' @param label_genes logical, TRUE to trigger gene name labeling, Default: FALSE
 #' @param label_n integer, Number of genes from either end to label, Default: 1

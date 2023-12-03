@@ -1,9 +1,9 @@
-#' @title Combine and annotate co-essential dataframe
+#' @title Combine and annotate co-essential or co-expression dataframe
 #' 
 #' @description Combines and annotates co-essential data frame with inflection points to determine which genes are 
 #' likely to be candidates co-essential genes. 
 #' 
-#' @param input_ess data frame, A data frame output from `coessential_map()`, Default: NULL
+#' @param input_df data frame, A data frame output from `coessential_map()`, `rna_express()`, and `protein_express()`, Default: NULL
 #' @param input_inflec data frame, A data frame output from get_inflection_points(), Default: NULL
 #' @param top_n vector, The number of top/bottom candidates to select (eg. if 10 there will be top top 
 #' co-essential and 10 anti-essential genes), Default: NULL
@@ -34,37 +34,41 @@
 #' gretta_data_dir,'/sample_22Q2_ARID1A_coessential_inflection.rda'), 
 #' envir = environment())
 #' 
-#' annotated_df <- annotate_coess(coess_df, coess_inflection_df)
+#' annotated_df <- annotate_df(coess_df, coess_inflection_df)
 #' 
-#' @rdname annotate_coess
+#' @rdname annotate_df
 #' @export 
 #' @importFrom dplyr mutate filter pull rename arrange case_when
 #' @importFrom tibble tibble
 
-annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL, use_inflection = TRUE) {
+annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_inflection = TRUE) {
   # Checkpoint
-  if (is.null(input_ess)) {
+  if (is.null(input_df)) {
     stop("No coessential dataframe found!")
   }
   if (is.null(input_inflec)) {
     stop("No inflection points found!")
   }
-  if (!is.data.frame(input_ess)) {
+  if (!is.data.frame(input_df)) {
     stop("Input is not a dataframe, please check the input")
   }
   
   All_res <- NULL
-  for(g in seq_len(length(unique(input_ess$GeneNameID_A)))){
+  for(g in seq_len(length(unique(input_df$GeneNameID_A)))){
     # g <- 1
-    gene <- unique(input_ess$GeneNameID_A)[g]
+    gene <- unique(input_df$GeneNameID_A)[g]
     
-    select_input_ess <- input_ess %>%
+    select_input_df <- input_df %>%
       dplyr::filter(.data$GeneNameID_A %in% gene)
     
-    select_input_inflec <- input_inflec %>%
-      dplyr::filter(.data$GeneNameID_A %in% gene)
+    if(nrow(input_inflec) == 1){
+      select_input_inflec <- input_inflec 
+    } else {
+      select_input_inflec <- input_inflec %>%
+        dplyr::filter(.data$GeneNameID_A %in% gene)
+    }
     
-    res <- select_input_ess %>%
+    res <- select_input_df %>%
       dplyr::arrange(-.data$Rank) %>%
       dplyr::mutate(Candidate_gene = dplyr::case_when(
         (.data$Padj_BH < 0.05) & (.data$Rank >= select_input_inflec$Inflection_point_pos_byRank) ~ TRUE,
@@ -77,7 +81,7 @@ annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL, 
   
   # Check if manual threshold is needed
   candidate <- All_res %>% dplyr::filter(.data$Candidate_gene)
-  if(length(unique(input_ess$GeneNameID_A)) == nrow(candidate)){
+  if(length(unique(input_df$GeneNameID_A)) == nrow(candidate)){
     use_inflection == FALSE
     top <- top_n
     middle <- 18333 - (top_n * 2)
@@ -92,7 +96,7 @@ annotate_coess <- function(input_ess = NULL, input_inflec = NULL, top_n = NULL, 
       message("Selecting top and bottom ", top_n, " candidates.")
     }
     All_res <- All_res %>% dplyr::ungroup() %>% dplyr::mutate(
-      Candidate_gene = rep(c(rep(TRUE, top), rep(FALSE, middle), rep(TRUE, top)), length(unique(input_ess$GeneNameID_A)))
+      Candidate_gene = rep(c(rep(TRUE, top), rep(FALSE, middle), rep(TRUE, top)), length(unique(input_df$GeneNameID_A)))
     )
   } else {
     message("Selecting candidates based on inflection points.")

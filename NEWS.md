@@ -1,6 +1,12 @@
 # GRETTA 0.99.5
-- `coessential_map()`, `get_inflection_point()`, and `anntate_coess()` now handle multiple input genes.
-- Introducing `common_coefs()` to map the Pearson's coefficient between all input genes.
+- `anntate_coess()` was renamed to `anntate_df()`
+- `coessential_map()`, `get_inflection_point()`, and `anntate_coess()` can now handle multiple input genes.
+
+## New functions!:
+Introducing:
+
+- `common_coefs()` to map the Pearson's coefficient between all input genes.
+- `rna_coexpress()` to perform co-expression analysis for mRNA.
 
 # GRETTA 0.99.4
 - Fixing path for figures in README to pass bioconductor warnings
