@@ -92,7 +92,7 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
   } else {
     output_dir_and_filename <- paste0(
       output_dir,
-      "/GRETTA_coessentiality_network_results.csv"
+      "/GRETTA_rna_coexpress_results.csv"
     )
   }
   

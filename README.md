@@ -61,6 +61,27 @@ have a request please submit an
 
 # Installation
 
+> **Warning** The new version of [dbplyr
+> (v2.4.0)](https://stackoverflow.com/questions/77370659/error-failed-to-collect-lazy-table-caused-by-error-in-db-collect-using/77370920#77370920)
+> is currently incompatable with another library used in GRETTA. If you
+> encounter an error message like the one below. Please install the
+> previous working version also shown below.
+>
+> Error message:
+>
+>     Error in `collect()`:
+>     ! Failed to collect lazy table.
+>     Caused by error in `db_collect()`:
+>     ! Arguments in `...` must be used.
+>     ✖ Problematic argument:
+>     • ..1 = Inf
+>     ℹ Did you misspell an argument name?
+>
+> Solution:
+>
+>     install.packages("devtools")
+>     devtools::install_version("dbplyr", version = "2.3.4")`
+
 You can install the GRETTA package from [GitHub](https://github.com)
 with:
 
@@ -177,11 +198,6 @@ downloaded using the following code.
 ``` r
 path <- getwd()
 download_example_data(path)
-#> Warning in dir.create(paste0(path, "/GRETTA_example")):
-#> '/projects/marralab/ytakemon_prj/DepMap/GRETTA/GRETTA_example' already exists
-#> Warning in dir.create(paste0(path, "/GRETTA_example_output")):
-#> '/projects/marralab/ytakemon_prj/DepMap/GRETTA/GRETTA_example_output' already
-#> exists
 #> Data saved to: /projects/marralab/ytakemon_prj/DepMap/GRETTA/GRETTA_example/
 ```
 
