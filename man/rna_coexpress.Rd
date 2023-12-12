@@ -63,12 +63,14 @@ if(!dir.exists(gretta_data_dir)){
   download_example_data(".")
 }
 
-coess_df <- rna_coespress_map(
+\dontrun{
+coess_df <- rna_coespress(
 input_gene = 'ARID1A',
 input_disease = 'Pancreatic Cancer',
 core_num = 2,
 data_dir = gretta_data_dir, 
 output_dir = gretta_output_dir,
 test = TRUE)
+}
 
 }

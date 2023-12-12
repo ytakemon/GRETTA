@@ -36,6 +36,7 @@
 #'   download_example_data(".")
 #' }
 #' 
+#' \dontrun{
 #' coess_df <- coessential_map(
 #' input_gene = 'ARID1A',
 #' input_disease = 'Pancreatic Cancer',
@@ -43,6 +44,7 @@
 #' data_dir = gretta_data_dir, 
 #' output_dir = gretta_output_dir,
 #' test = TRUE)
+#' }
 #' 
 #' @rdname coessential_map
 #' @export 
@@ -118,28 +120,28 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "estimate"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(.data$GeneNameID_A %in% Gene_A_GeneNameID)
     
     fit_tstat_long <- fit$t %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "statistic"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(.data$GeneNameID_A %in% Gene_A_GeneNameID)
     
     fit_pval_long <- fit$p %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "p.value"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(.data$GeneNameID_A %in% Gene_A_GeneNameID)
     
     fit_param_long <- fit$n %>%
       tibble::as_tibble(.data, rownames = "GeneNameID_A") %>%
       tidyr::pivot_longer(-.data$GeneNameID_A,
                           names_to = "GeneNameID_B", values_to = "parameter"
       ) %>%
-      dplyr::filter(GeneNameID_A %in% Gene_A_GeneNameID)
+      dplyr::filter(.data$GeneNameID_A %in% Gene_A_GeneNameID)
     
     cor_df <- dplyr::left_join(fit_est_long, fit_tstat_long) %>%
       dplyr::left_join(fit_pval_long) %>%
@@ -242,7 +244,11 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
       # Begin loop
       message("This may take a few mins... Consider running with a higher core numbers to speed up the analysis.")
       if (test == TRUE) {
-        run <- 10
+        if(data_dir == './GRETTA_example/'){
+          run <- 1
+        } else {
+          run <- 10
+        }
       } else {
         run <- length(unique(AllGenes))
       }
@@ -292,24 +298,42 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
     }
     
     # save and return output
-    output <- All_res %>%
-      dplyr::arrange(.data$GeneNameID_A) %>%
-      dplyr::group_by(.data$GeneNameID_A) %>%
-      dplyr::arrange(.data$GeneNameID_A, -.data$estimate, .data$p.value) %>%
-      dplyr::mutate(
-        Rank = order(-.data$estimate,
-                     decreasing = FALSE
-        ),
-        Padj_BH = p.adjust(.data$p.value,
-                           method = "BH", n = (length(.data$p.value))
-        )
-      ) %>%
-      dplyr::select(
-        .data$GeneNameID_A, .data$GeneNameID_B,
-        .data$estimate, .data$statistic, .data$parameter,
-        .data$Rank, .data$p.value, .data$Padj_BH
-      ) %>%
-      readr::write_csv(file = output_dir_and_filename)
+    if(data_dir == './GRETTA_example/'){
+      output <- All_res %>%
+        dplyr::arrange(.data$GeneNameID_A) %>%
+        dplyr::group_by(.data$GeneNameID_A) %>%
+        dplyr::arrange(.data$GeneNameID_A, -.data$estimate, .data$p.value) %>%
+        dplyr::mutate(
+          Rank = order(-.data$estimate,
+                       decreasing = FALSE
+          ),
+          Padj_BH = NA) %>%
+        dplyr::select(
+          .data$GeneNameID_A, .data$GeneNameID_B,
+          .data$estimate, .data$statistic, .data$parameter,
+          .data$Rank, .data$p.value, .data$Padj_BH
+        ) %>%
+        readr::write_csv(file = output_dir_and_filename)
+    } else {
+      output <- All_res %>%
+        dplyr::arrange(.data$GeneNameID_A) %>%
+        dplyr::group_by(.data$GeneNameID_A) %>%
+        dplyr::arrange(.data$GeneNameID_A, -.data$estimate, .data$p.value) %>%
+        dplyr::mutate(
+          Rank = order(-.data$estimate,
+                       decreasing = FALSE
+          ),
+          Padj_BH = p.adjust(.data$p.value,
+                             method = "BH", n = (length(.data$p.value))
+          )
+        ) %>%
+        dplyr::select(
+          .data$GeneNameID_A, .data$GeneNameID_B,
+          .data$estimate, .data$statistic, .data$parameter,
+          .data$Rank, .data$p.value, .data$Padj_BH
+        ) %>%
+        readr::write_csv(file = output_dir_and_filename)
+    }
     
     message(
       "Coessentiality mapping finished. Outputs were also written to: ",

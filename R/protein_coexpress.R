@@ -1,4 +1,4 @@
-#' @title Perform RNA co-expression analysis
+#' @title Perform protein co-expression analysis
 #' 
 #' @description Performs multiple correlation coefficient analyses and determines cut to identify most likely co-expressed genes.
 #' 
@@ -37,7 +37,7 @@
 #' }
 #' 
 #' \dontrun{
-#' coess_df <- rna_coespress(
+#' coess_df <- protein_coexpress(
 #' input_gene = 'ARID1A',
 #' input_disease = 'Pancreatic Cancer',
 #' core_num = 2,
@@ -46,7 +46,7 @@
 #' test = TRUE)
 #' }
 #' 
-#' @rdname rna_coexpress
+#' @rdname protein_coexpress
 #' @export 
 #' @importFrom parallel detectCores
 #' @importFrom doMC registerDoMC
@@ -62,9 +62,9 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
-                          input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
-                          data_dir = NULL, filename = NULL, test = FALSE) {
+protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
+                              input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
+                              data_dir = NULL, filename = NULL, test = FALSE) {
   # Check that essential inputs are given:
   if (is.null(input_genes)) {
     stop("No genes detected")
@@ -94,7 +94,7 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
   } else {
     output_dir_and_filename <- paste0(
       output_dir,
-      "/GRETTA_rna_coexpress_results.csv"
+      "/GRETTA_protein_coexpress_results.csv"
     )
   }
   
@@ -108,10 +108,10 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
   }
   
   # Load necessary data
-  CCLE_exp <- CCLE_exp_annot <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
-  load(paste0(data_dir, "/CCLE_exp.rda"), envir = environment())
-  load(paste0(data_dir, "/CCLE_exp_annot.rda"), envir = environment())
+  protein_annot <- protein_nodup <- sample_annot <- NULL # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_nodup.rda"), envir = environment())
+  load(paste0(data_dir, "/protein_annot.rda"), envir = environment())
   
   # Set cores:
   if (!is.null(core_num)) {
@@ -121,27 +121,28 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
   # Check if inputs are recognized
   if (!all(input_cell_lines %in% sample_annot$DepMap_ID)) {
     stop(
-      input_cell_lines[!input_cell_lines %in% sample_annot$DepMap_ID],
+      paste0(input_cell_lines[!input_cell_lines %in% sample_annot$DepMap_ID], collapse = ", "),
       ", not recognized as a valid sample"
     )
   }
-  if (!all(input_genes %in% CCLE_exp_annot$GeneNames)) {
+  if (!all(input_genes %in% protein_nodup$Gene_Symbol)) {
     stop(
-      input_genes[!input_genes %in% CCLE_exp_annot$GeneNames],
-      ", not recognized. Please check spelling or remove gene name from input"
+      paste0(input_genes[!input_genes %in% protein_nodup$Gene_Symbol], collapse = ", "),
+      ", not recognized or protein expression is not available. Please check spelling or remove gene name from input"
     )
   }
   
+  # Define cell lines
   if (!is.null(input_disease)) {
     selected_cell_lines <- sample_annot %>%
       dplyr::filter(.data$DepMap_ID %in%
-                      CCLE_exp$DepMap_ID, .data$disease %in%
+                      protein_annot$DepMap_ID, .data$disease %in%
                       input_disease) %>%
       dplyr::pull(.data$DepMap_ID)
   } else if (!is.null(input_cell_lines)) {
     selected_cell_lines <- sample_annot %>%
       dplyr::filter(.data$DepMap_ID %in%
-                      CCLE_exp$DepMap_ID, .data$DepMap_ID %in%
+                      protein_annot$DepMap_ID, .data$DepMap_ID %in%
                       input_cell_lines) %>%
       dplyr::pull(.data$DepMap_ID)
   } else {
@@ -152,19 +153,37 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
   }
   
   # Provide only expr of genes of interst
-  AllGenes <- CCLE_exp_annot$GeneNameID[-1]
-  
+  AllGenes <- protein_nodup$Gene_Symbol
   All_res <- NULL
-  for(g in seq_len(length(input_genes))){
+  for (g in seq_len(length(input_genes))) {
     # g <- 1
     select_gene <- input_genes[g]
     
-    Gene_A_expr <- CCLE_exp %>%
-      dplyr::select(.data$DepMap_ID, get_GeneNameID(select_gene,
-                                                    data_dir = data_dir
-      )) %>%
-      dplyr::filter(.data$DepMap_ID %in% selected_cell_lines) %>%
-      dplyr::rename(RNA_expr = 2)
+    Gene_A_expr <- protein_nodup %>%
+      dplyr::filter(.data$Gene_Symbol %in% select_gene) %>%
+      dplyr::select(
+        .data$Gene_Symbol, .data$Description,
+        .data$Uniprot, .data$Uniprot_Acc, dplyr::contains("_TenPx")
+      ) %>%
+      tidyr::pivot_longer(
+        -c(
+          .data$Gene_Symbol, .data$Description,
+          .data$Uniprot, .data$Uniprot_Acc
+        ),
+        names_to = "Gygi_ID",
+        values_to = "protein_expr"
+      ) %>%
+      dplyr::left_join(protein_annot, by = c(Gygi_ID = "GygiNames")) %>%
+      dplyr::filter(.data$DepMap_ID %in% selected_cell_lines, ) %>%
+      dplyr::select(.data$DepMap_ID, .data$Gene_Symbol, .data$protein_expr, .data$Gygi_ID) %>%
+      filter(!is.na(.data$protein_expr))
+    
+    if(nrow(Gene_A_expr) < 3){
+      stop(
+        "There are only 3 or less lines with ", select_gene, " expression.",
+        "Please remove from input_gene"
+      )
+    }
     
     # Need to define function. A fix for a
     # strange bug:
@@ -199,29 +218,58 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
         )
       }
       
-      Gene_B_expr <- CCLE_exp %>%
-        dplyr::select(.data$DepMap_ID, AllGenes[each]) %>%
-        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines) %>%
-        dplyr::rename(RNA_expr = 2)
-      
-      res_pearson <- cor.test(Gene_A_expr$RNA_expr,
-                              Gene_B_expr$RNA_expr,
-                              alternative = "two.sided",
-                              method = "pearson", na.action = "na.omit"
-      ) %>%
-        broom::tidy() %>%
-        dplyr::mutate(
-          GeneNameID_A = get_GeneNameID(select_gene,
-                                        data_dir = data_dir
-          ),
-          GeneNameID_B = AllGenes[each]
-        ) %>%
+      Gene_B_expr <- protein_nodup %>%
+        dplyr::filter(.data$Gene_Symbol %in% AllGenes[each]) %>%
         dplyr::select(
-          .data$GeneNameID_A, .data$GeneNameID_B,
-          tidyr::everything()
-        )
+          .data$Gene_Symbol, .data$Description,
+          .data$Uniprot, .data$Uniprot_Acc, dplyr::contains("_TenPx")
+        ) %>%
+        tidyr::pivot_longer(
+          -c(
+            .data$Gene_Symbol, .data$Description,
+            .data$Uniprot, .data$Uniprot_Acc
+          ),
+          names_to = "Gygi_ID",
+          values_to = "protein_expr"
+        ) %>%
+        dplyr::left_join(protein_annot, by = c(Gygi_ID = "GygiNames")) %>%
+        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines, ) %>%
+        dplyr::select(.data$DepMap_ID, .data$Gene_Symbol, .data$protein_expr, .data$Gygi_ID)
       
-      res_pearson
+      # Check if enough Ns
+      check <- Gene_B_expr %>% dplyr::filter(!is.na(.data$protein_expr))
+      if(nrow(check) < 3){
+        res_pearson <- tibble(
+          GeneNameID_A = select_gene,
+          GeneNameID_B = AllGenes[each],
+          statistic = NA,
+          p.value = NA,
+          parameter = NA,
+          conf.low = NA,
+          conf.high = NA, 
+          method = NA, 
+          alternative = NA
+        )
+        
+        res_pearson
+      } else {
+        res_pearson <- cor.test(Gene_A_expr$protein_expr,
+                                Gene_B_expr$protein_expr,
+                                alternative = "two.sided",
+                                method = "pearson", na.action = "na.omit"
+        ) %>%
+          broom::tidy() %>%
+          dplyr::mutate(
+            GeneNameID_A = select_gene,
+            GeneNameID_B = AllGenes[each]
+          ) %>%
+          dplyr::select(
+            .data$GeneNameID_A, .data$GeneNameID_B,
+            tidyr::everything()
+          )
+        
+        res_pearson
+      }
     }
     All_res <- dplyr::bind_rows(All_res, res)
   }
@@ -247,7 +295,7 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
     readr::write_csv(file = output_dir_and_filename)
   
   message(
-    "RNA co-expression mapping finished. Outputs were also written to: ",
+    "Protein co-expression mapping finished. Outputs were also written to: ",
     output_dir_and_filename
   )
   return(output)

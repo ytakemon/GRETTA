@@ -1,7 +1,7 @@
-#' @title Perform Pearson coefficient mapping of all pairs
+#' @title Perform Pearson coefficient mapping of all pairs of genes in a essentiality screen
 #' 
-#' @description Performs Pearson correlation coefficient analyses between all gene pairs. Input parameters should match those
-#' used to run `annotate_coess()`.
+#' @description Performs Pearson correlation coefficient analyses between all gene pairs found in an essentiality screen. Input parameters should match those
+#' used to run `annotate_df()`.
 #' 
 #' @param input_genes string, A vector containing one or more "Hugo Symbol_NCBIID", Default: NULL
 #' @param input_disease string, A vector one or more disease contexts, Will perform pan-cancer analyses 
@@ -35,15 +35,17 @@
 #'   download_example_data(".")
 #' }
 #' 
-#' coess_df <- common_coefs(
+#' \dontrun{
+#' coess_df <- common_coefs_coess(
 #' input_gene = c("ARID1A", "SMARCB1"),
 #' input_disease = 'Pancreatic Cancer',
 #' core_num = 2,
 #' data_dir = gretta_data_dir, 
 #' output_dir = gretta_output_dir,
 #' test = TRUE)
+#' }
 #' 
-#' @rdname coessential_map
+#' @rdname common_coefs_coess
 #' @export 
 #' @importFrom parallel detectCores
 #' @importFrom doMC registerDoMC
@@ -60,7 +62,7 @@
 #' @importFrom stringr str_detect
 
 
-common_coefs <- function(input_genes = NULL, input_disease = NULL,
+common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
                          input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
                          data_dir = NULL, filename = NULL, test = FALSE) {
   # Check that essential inputs are given:
@@ -117,8 +119,8 @@ common_coefs <- function(input_genes = NULL, input_disease = NULL,
                           names_to = "GeneNameID_B", values_to = "estimate"
       ) %>%
       dplyr::filter(
-        GeneNameID_A %in% Gene_A_GeneNameID,
-        GeneNameID_B %in% Gene_A_GeneNameID,
+        .data$GeneNameID_A %in% Gene_A_GeneNameID,
+        .data$GeneNameID_B %in% Gene_A_GeneNameID,
       )
     
     fit_tstat_long <- fit$t %>%
@@ -127,8 +129,8 @@ common_coefs <- function(input_genes = NULL, input_disease = NULL,
                           names_to = "GeneNameID_B", values_to = "statistic"
       ) %>%
       dplyr::filter(
-        GeneNameID_A %in% Gene_A_GeneNameID,
-        GeneNameID_B %in% Gene_A_GeneNameID,
+        .data$GeneNameID_A %in% Gene_A_GeneNameID,
+        .data$GeneNameID_B %in% Gene_A_GeneNameID,
       )
     
     fit_pval_long <- fit$p %>%
@@ -137,8 +139,8 @@ common_coefs <- function(input_genes = NULL, input_disease = NULL,
                           names_to = "GeneNameID_B", values_to = "p.value"
       ) %>%
       dplyr::filter(
-        GeneNameID_A %in% Gene_A_GeneNameID,
-        GeneNameID_B %in% Gene_A_GeneNameID,
+        .data$GeneNameID_A %in% Gene_A_GeneNameID,
+        .data$GeneNameID_B %in% Gene_A_GeneNameID,
       )
     
     fit_param_long <- fit$n %>%
@@ -147,8 +149,8 @@ common_coefs <- function(input_genes = NULL, input_disease = NULL,
                           names_to = "GeneNameID_B", values_to = "parameter"
       ) %>%
       dplyr::filter(
-        GeneNameID_A %in% Gene_A_GeneNameID,
-        GeneNameID_B %in% Gene_A_GeneNameID,
+        .data$GeneNameID_A %in% Gene_A_GeneNameID,
+        .data$GeneNameID_B %in% Gene_A_GeneNameID,
       )
     
     cor_df <- dplyr::left_join(fit_est_long, fit_tstat_long) %>%
@@ -198,8 +200,8 @@ common_coefs <- function(input_genes = NULL, input_disease = NULL,
     if (!is.null(input_disease)) {
       selected_cell_lines <- sample_annot %>%
         dplyr::filter(.data$DepMap_ID %in%
-                        gene_effect$DepMap_ID, .data$disease %in%
-                        input_disease) %>%
+                        gene_effect$DepMap_ID, 
+                      .data$disease %in% input_disease) %>%
         dplyr::pull(.data$DepMap_ID)
     } else if (!is.null(input_cell_lines)) {
       selected_cell_lines <- sample_annot %>%
