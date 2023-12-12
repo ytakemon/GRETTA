@@ -1,8 +1,9 @@
-#' @title Perform protein co-expression analysis
+#' @title Perform Pearson coefficient mapping of all pairs of genes in a protein co-expression analysis
 #' 
-#' @description Performs multiple correlation coefficient analyses and determines cut to identify most likely co-expressed genes.
+#' @description Performs Pearson correlation coefficient analyses between all gene pairs found in a protein co-expression analysis. 
+#' Input parameters should match those used to run `annotate_df()`.
 #' 
-#' @param input_genes string, A vector containing one or more Hugo Symbol, Default: NULL
+#' @param input_genes string, A vector containing one or more "Hugo Symbol", Default: NULL
 #' @param input_disease string, A vector one or more disease contexts, Will perform pan-cancer analyses 
 #' (all cell lines) by default, Default: NULL
 #' @param input_cell_lines string, A vector DepMap_IDs for which co-essentiality mapping will be performed on. 
@@ -12,7 +13,7 @@
 #' @param data_dir string Path to GRETTA_data
 #' @param filename string name of file without the '.csv' extension. 
 #' @param test logical, TRUE/FALSE whether you want to run only a small subset (first 10 genes) to ensure function will run properly 
-#' prior to running all 18,333 genes. Default: FALSE.
+#' prior to running all genes. Default: FALSE.
 #'
 #' @return A data frame containing Pearson correlation coefficients. A copy is also saved to the 
 #' directory defined in `output_dir`.
@@ -24,8 +25,6 @@
 #' * `statistic` - Pearson's correlation statistic. Output from `?cor.test`.
 #' * `p.value` - P-value from Pearson's correlation statistic. Output from `?cor.test`.
 #' * `parameter` - Degrees of freedom. Output from `?cor.test`.
-#' * `Rank` - Rank by correlation coefficient. 
-#' * `Padj_BH` - Benjamini-Hochberg adjusted p-value.
 #' @md
 #' 
 #' @examples 
@@ -37,8 +36,8 @@
 #' }
 #' 
 #' \dontrun{
-#' coess_df <- protein_coexpress(
-#' input_gene = 'ARID1A',
+#' coess_df <- common_coefs_prot(
+#' input_gene = c("ARID1A", "SMARCB1"),
 #' input_disease = 'Pancreatic Cancer',
 #' core_num = 2,
 #' data_dir = gretta_data_dir, 
@@ -46,7 +45,7 @@
 #' test = TRUE)
 #' }
 #' 
-#' @rdname protein_coexpress
+#' @rdname common_coefs_prot
 #' @export 
 #' @importFrom parallel detectCores
 #' @importFrom doMC registerDoMC
@@ -62,7 +61,7 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
+common_coefs_prot <- function(input_genes = NULL, input_disease = NULL,
                               input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
                               data_dir = NULL, filename = NULL, test = FALSE) {
   # Check that essential inputs are given:
@@ -153,7 +152,7 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
   }
   
   # Provide only expr of genes of interst
-  AllGenes <- protein_nodup$Gene_Symbol
+  AllGenes <- input_genes
   All_res <- NULL
   for (g in seq_len(length(input_genes))) {
     # g <- 1
@@ -190,7 +189,7 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
     `%dopar%` <- foreach::`%dopar%`
     
     # Begin loop
-    message("This may take a few mins... Consider running with a higher core numbers to speed up the analysis.")
+    message("Analysing: ", select_gene, ". \n")
     if (test == TRUE) {
       run <- 10
     } else {
@@ -291,7 +290,7 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
       .data$GeneNameID_A, .data$GeneNameID_B,
       .data$estimate, .data$statistic, .data$parameter,
       .data$Rank, .data$p.value, .data$Padj_BH
-    ) %>%
+    ) %>% 
     dplyr::ungroup() %>%
     readr::write_csv(file = output_dir_and_filename)
   
@@ -301,4 +300,3 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
   )
   return(output)
 }
-

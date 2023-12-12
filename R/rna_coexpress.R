@@ -244,6 +244,7 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
       .data$estimate, .data$statistic, .data$parameter,
       .data$Rank, .data$p.value, .data$Padj_BH
     ) %>%
+    dplyr::ungroup() %>%
     readr::write_csv(file = output_dir_and_filename)
   
   message(

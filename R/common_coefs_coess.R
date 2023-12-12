@@ -61,7 +61,6 @@
 #' @importFrom tibble as_tibble
 #' @importFrom stringr str_detect
 
-
 common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
                          input_cell_lines = NULL, core_num = NULL, output_dir = NULL,
                          data_dir = NULL, filename = NULL, test = FALSE) {
@@ -94,7 +93,7 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
   } else {
     output_dir_and_filename <- paste0(
       output_dir,
-      "/GRETTA_coessentiality_network_results.csv"
+      "/GRETTA_coessentiality_common_results.csv"
     )
   }
   
@@ -318,6 +317,7 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
         .data$estimate, .data$statistic, .data$parameter, 
         .data$p.value, .data$Padj_BH
       ) %>%
+      dplyr::ungroup() %>%
       readr::write_csv(file = output_dir_and_filename)
     
     message(
