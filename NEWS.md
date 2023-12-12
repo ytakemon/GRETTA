@@ -1,11 +1,20 @@
+# GRETTA 1.0.0
+
+Due to slow turn around by Bioconductor, it has been decided that GRETTA will not be uploaded to their repository. 
+
+## Introducing new functions!
+
+- `protien_coexpress()` to perform co-expression analysis for protein data.
+- `common_coefs_prot()` to map the Pearson's coefficient between input proteins.
+- `common_coefs_rna()` to map the Pearson's coefficient between input RNA.
+- `common_coefs_coess()` to map the Pearson's coefficient between input co/anti-essential genes.
+
 # GRETTA 0.99.5
 
 - `anntate_coess()` was renamed to `anntate_df()`
 - `coessential_map()`, `get_inflection_point()`, and `anntate_coess()` can now handle multiple input genes.
 
-## New functions!:
-
-Introducing:
+## Introducing new functions!:
 
 - `common_coefs()` to map the Pearson's coefficient between all input genes.
 - `rna_coexpress()` to perform co-expression analysis for mRNA.
