@@ -95,6 +95,12 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
     } else {
       message("Selecting top and bottom ", top_n, " candidates.")
     }
+    
+    # Define tops and bottoms
+    top <- top_n
+    middle <- 18333 - (top_n * 2)
+    
+    # annotate and output
     All_res <- All_res %>% dplyr::ungroup() %>% dplyr::mutate(
       Candidate_gene = rep(c(rep(TRUE, top), rep(FALSE, middle), rep(TRUE, top)), length(unique(input_df$GeneNameID_A)))
     )
