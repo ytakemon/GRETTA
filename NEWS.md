@@ -1,3 +1,5 @@
+# GRETTA 1.0.2
+
 # GRETTA 1.0.1
 
 Minor patch to ensure top/bottoms are selected when annotating
