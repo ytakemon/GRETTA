@@ -1,5 +1,7 @@
 # GRETTA 1.0.1
 
+Minor patch to ensure top/bottoms are selected when annotating
+
 # GRETTA 1.0.0
 
 Due to slow turn around by Bioconductor, it has been decided that GRETTA will not be uploaded to their repository. 
