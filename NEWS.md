@@ -1,3 +1,5 @@
+# GRETTA 1.0.1
+
 # GRETTA 1.0.0
 
 Due to slow turn around by Bioconductor, it has been decided that GRETTA will not be uploaded to their repository. 
