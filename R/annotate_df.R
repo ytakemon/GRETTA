@@ -84,7 +84,7 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
   if(length(unique(input_df$GeneNameID_A)) == nrow(candidate)){
     use_inflection == FALSE
     top <- top_n
-    middle <- 18333 - (top_n * 2)
+    middle <- (nrow(All_res) / length(unique(input_df$GeneNameID_A))) - (top_n * 2)
     message("Only ", nrow(candidate), " candidates. Selecting candidates based on input \n")
   } 
   
@@ -98,7 +98,7 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
     
     # Define tops and bottoms
     top <- top_n
-    middle <- 18333 - (top_n * 2)
+    middle <- (nrow(All_res) / length(unique(input_df$GeneNameID_A))) - (top_n * 2)
     
     # annotate and output
     All_res <- All_res %>% dplyr::ungroup() %>% dplyr::mutate(
