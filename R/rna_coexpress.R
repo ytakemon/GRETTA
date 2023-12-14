@@ -138,11 +138,11 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
                       CCLE_exp$DepMap_ID, .data$disease %in%
                       input_disease) %>%
       dplyr::pull(.data$DepMap_ID)
-  } else if (!is.null(input_cell_lines)) {
+  } else if(is.null(input_cell_lines) & is.null(input_disease)){
     selected_cell_lines <- sample_annot %>%
-      dplyr::filter(.data$DepMap_ID %in%
-                      CCLE_exp$DepMap_ID, .data$DepMap_ID %in%
-                      input_cell_lines) %>%
+      dplyr::pull(.data$DepMap_ID)
+  } else if(is.null(input_cell_lines) & is.null(input_disease)){
+    selected_cell_lines <- sample_annot %>%
       dplyr::pull(.data$DepMap_ID)
   } else {
     stop(
