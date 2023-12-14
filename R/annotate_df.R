@@ -47,7 +47,7 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
     stop("No coessential dataframe found!")
   }
   if (is.null(input_inflec)) {
-    stop("No inflection points found!")
+    message("No inflection points provided")
   }
   if (!is.data.frame(input_df)) {
     stop("Input is not a dataframe, please check the input")
@@ -61,21 +61,26 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
     select_input_df <- input_df %>%
       dplyr::filter(.data$GeneNameID_A %in% gene)
     
-    if(nrow(input_inflec) == 1){
-      select_input_inflec <- input_inflec 
+    if(!is.null(input_inflec)){
+      if(nrow(input_inflec) == 1){
+        select_input_inflec <- input_inflec 
+      } else {
+        select_input_inflec <- input_inflec %>%
+          dplyr::filter(.data$GeneNameID_A %in% gene)
+      }
+      
+      res <- select_input_df %>%
+        dplyr::arrange(-.data$Rank) %>%
+        dplyr::mutate(Candidate_gene = dplyr::case_when(
+          (.data$Padj_BH < 0.05) & (.data$Rank >= select_input_inflec$Inflection_point_pos_byRank) ~ TRUE,
+          (.data$Padj_BH < 0.05) & (.data$Rank <= select_input_inflec$Inflection_point_neg_byRank) ~ TRUE,
+          TRUE ~ FALSE
+        ))
     } else {
-      select_input_inflec <- input_inflec %>%
-        dplyr::filter(.data$GeneNameID_A %in% gene)
+        res <- select_input_df %>%
+        dplyr::arrange(-.data$Rank) %>%
+        dplyr::mutate(Candidate_gene = FALSE)
     }
-    
-    res <- select_input_df %>%
-      dplyr::arrange(-.data$Rank) %>%
-      dplyr::mutate(Candidate_gene = dplyr::case_when(
-        (.data$Padj_BH < 0.05) & (.data$Rank >= select_input_inflec$Inflection_point_pos_byRank) ~ TRUE,
-        (.data$Padj_BH < 0.05) & (.data$Rank <= select_input_inflec$Inflection_point_neg_byRank) ~ TRUE,
-        TRUE ~ FALSE
-      ))
-    
     All_res <- dplyr::bind_rows(All_res, res)
   }
   
@@ -89,7 +94,7 @@ annotate_df <- function(input_df = NULL, input_inflec = NULL, top_n = NULL, use_
   } 
   
   # If using a manual threshold
-  if(use_inflection == FALSE){
+  if(use_inflection == FALSE | is.null(input_inflec)){
     if (is.null(top_n)) {
       stop("Manually  selecting candidates... Error: No input in top_n \n")
     } else {
