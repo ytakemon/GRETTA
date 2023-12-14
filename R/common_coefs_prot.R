@@ -144,6 +144,9 @@ common_coefs_prot <- function(input_genes = NULL, input_disease = NULL,
                       protein_annot$DepMap_ID, .data$DepMap_ID %in%
                       input_cell_lines) %>%
       dplyr::pull(.data$DepMap_ID)
+  } else if(is.null(input_cell_lines) & is.null(input_disease)){
+    selected_cell_lines <- sample_annot %>%
+      dplyr::pull(.data$DepMap_ID)
   } else {
     stop(
       "Following may not be available:",
