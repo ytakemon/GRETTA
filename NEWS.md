@@ -1,14 +1,22 @@
 # GRETTA 1.0.5
 
+Minor patch to remove duplicates from common screens
+
 # GRETTA 1.0.4
+
+Minor patch to fix typo
 
 # GRETTA 1.0.3
 
+Minor patch to fix protein expression extraction.
+
 # GRETTA 1.0.2
+
+Minor patch to fix typo.
 
 # GRETTA 1.0.1
 
-Minor patch to ensure top/bottoms are selected when annotating
+Minor patch to ensure top/bottoms are selected when annotating.
 
 # GRETTA 1.0.0
 
