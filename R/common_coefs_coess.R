@@ -164,6 +164,9 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
       dplyr::mutate(Padj_BH = p.adjust(.data$p.value,
                                        method = "BH", n = (length(.data$p.value))
       )) %>%
+      arrange(estimate,statistic,p.value, GeneNameID_A) %>%
+      filter(row_number() %% 2 == 1) %>% ## Select odd rows to remove duplicates
+      arrange(GeneNameID_A, GeneNameID_B) %>%
       readr::write_csv(file = output_dir_and_filename)
     
     message(
@@ -318,6 +321,9 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
         .data$p.value, .data$Padj_BH
       ) %>%
       dplyr::ungroup() %>%
+      arrange(estimate,statistic,p.value, GeneNameID_A) %>%
+      filter(row_number() %% 2 == 1) %>% ## Select odd rows to remove duplicates
+      arrange(GeneNameID_A, GeneNameID_B) %>%
       readr::write_csv(file = output_dir_and_filename)
     
     message(
