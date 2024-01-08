@@ -1,3 +1,5 @@
+# GRETTA 1.0.6
+
 # GRETTA 1.0.5
 
 Minor patch to remove duplicates from common screens
