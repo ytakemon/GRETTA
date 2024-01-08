@@ -195,32 +195,17 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
     # Begin loop
     message("This may take a few mins... Consider running with a higher core numbers to speed up the analysis.")
     if (test == TRUE) {
-      run <- 10
+      run <- 100
     } else {
       run <- length(unique(AllGenes))
     }
+    
     res <- each <- NULL
     res <- foreach::foreach(
       each = seq_len(run),
+      #each = 1000:6000,
       .combine = dplyr::bind_rows
     ) %dopar% {
-      if (each == 1) {
-        message(
-          "Processing ", each, " of ",
-          length(AllGenes), "\n"
-        )
-      } else if (each == length(AllGenes)) {
-        message(
-          "Processing ", each, " of ",
-          length(AllGenes), "\n"
-        )
-      } else if (each %% 1000 == 0) {
-        message(
-          "Processing ", each, " of ",
-          length(AllGenes), "\n"
-        )
-      }
-      
       Gene_B_expr <- protein_nodup %>%
         dplyr::filter(.data$Gene_Symbol %in% AllGenes[each]) %>%
         dplyr::select(
@@ -236,12 +221,16 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
           values_to = "protein_expr"
         ) %>%
         dplyr::left_join(protein_annot, by = c(Gygi_ID = "GygiNames")) %>%
-        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines, ) %>%
+        dplyr::filter(.data$DepMap_ID %in% selected_cell_lines) %>%
         dplyr::select(.data$DepMap_ID, .data$Gene_Symbol, .data$protein_expr, .data$Gygi_ID)
       
       # Check if enough Ns
-      check <- Gene_B_expr %>% dplyr::filter(!is.na(.data$protein_expr))
-      if(nrow(check) < 3){
+      test_df <- Gene_A_expr %>%
+        dplyr::select(DepMap_ID, protein_exprA = protein_expr) %>%
+        dplyr::full_join(Gene_B_expr %>% dplyr::select(DepMap_ID, protein_exprB = protein_expr)) %>%
+        filter(!is.na(protein_exprA) & !is.na(protein_exprB))
+      
+      if(nrow(test_df) < 3){
         res_pearson <- tibble(
           GeneNameID_A = select_gene,
           GeneNameID_B = AllGenes[each],
@@ -256,11 +245,10 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
         
         res_pearson
       } else {
-        res_pearson <- cor.test(Gene_A_expr$protein_expr,
-                                Gene_B_expr$protein_expr,
+        res_pearson <- cor.test(test_df$protein_exprA,
+                                test_df$protein_exprB,
                                 alternative = "two.sided",
-                                method = "pearson", na.action = "na.omit"
-        ) %>%
+                                method = "pearson", na.action = "na.omit") %>%
           broom::tidy() %>%
           dplyr::mutate(
             GeneNameID_A = select_gene,

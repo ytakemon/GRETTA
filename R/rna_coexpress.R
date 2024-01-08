@@ -204,11 +204,15 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
         dplyr::filter(.data$DepMap_ID %in% selected_cell_lines) %>%
         dplyr::rename(RNA_expr = 2)
       
-      res_pearson <- cor.test(Gene_A_expr$RNA_expr,
-                              Gene_B_expr$RNA_expr,
+      test_df <- Gene_A_expr %>%
+        dplyr::select(DepMap_ID, RNA_exprA = RNA_expr) %>%
+        dplyr::full_join(Gene_B_expr %>% dplyr::select(DepMap_ID, RNA_exprB = RNA_expr)) %>%
+        filter(!is.na(RNA_exprA) & !is.na(RNA_exprB))
+      
+      res_pearson <- cor.test(test_df$RNA_exprA,
+                              test_df$RNA_exprB,
                               alternative = "two.sided",
-                              method = "pearson", na.action = "na.omit"
-      ) %>%
+                              method = "pearson", na.action = "na.omit") %>%
         broom::tidy() %>%
         dplyr::mutate(
           GeneNameID_A = get_GeneNameID(select_gene,

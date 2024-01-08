@@ -277,11 +277,15 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
         Gene_B_effect <- gene_effect_long %>%
           dplyr::filter(.data$GeneNameID == AllGenes[each])
         
-        res_pearson <- cor.test(Gene_A_effect$Effect_score,
-                                Gene_B_effect$Effect_score,
+        test_df <- Gene_A_effect %>%
+          dplyr::select(DepMap_ID, Effect_scoreA = Effect_score) %>%
+          dplyr::full_join(Gene_B_effect %>% dplyr::select(DepMap_ID, Effect_scoreB = Effect_score)) %>%
+          filter(!is.na(Effect_scoreA) & !is.na(Effect_scoreB))
+        
+        res_pearson <- cor.test(test_df$Effect_scoreA,
+                                test_df$Effect_scoreB,
                                 alternative = "two.sided",
-                                method = "pearson", na.action = "na.omit"
-        ) %>%
+                                method = "pearson", na.action = "na.omit") %>%
           broom::tidy() %>%
           dplyr::mutate(
             GeneNameID_A = Gene_A_GeneNameID,
