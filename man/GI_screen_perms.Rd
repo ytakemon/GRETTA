@@ -59,7 +59,7 @@ if(!dir.exists(gretta_data_dir)){
   download_example_data(".")
 }
 
-Screen_results <- GI_screen(
+Screen_results <- GI_screen_perms(
 control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
 mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
 n_perm = 10,

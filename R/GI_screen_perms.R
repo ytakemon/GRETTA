@@ -34,7 +34,7 @@
 #'   download_example_data(".")
 #' }
 #' 
-#' Screen_results <- GI_screen(
+#' Screen_results <- GI_screen_perms(
 #' control_id = c('ACH-001354', 'ACH-000274', 'ACH-001799'), 
 #' mutant_id = c('ACH-000911', 'ACH-001957', 'ACH-000075'), 
 #' n_perm = 10,
@@ -158,11 +158,11 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                 
                                 # Give feedback
                                 if (each == 1) {
-                                  message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
-                                } else if (each == length(unique(select_dep$GeneNameID))) {
-                                  message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
+                                  message("Processing ", each, " of ", n_perm)
+                                } else if (each == n_perm) {
+                                  message("Processing ", each, " of ", n_perm)
                                 } else if (each%%1000 == 0) {
-                                  message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
+                                  message("Processing ", each, " of ", n_perm)
                                 }
                                 
                                 # Create randomly sampled DepProb dataframe

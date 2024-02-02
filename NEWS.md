@@ -1,6 +1,10 @@
 # GRETTA 2.0.0
 
+Major bump. New function `GI_screen_perms()` has been added to perform permutation on GI screen results for p-value correction/
+
 # GRETTA 1.0.6
+
+Minor patch to for Connibear lab requests
 
 # GRETTA 1.0.5
 
