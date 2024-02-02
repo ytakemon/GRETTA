@@ -2,6 +2,7 @@
 
 export("%>%")
 export(GI_screen)
+export(GI_screen_perms)
 export(annotate_df)
 export(coessential_map)
 export(common_coefs_coess)

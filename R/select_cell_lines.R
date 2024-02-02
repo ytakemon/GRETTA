@@ -4,7 +4,7 @@
 #' `select_cell_lines()` assigns cancer cell lines to either `Control` groups or one of the following mutant groups: `HomDel`,
 #' `T-HetDel`, `HetDel`, `Amplified`, or `Others` (see details).
 #' 
-#' @param input_gene string Hugo Symbol
+#' @param input_gene string as Hugo Symbol
 #' @param input_aa_change string Amino acid change (eg. "A387A"). input_gene must be specified
 #' @param input_disease string Cancer type listed in `list_available_cancer_types()`
 #' @param input_disease_subtype string Cancer subtype listed in `list_available_cancer_subtypes()`
@@ -60,10 +60,10 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
          but no gene was provided. Please define input_gene!")
     
   } else if(is.null(c(input_disease, input_disease_subtype)) & !is.null(input_gene)){
-    message("Selecting mutant groups for: ", input_gene, " in all cancer cell lines")
+    message("Selecting mutant groups for: ", paste0(input_gene, collapse = ", "), " in all cancer cell lines")
   
   } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
-    message("Selecting mutant groups for: ", input_gene, " in ", input_disease,", ", 
+    message("Selecting mutant groups for: ", paste0(input_gene, collapse = ", "), " in ", input_disease,", ", 
             input_disease_subtype, " cell lines")
     
   } else if(is.null(input_disease_subtype) & !is.null(c(input_gene, input_disease))){

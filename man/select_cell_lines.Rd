@@ -13,7 +13,7 @@ select_cell_lines(
 )
 }
 \arguments{
-\item{input_gene}{string Hugo Symbol}
+\item{input_gene}{string as Hugo Symbol}
 
 \item{input_aa_change}{string Amino acid change (eg. "A387A"). input_gene must be specified}
 
