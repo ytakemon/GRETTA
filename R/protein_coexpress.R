@@ -226,9 +226,9 @@ protein_coexpress <- function(input_genes = NULL, input_disease = NULL,
       
       # Check if enough Ns
       test_df <- Gene_A_expr %>%
-        dplyr::select(DepMap_ID, protein_exprA = protein_expr) %>%
-        dplyr::full_join(Gene_B_expr %>% dplyr::select(DepMap_ID, protein_exprB = protein_expr)) %>%
-        filter(!is.na(protein_exprA) & !is.na(protein_exprB))
+        dplyr::select(.data$DepMap_ID, protein_exprA = .data$protein_expr) %>%
+        dplyr::full_join(Gene_B_expr %>% dplyr::select(.data$DepMap_ID, protein_exprB = .data$protein_expr)) %>%
+        filter(!is.na(.data$protein_exprA) & !is.na(.data$protein_exprB))
       
       if(nrow(test_df) < 3){
         res_pearson <- tibble(

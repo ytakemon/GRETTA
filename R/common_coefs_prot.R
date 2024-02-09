@@ -296,9 +296,9 @@ common_coefs_prot <- function(input_genes = NULL, input_disease = NULL,
     ) %>% 
     dplyr::ungroup() %>%
     filter(GeneNameID_A != GeneNameID_B) %>%
-    arrange(estimate,statistic,p.value, GeneNameID_A) %>%
+    arrange(.data$estimate, .data$statistic, .data$p.value, .data$GeneNameID_A) %>%
     filter(row_number() %% 2 == 1) %>% ## Select odd rows to remove duplicates
-    arrange(GeneNameID_A, GeneNameID_B) %>%
+    arrange(.data$GeneNameID_A, .data$GeneNameID_B) %>%
     readr::write_csv(file = output_dir_and_filename)
   
   message(

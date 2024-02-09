@@ -205,9 +205,9 @@ rna_coexpress <- function(input_genes = NULL, input_disease = NULL,
         dplyr::rename(RNA_expr = 2)
       
       test_df <- Gene_A_expr %>%
-        dplyr::select(DepMap_ID, RNA_exprA = RNA_expr) %>%
-        dplyr::full_join(Gene_B_expr %>% dplyr::select(DepMap_ID, RNA_exprB = RNA_expr)) %>%
-        filter(!is.na(RNA_exprA) & !is.na(RNA_exprB))
+        dplyr::select(.data$DepMap_ID, .RNA_exprA = data$RNA_expr) %>%
+        dplyr::full_join(Gene_B_expr %>% dplyr::select(.data$DepMap_ID, RNA_exprB = .data$RNA_expr)) %>%
+        filter(!is.na(.data$RNA_exprA) & !is.na(.data$RNA_exprB))
       
       res_pearson <- cor.test(test_df$RNA_exprA,
                               test_df$RNA_exprB,

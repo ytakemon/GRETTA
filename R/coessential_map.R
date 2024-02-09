@@ -278,9 +278,9 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
           dplyr::filter(.data$GeneNameID == AllGenes[each])
         
         test_df <- Gene_A_effect %>%
-          dplyr::select(DepMap_ID, Effect_scoreA = Effect_score) %>%
-          dplyr::full_join(Gene_B_effect %>% dplyr::select(DepMap_ID, Effect_scoreB = Effect_score)) %>%
-          filter(!is.na(Effect_scoreA) & !is.na(Effect_scoreB))
+          dplyr::select(.data$DepMap_ID, Effect_scoreA = .data$Effect_score) %>%
+          dplyr::full_join(Gene_B_effect %>% dplyr::select(.data$DepMap_ID, Effect_scoreB = .data$Effect_score)) %>%
+          filter(!is.na(.data$Effect_scoreA) & !is.na(.data$Effect_scoreB))
         
         res_pearson <- cor.test(test_df$Effect_scoreA,
                                 test_df$Effect_scoreB,

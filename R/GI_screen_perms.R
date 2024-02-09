@@ -119,9 +119,9 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
   
   # Check to see if enough samples were given
   # after filtering:
-  Control_group_avail <- control_id[control_id %in%
+  Control_group_avail <- control_id[.data$control_id %in%
                                       dep$DepMap_ID]
-  Mutant_groups_avail <- mutant_id[mutant_id %in%
+  Mutant_groups_avail <- mutant_id[.data$mutant_id %in%
                                      dep$DepMap_ID]
   if (length(Control_group_avail) < 2) {
     say <- paste0("Not enough controls were screened! Only the following control samples were screen: ",
@@ -139,8 +139,8 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
   select_dep <- dep %>%
     tidyr::pivot_longer(cols = tidyselect::matches("\\d"),
                         names_to = "GeneNameID", values_to = "DepProb") %>%
-    dplyr::mutate(CellType = case_when(DepMap_ID %in%
-                                         Mutant_groups_avail ~ "Mutant", DepMap_ID %in%
+    dplyr::mutate(CellType = case_when(.data$DepMap_ID %in%
+                                         Mutant_groups_avail ~ "Mutant", .data$DepMap_ID %in%
                                          Control_group_avail ~ "Control", TRUE ~
                                          "Others")) %>%
     dplyr::filter(.data$CellType != "Others") %>%
@@ -168,10 +168,10 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                 # Create randomly sampled DepProb dataframe
                                 dummy_geneID <- "A1BG_1"
                                 df <- select_dep %>% 
-                                  mutate(DepProb_randomize = sample(DepProb, size = length(DepProb), replace = FALSE)) %>%
-                                  filter(GeneNameID == dummy_geneID) %>%
-                                  select(-DepProb) %>%
-                                  rename(DepProb = DepProb_randomize)
+                                  mutate(DepProb_randomize = (sample(DepProb, size = length(DepProb), replace = FALSE))) %>%
+                                  filter(G.data$eneNameID == dummy_geneID) %>%
+                                  select(-.data$DepProb) %>%
+                                  rename(DepProb = .data$DepProb_randomize)
                                 
                                 df_post_filter_check <- df %>%
                                   count(.data$CellType)
@@ -200,8 +200,8 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                   if ((any(is.na(stats)) != TRUE) & (nrow(stats) ==
                                                                      2)) {
                                     
-                                    fit_pval <- stats::wilcox.test(DepProb ~
-                                                                     CellType, df, paired = FALSE, alternative = "two.sided",
+                                    fit_pval <- stats::wilcox.test(.data$DepProb ~
+                                                                     .data$CellType, df, paired = FALSE, alternative = "two.sided",
                                                                    conf.int = TRUE, na.action = "na.omit")$p.value
                                     
                                   } else if ((any(is.na(stats)) == TRUE) &
@@ -233,8 +233,8 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
     mutate(
       perm_test = 1:n_perm,
       n_perm = n_perm) %>%
-    select(-GeneNameID) %>%
-    select(perm_test, everything())
+    select(-.data$GeneNameID) %>%
+    select(.data$perm_test, everything())
   
   # save and return output
   output %>%
