@@ -4,12 +4,19 @@
 \alias{plot_screen}
 \title{Plot genetic screen results}
 \usage{
-plot_screen(result_df = NULL, label_genes = FALSE, label_n = NULL)
+plot_screen(
+  result_df = NULL,
+  label_genes = FALSE,
+  gene_list = NULL,
+  label_n = NULL
+)
 }
 \arguments{
 \item{result_df}{data frame, A data frame output from \code{GINI_screen()}, Default: NULL}
 
 \item{label_genes}{logical, TRUE to trigger gene name labeling, Default: FALSE}
+
+\item{gene_list}{characters, A vector of Hugo Symbols to plot. labels_genes must be TRUE to plot them, Default: NULL}
 
 \item{label_n}{integer, Number of genes from either end to label, Default: 1}
 }
@@ -29,6 +36,6 @@ if(!dir.exists(gretta_data_dir)){
 
 load(paste0(gretta_data_dir,"/sample_22Q2_ARID1A_KO_screen.rda"), envir = environment())
 
-plot_screen(screen_results, label_genes = FALSE)
+plot_screen(screen_results, label_genes = TRUE, "ARID1B")
 
 }

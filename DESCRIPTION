@@ -35,6 +35,7 @@ Imports:
     dplyr,
     magrittr,
     forcats,
+    purrr,
     rlang,
     stringr,
     utils,

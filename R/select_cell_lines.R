@@ -100,7 +100,7 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
     
     # Check if input gene mutations exist
-    if(!any(mut_calls$Hugo_Symbol %in% input_gene)|
+    if(!any(mut_calls$Hugo_Symbol %in% input_gene) &
        !any(copy_num_annot$GeneNames %in% input_gene)){
       stop("No mutations were found for: ", input_gene,
            ". Please check spelling and for valid Hugo Symbols")
