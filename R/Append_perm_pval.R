@@ -20,7 +20,9 @@
 Append_perm_pval <- function(GI_screen_res = NULL, perms = NULL) {
   res <- GI_screen_res %>%
     dplyr::mutate(
-      Pval_perm_adj = purrr::map_dbl(Pval, .f = Pval_perm_adjust, perms$Pval))
+      Pval_perm_adj = purrr::map_dbl(.data$Pval, .f = Pval_perm_adjust, perms$Pval),
+      Interaction_score = -log10(.data$Pval_perm_adj) * sign(.data$log2FC_by_median)
+    )
   
   return(res)
 }
