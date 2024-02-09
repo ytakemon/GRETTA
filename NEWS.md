@@ -1,3 +1,6 @@
+# GRETTA 2.1.0
+`plot_screen()` now has new option to plot specific genes using the `gene_list =` argument. Please read `?plot_screen` for more info. 
+
 # GRETTA 2.0.0
 
 Major bump. New function `GI_screen_perms()` has been added to perform permutation on GI screen results for p-value correction/
