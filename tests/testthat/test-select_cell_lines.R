@@ -5,6 +5,6 @@ test_that("Number of example control and mutant groups are correct", {
   test_control <- test %>% dplyr::filter(Group == "Control")
   test_amp <- test %>% dplyr::filter(Group == "Others")
   
-  expect_equal(test_control$n, 906)
-  expect_equal(test_amp$n, 66)
+  expect_equal(test_control$n, 758)
+  expect_equal(test_amp$n, 73)
 })

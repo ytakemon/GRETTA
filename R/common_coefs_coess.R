@@ -164,7 +164,7 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
       dplyr::mutate(Padj_BH = p.adjust(.data$p.value,
                                        method = "BH", n = (length(.data$p.value))
       )) %>%
-      filter(GeneNameID_A != GeneNameID_B) %>%
+      filter(.data$GeneNameID_A != .data$GeneNameID_B) %>%
       arrange(.data$estimate, .data$statistic, .data$p.value, .data$GeneNameID_A) %>%
       filter(row_number() %% 2 == 1) %>% ## Select odd rows to remove duplicates
       arrange(.data$GeneNameID_A, .data$GeneNameID_B) %>%
@@ -322,7 +322,7 @@ common_coefs_coess <- function(input_genes = NULL, input_disease = NULL,
         .data$p.value, .data$Padj_BH
       ) %>%
       dplyr::ungroup() %>%
-      filter(.data$GeneNameID_A != GeneNameID_B) %>%
+      filter(.data$GeneNameID_A != .data$GeneNameID_B) %>%
       arrange(.data$estimate, .data$statistic, .data$p.value, .data$GeneNameID_A) %>%
       filter(row_number() %% 2 == 1) %>% ## Select odd rows to remove duplicates
       arrange(.data$GeneNameID_A, .data$GeneNameID_B) %>%

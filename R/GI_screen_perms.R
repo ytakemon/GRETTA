@@ -119,9 +119,9 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
   
   # Check to see if enough samples were given
   # after filtering:
-  Control_group_avail <- control_id[.data$control_id %in%
+  Control_group_avail <- control_id[control_id %in%
                                       dep$DepMap_ID]
-  Mutant_groups_avail <- mutant_id[.data$mutant_id %in%
+  Mutant_groups_avail <- mutant_id[mutant_id %in%
                                      dep$DepMap_ID]
   if (length(Control_group_avail) < 2) {
     say <- paste0("Not enough controls were screened! Only the following control samples were screen: ",
@@ -168,8 +168,8 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                 # Create randomly sampled DepProb dataframe
                                 dummy_geneID <- "A1BG_1"
                                 df <- select_dep %>% 
-                                  mutate(DepProb_randomize = (sample(DepProb, size = length(DepProb), replace = FALSE))) %>%
-                                  filter(G.data$eneNameID == dummy_geneID) %>%
+                                  mutate(DepProb_randomize = (sample(.data$DepProb, size = length(.data$DepProb), replace = FALSE))) %>%
+                                  filter(.data$GeneNameID == dummy_geneID) %>%
                                   select(-.data$DepProb) %>%
                                   rename(DepProb = .data$DepProb_randomize)
                                 
@@ -197,11 +197,8 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                       Median = stats::median(.data$DepProb, na.rm = TRUE), 
                                       Mean = mean(.data$DepProb, na.rm = TRUE), .groups = "drop")
                                   
-                                  if ((any(is.na(stats)) != TRUE) & (nrow(stats) ==
-                                                                     2)) {
-                                    
-                                    fit_pval <- stats::wilcox.test(.data$DepProb ~
-                                                                     .data$CellType, df, paired = FALSE, alternative = "two.sided",
+                                  if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
+                                    fit_pval <- stats::wilcox.test(DepProb ~ CellType, df, paired = FALSE, alternative = "two.sided",
                                                                    conf.int = TRUE, na.action = "na.omit")$p.value
                                     
                                   } else if ((any(is.na(stats)) == TRUE) &
