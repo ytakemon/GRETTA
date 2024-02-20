@@ -1,3 +1,5 @@
+# GRETTA 2.2.0
+
 # GRETTA 2.1.0
 `plot_screen()` now has new option to plot specific genes using the `gene_list =` argument. Please read `?plot_screen` for more info. 
 

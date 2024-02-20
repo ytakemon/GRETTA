@@ -14,6 +14,7 @@
 #' @import rlang
 #' @import dplyr
 #' @import utils
+#' @import stringr
 #' 
 #' @export
 #' @details 
@@ -109,6 +110,15 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     input_geneID <- get_GeneNameID(input_gene, data_dir = data_dir)
     
     # Get copy number
+    # Fix names if needed
+    test <- grep("\\(", names(copy_num))
+    if(length(test) != 0){
+      # needs fixing
+      fix1 <- stringr::str_replace_all(string = names(copy_num), pattern = "\\ \\(", "_")
+      fix2 <- stringr::str_replace_all(string = fix1, pattern = "\\)", "")
+      names(copy_num) <- fix2
+    }
+    
     if(any(names(copy_num) %in% input_geneID)){
       target_copy_num <- copy_num %>%
         dplyr::select(.data$DepMap_ID, dplyr::all_of(input_geneID)) %>%
