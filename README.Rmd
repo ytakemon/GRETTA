@@ -263,11 +263,11 @@ At its core, `screen_results()` performs multiple Mann-Whitney U tests, comparin
 * `_median, _mean, _sd, _iqr` - Control and mutant group's median, mean, standard deviation (sd), and interquartile range (iqr) of dependency probabilities. Dependency probabilities range from zero to one, where one indicates a essential gene (ie. KO of gene was lethal) and zero indicates a non-essential gene (KO of gene was not lethal)
 * `Pval` - P-value from Mann Whitney U test between control and mutant groups.
 * `Adj_pval` - BH-adjusted P-value.
-* `log2FC_by_median` - Log2 normalized median fold change of dependency probabilities (mutant / control).
-* `log2FC_by_mean` - Log2 normalized mean fold change of dependency probabilities (mutant / control).
+* `log2FC_by_median` - Log2 normalized median fold change of dependency probabilities (mutant / control). Dependency probabilities range from 0.0-1.0 where 1.0 indicates high probability of KO leading to lethality, while 0.0 indicates little to no lethality.
+* `log2FC_by_mean` - Log2 normalized mean fold change of dependency probabilities (mutant / control). Dependency probabilities range from 0.0-1.0 where 1.0 indicates high probability of KO leading to lethality, while 0.0 indicates little to no lethality.
 * `CliffDelta` - Cliff's delta non-parametric effect size between mutant and control dependency probabilities. Ranges between -1 to 1.
 * `dip_pval` - Hartigan's dip test p-value. Tests whether distribution of mutant dependency probability is unimodel. If dip test is rejected (p-value < 0.05), this indicates that there is a multimodel dependency probability distribution and that there may be another factor contributing to this separation.
-* `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median). Negative scores indicate lethal genetic interaction, and positive scores indicate alleviating genetic interaction.
+* `Interaction_score` - Combined value generated from signed p-values: -log10(Pval) \* sign(log2FC_by_median). Positive scores indicate possible lethal genetic interaction, and negative scores indicate possible alleviating genetic interaction.
 
 > **Warning**
 > This process may take a few hours depending on the number of cores assigned. Our example below `GI_screen()` took ~2 hours to process. To save time, we have preprocessed this step for you.
