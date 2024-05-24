@@ -25,7 +25,7 @@ list_cancer_types <- function(data_dir) {
   # Load necessary data
   sample_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
-  
+
   # Main
   sample_annot %>%
     dplyr::pull(.data$disease) %>%
