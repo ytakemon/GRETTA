@@ -58,11 +58,15 @@ list_cancer_subtypes <- function(input_disease, data_dir) {
   load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
   
   # Main
-  sample_annot %>%
+  res <- sample_annot %>%
     dplyr::filter(.data$disease %in% input_disease) %>%
     dplyr::pull(.data$disease_subtype) %>%
     unique
   
   # Message:
   message("See sample_annot.rda in your data directory for a complist list of cell line annotation.")
+  
+  # result
+  return(res)
+  
 }

@@ -6,6 +6,6 @@ test_that("Test that list_available_cancer_types works", {
   expect_equal(length(res1), 33)
   
   # To list all subtypes
-  res2 <- list_cancer_subtypes("Lung Cancer", data_dir = dir)
+  res2 <- list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = dir)
   expect_equal(length(res2), 11)
 })

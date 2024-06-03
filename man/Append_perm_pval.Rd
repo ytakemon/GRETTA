@@ -7,15 +7,15 @@
 Append_perm_pval(GI_screen_res = NULL, perms = NULL)
 }
 \arguments{
-\item{p_value}{dataframe, Output from GI_screen(), Default: NULL}
+\item{GI_screen_res}{dataframe, Output from GI_screen(), Default: NULL}
 
-\item{perm_pvalues}{dataframe, Output from GI_screen_perms(), Default: NULL}
+\item{perms}{dataframe, Output from Pval_perm_adjust(), Default: NULL}
 }
 \value{
-A vector of adjusted p-values
+A dataframe with permutation adjusted p-values appeneded as a new column named Pval_perm_adj.
 }
 \description{
-Randomly samples dependency probabilities from a given mutant and control group screened.
+Appends permutation adjusted p-values to new column.
 }
 \details{
 P-values are adjusted based on permuted random sampled background data.

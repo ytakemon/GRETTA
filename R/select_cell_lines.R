@@ -194,8 +194,8 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
           .data$GT == "1|1" ~ "Hom_mut",
           TRUE ~ "Het_Mut"),
           AC_Variant = paste0(.data$VariantInfo," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
-        dplyr::rename(Chromosome = Chrom, Start_position = Pos) %>%
-        dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$Ref:.data$EntrezGeneID, AC_Variant) %>%
+        dplyr::rename(Chromosome = .data$Chrom, Start_position = .data$Pos) %>%
+        dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$Ref:.data$EntrezGeneID, .data$AC_Variant) %>%
         dplyr::arrange(.data$Start_position) %>% 
         dplyr::distinct()
     }
@@ -301,16 +301,16 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
         # If post23Q
         temp_dels <- target_mut %>% 
           dplyr:: filter(
-            LikelyLoF) %>% 
+            .data$LikelyLoF) %>% 
           dplyr::distinct()
         
         if(any(str_detect(temp_dels$VariantInfo, "splice"))){
           no_splice <- temp_dels %>% 
-            dplyr::filter(!str_detect(VariantInfo, "splice"))
+            dplyr::filter(!str_detect(.data$VariantInfo, "splice"))
           
           del_splice <- temp_dels %>% 
-            dplyr::filter(str_detect(VariantInfo, "splice"),
-                          VariantType != "SNV")
+            dplyr::filter(str_detect(.data$VariantInfo, "splice"),
+                          .data$VariantType != "SNV")
           mut_dels <- dplyr::bind_rows(no_splice, del_splice) %>%
             distinct()
         } else{
@@ -343,9 +343,9 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
           dplyr::filter(.data$n > 1)
       } else {
         multi_mut_dels <- mut_dels %>% 
-          dplyr::select(.data$DepMap_ID, Start_position, .data$GT) %>%
+          dplyr::select(.data$DepMap_ID, .data$Start_position, .data$GT) %>%
           dplyr::filter(.data$GT != "1|1") %>% 
-          dplyr::select(.data$DepMap_ID, Start_position) %>%
+          dplyr::select(.data$DepMap_ID, .data$Start_position) %>%
           dplyr::distinct() %>%
           dplyr::add_count(.data$DepMap_ID) %>% 
           dplyr::filter(.data$n > 1)

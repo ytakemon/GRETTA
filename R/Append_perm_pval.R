@@ -1,11 +1,11 @@
 #' @title Appends permutation adjusted p-value
 #' 
-#' @description Randomly samples dependency probabilities from a given mutant and control group screened.
+#' @description Appends permutation adjusted p-values to new column.
 #' 
-#' @param p_value dataframe, Output from GI_screen(), Default: NULL
-#' @param perm_pvalues dataframe, Output from GI_screen_perms(), Default: NULL
+#' @param GI_screen_res dataframe, Output from GI_screen(), Default: NULL
+#' @param perms dataframe, Output from Pval_perm_adjust(), Default: NULL
 #' 
-#' @return A vector of adjusted p-values
+#' @return A dataframe with permutation adjusted p-values appeneded as a new column named Pval_perm_adj.
 #' 
 #' @details P-values are adjusted based on permuted random sampled background data. 
 #' @md
