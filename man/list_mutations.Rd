@@ -28,12 +28,21 @@ list_mutations(
 
 \item{is_damaging}{logical, Default: NULL}
 
-\item{variant_classification}{string, Select from the following: 3'UTR, 5'Flank, 5'UTR,
+\item{variant_classification}{string, Default: NULL.
+
+Select from the following:
+For DepMap data version prior to 23Q:
+3'UTR, 5'Flank, 5'UTR,
 De_novo_Start_OutOfFrame, Frame_Shift_Del, Frame_Shift_Ins, IGR, In_Frame_Del, In_Frame_Ins,
 Intron, Missense_Mutation, Nonsense_Mutation, Nonstop_Mutation, Silent, Splice_Site,
-Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins, Default: NULL}
+Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins
 
-\item{data_dir}{string Path to GINIR_data}
+For DepMap data version 23Q and after:
+missense_variant, frameshift_variant, splice_acceptor_variant, stop_gained, splice_donor_variant,
+inframe_deletion, inframe_insertion, stop_lost, start_lost, downstream_gene_variant,
+protein_altering_variant, 5_prime_UTR_variant, upstream_gene_variant, non_coding_transcript_exon_variant}
+
+\item{data_dir}{string Path to GRETTA_data}
 }
 \value{
 A data frame containing mutations matching criteria of input arguments

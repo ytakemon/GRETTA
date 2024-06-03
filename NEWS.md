@@ -1,3 +1,7 @@
+# GRETTA 2.4.0
+- Latest DepMap dataset 23Q4 is now available. See https://github.com/ytakemon/GRETTA/tree/main/DepMap_data_versions/ for more details.
+- `list_mutations()`, `list_cancer_types()`, `extract_rna()`, `select_cell_lines()`, and `list_mutations()` have been updated to accommodate different column names used in 23Q4. 
+	
 # GRETTA 2.3.0
 
 # GRETTA 2.2.0

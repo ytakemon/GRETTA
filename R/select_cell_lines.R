@@ -26,7 +26,6 @@
 #' * `Amplified` cell lines harbor no SNVs/InDels with increased CN.
 #' * `Others` cell lines harbor deleterious SNVs with increased CN.
 #' 
-#' 
 #' If input_aa_change` is also defined:
 #' * `Control` cell lines do not harbor any single nucleotide variations (SNVs) or insertions and deletions (InDels) with a neutral copy number (CN).
 #' * `HomAlt` cell lines harbor a homozygous alteration for the specified mutation.
@@ -62,7 +61,7 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     
   } else if(is.null(c(input_disease, input_disease_subtype)) & !is.null(input_gene)){
     message("Selecting mutant groups for: ", paste0(input_gene, collapse = ", "), " in all cancer cell lines")
-  
+    
   } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
     message("Selecting mutant groups for: ", paste0(input_gene, collapse = ", "), " in ", input_disease,", ", 
             input_disease_subtype, " cell lines")
@@ -144,7 +143,7 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
       dplyr::filter((.data$DepMap_ID %in% dep$DepMap_ID) & 
                       (.data$Hugo_Symbol %in% input_gene))
     
-    # Only some mut_calls contain a "SangerRecalibWES_AC" column
+    # pre-23Q: Only some mut_calls contain a "SangerRecalibWES_AC" column
     if(any(colnames(target_mut) %in% "SangerRecalibWES_AC")){
       target_mut <- target_mut %>% 
         dplyr::mutate(AC_combined = dplyr::coalesce(.data$CGA_WES_AC, .data$SangerRecalibWES_AC, 
@@ -162,8 +161,11 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
                       .data$Protein_Change, .data$isDeleterious, .data$isTCGAhotspot, 
                       .data$TCGAhsCnt, .data$isCOSMIChotspot, .data$COSMIChsCnt, .data$Variant_annotation, 
                       .data$AC_combined, .data$AC_ref_NULL, .data$AC_Variant) %>%
-        dplyr::arrange(.data$Start_position)
-    } else {
+        dplyr::arrange(.data$Start_position) %>%
+        dplyr::distinct()
+      
+    } else if(any(colnames(target_mut) %in% "SangerWES_AC")){
+      # pre-23Q: if no "SangerRecalibWES_AC" column
       target_mut <- target_mut %>% 
         dplyr::mutate(AC_combined = dplyr::coalesce(.data$CGA_WES_AC, .data$SangerWES_AC, .data$RNAseq_AC, 
                                                     .data$HC_AC, .data$RD_AC, .data$WGS_AC), #(Alt:REF)
@@ -182,7 +184,20 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
                       .data$TCGAhsCnt, .data$isCOSMIChotspot, .data$COSMIChsCnt, .data$Variant_annotation, 
                       .data$AC_combined, 
                       .data$AC_ref_NULL, .data$AC_Variant) %>%
-        dplyr::arrange(.data$Start_position)
+        dplyr::arrange(.data$Start_position) %>%
+        dplyr::distinct()
+      
+    } else if(any(colnames(target_mut) %in% "GT")){
+      # post-23Q
+      target_mut <- target_mut %>% 
+        dplyr::mutate(AC_Variant = dplyr::case_when(
+          .data$GT == "1|1" ~ "Hom_mut",
+          TRUE ~ "Het_Mut"),
+          AC_Variant = paste0(.data$VariantInfo," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
+        dplyr::rename(Chromosome = Chrom, Start_position = Pos) %>%
+        dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$Ref:.data$EntrezGeneID, AC_Variant) %>%
+        dplyr::arrange(.data$Start_position) %>% 
+        dplyr::distinct()
     }
     # Count number of mutations found per sample
     all_mutations_count_by_sample <- target_mut %>% dplyr::count(.data$DepMap_ID)
@@ -192,26 +207,44 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
       select_muts <- target_mut %>% 
         dplyr::filter(.data$Protein_Change %in% paste0("p.",input_aa_change)) %>%
         dplyr::select(.data$DepMap_ID:.data$Protein_Change, .data$Variant_annotation:.data$AC_Variant)
-        
+      
       
       # Summarize mutations for all samples 
-      summary <- sample_annot %>% 
-        dplyr::filter(.data$DepMap_ID %in% dep$DepMap_ID) %>%
-        dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, 
-                      .data$primary_or_metastasis) %>%
-        dplyr::left_join(all_mutations_count_by_sample, by = "DepMap_ID") %>%
-        dplyr::rename(Total_mutations = .data$n) %>%
-        dplyr::mutate(Total_mutations = dplyr::case_when(
-          is.na(.data$Total_mutations) ~ as.double(0),
-          TRUE ~  as.double(.data$Total_mutations))) %>%
-        dplyr::left_join(target_copy_num %>% 
-                           dplyr::select(.data$DepMap_ID, .data$Status), by = "DepMap_ID") %>%
-        dplyr::rename(CN_status = .data$Status) %>%
-        dplyr::left_join(select_muts)
+      # add OncotreeCode if post 23Q
+      if(any(colnames(sample_annot) == "OncotreeCode")){
+        summary <- sample_annot %>% 
+          dplyr::filter(.data$DepMap_ID %in% dep$DepMap_ID) %>%
+          dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, 
+                        .data$primary_or_metastasis, .data$OncotreeCode) %>%
+          dplyr::left_join(all_mutations_count_by_sample, by = "DepMap_ID") %>%
+          dplyr::rename(Total_mutations = .data$n) %>%
+          dplyr::mutate(Total_mutations = dplyr::case_when(
+            is.na(.data$Total_mutations) ~ as.double(0),
+            TRUE ~  as.double(.data$Total_mutations))) %>%
+          dplyr::left_join(target_copy_num %>% 
+                             dplyr::select(.data$DepMap_ID, .data$Status), by = "DepMap_ID") %>%
+          dplyr::rename(CN_status = .data$Status) %>%
+          dplyr::left_join(select_muts)
+      } else {
+        summary <- sample_annot %>% 
+          dplyr::filter(.data$DepMap_ID %in% dep$DepMap_ID) %>%
+          dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, 
+                        .data$primary_or_metastasis) %>%
+          dplyr::left_join(all_mutations_count_by_sample, by = "DepMap_ID") %>%
+          dplyr::rename(Total_mutations = .data$n) %>%
+          dplyr::mutate(Total_mutations = dplyr::case_when(
+            is.na(.data$Total_mutations) ~ as.double(0),
+            TRUE ~  as.double(.data$Total_mutations))) %>%
+          dplyr::left_join(target_copy_num %>% 
+                             dplyr::select(.data$DepMap_ID, .data$Status), by = "DepMap_ID") %>%
+          dplyr::rename(CN_status = .data$Status) %>%
+          dplyr::left_join(select_muts)
+        
+      }
       
       # Annotate mutant group types based on conditions
       if(!all(summary$CN_status == "Unknown")){
-
+        
         Groups <- summary %>% 
           dplyr::mutate(
             Group = dplyr::case_when(
@@ -258,20 +291,65 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     } else {
       # If no mutations are defined, find default deleterious mutations
       # Get deleterious/damaging mutations
-      mut_dels <- target_mut %>% dplyr::filter(.data$Variant_annotation == "damaging")
+      # If pre23Q
+      if(any(colnames(target_mut) == "Variant_annotation")){
+        mut_dels <- target_mut %>% 
+          dplyr::filter(.data$Variant_annotation == "damaging") %>%
+          dplyr::distinct()
+        
+      } else if(any(colnames(target_mut) == "LikelyLoF")){
+        # If post23Q
+        temp_dels <- target_mut %>% 
+          dplyr:: filter(
+            LikelyLoF) %>% 
+          dplyr::distinct()
+        
+        if(any(str_detect(temp_dels$VariantInfo, "splice"))){
+          no_splice <- temp_dels %>% 
+            dplyr::filter(!str_detect(VariantInfo, "splice"))
+          
+          del_splice <- temp_dels %>% 
+            dplyr::filter(str_detect(VariantInfo, "splice"),
+                          VariantType != "SNV")
+          mut_dels <- dplyr::bind_rows(no_splice, del_splice) %>%
+            distinct()
+        } else{
+          mut_dels <- temp_dels
+        }
+      }
+      
       # Count number of deleterious mutations found per sample
       del_mutations_count_by_sample <- mut_dels %>% dplyr::count(.data$DepMap_ID)
       
       # Find samples with homozygous deleterious mutations (HomDels)
-      hom_del_muts_by_sample <- mut_dels %>% dplyr::select(.data$DepMap_ID, .data$AC_ref_NULL) %>%
-        dplyr::distinct() %>%
-        dplyr::filter(.data$AC_ref_NULL == TRUE)
+      if(any(colnames(mut_dels) == "AC_ref_NULL")){
+        hom_del_muts_by_sample <- mut_dels %>% 
+          dplyr::select(.data$DepMap_ID, .data$AC_ref_NULL) %>%
+          dplyr::distinct() %>%
+          dplyr::filter(.data$AC_ref_NULL == TRUE)
+      } else {
+        hom_del_muts_by_sample <- mut_dels %>% 
+          dplyr::select(.data$DepMap_ID, .data$GT) %>%
+          dplyr::distinct() %>%
+          dplyr::filter(.data$GT == "1|1")
+      }
+      
       
       # Find samples with multiple heterozygous deleterious mutations. Trans-heterozygous mutants (T-HetDels)
-      multi_mut_dels <- mut_dels %>%
-        dplyr::filter(.data$AC_ref_NULL == FALSE) %>%
-        dplyr::add_count(.data$DepMap_ID) %>% 
-        dplyr::filter(.data$n > 1)
+      if(any(colnames(mut_dels) == "AC_ref_NULL")){
+        multi_mut_dels <- mut_dels %>%
+          dplyr::filter(.data$AC_ref_NULL == FALSE) %>%
+          dplyr::add_count(.data$DepMap_ID) %>% 
+          dplyr::filter(.data$n > 1)
+      } else {
+        multi_mut_dels <- mut_dels %>% 
+          dplyr::select(.data$DepMap_ID, Start_position, .data$GT) %>%
+          dplyr::filter(.data$GT != "1|1") %>% 
+          dplyr::select(.data$DepMap_ID, Start_position) %>%
+          dplyr::distinct() %>%
+          dplyr::add_count(.data$DepMap_ID) %>% 
+          dplyr::filter(.data$n > 1)
+      }
       
       # Summarize mutations for all samples 
       summary <- sample_annot %>% 
@@ -345,13 +423,13 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
                     .data$primary_or_metastasis) %>%
       dplyr::filter(.data$disease %in% input_disease & 
                       .data$disease_subtype %in% input_disease_subtype)
-  
+    
   } else if(is.null(c(input_gene, input_disease_subtype)) & !is.null(input_disease)){
     output <- sample_annot %>% 
       dplyr::select(.data$DepMap_ID, .data$stripped_cell_line_name, .data$disease, .data$disease_subtype, 
                     .data$primary_or_metastasis) %>%
       dplyr::filter(.data$disease %in% input_disease)
-  
+    
   } else if(!is.null(c(input_gene, input_disease, input_disease_subtype))){
     output <- Groups %>% 
       dplyr::filter(.data$disease %in% input_disease &

@@ -18,12 +18,11 @@
 #' Start_Codon_Del, Start_Codon_Ins, Start_Codon_SNP, Stop_Codon_Del, Stop_Codon_Ins
 #' 
 #' For DepMap data version 23Q and after:
-#' stop_gained, missense_variant, missense_variant&splice_region_variant, frameshift_variant, 
-#' splice_donor_variant, splice_acceptor_variant, inframe_deletion, stop_gained&inframe_insertion, 
-#' splice_acceptor_variant&coding_sequence_variant&intron_variant, 
-#' stop_gained&splice_region_variant, stop_gained&frameshift_variant 
-#' 
-#' @param data_dir string Path to GINIR_data
+#' missense_variant, frameshift_variant, splice_acceptor_variant, stop_gained, splice_donor_variant, 
+#' inframe_deletion, inframe_insertion, stop_lost, start_lost, downstream_gene_variant, 
+#' protein_altering_variant, 5_prime_UTR_variant, upstream_gene_variant, non_coding_transcript_exon_variant
+#'
+#' @param data_dir string Path to GRETTA_data
 #' 
 #' @return A data frame containing mutations matching criteria of input arguments
 #' 

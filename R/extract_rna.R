@@ -69,10 +69,14 @@ extract_rna <- function(input_samples = NULL, input_genes = NULL,
   
   # Otherwise, provide only expr of genes of
   # interst
+  gene_colname <- CCLE_exp_annot %>% 
+    dplyr::filter(.data$GeneNames %in% input_genes) %>% 
+    dplyr::pull(.data$GeneNameID)
+  
   res <- CCLE_exp %>%
-    dplyr::select(.data$DepMap_ID, get_GeneNameID(input_genes,
-                                                  data_dir = data_dir)) %>%
-    dplyr::filter(.data$DepMap_ID %in% input_samples)
+    dplyr::select(.data$DepMap_ID, all_of(gene_colname)) %>%
+    dplyr::filter(.data$DepMap_ID %in% input_samples) %>%
+    ungroup()
   
   # Notify if some samples do not have
   # expression data
