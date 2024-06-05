@@ -34,16 +34,21 @@ Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco
 Marra](https://www.bcgsc.ca/labs/marra-lab)’s laboratory at [Canada’s
 Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
-### Citations
+## Citations
 
-Please cite the manuscript describing GRETTA on [bioinformatics
-(Takemon, Y. and Marra, MA.,
-2023)](https://doi.org/10.1093/bioinformatics/btad381)
-
-Yuka Takemon, Marco A Marra, GRETTA: an R package for mapping in silico
+When using GRETTA, please cite the manuscript describing GRETTA: Yuka
+Takemon, Marco A Marra, GRETTA: an R package for mapping in silico
 genetic interaction and essentiality networks, Bioinformatics, Volume
 39, Issue 6, June 2023, btad381,
 <https://doi.org/10.1093/bioinformatics/btad381>
+
+Please also cite the DepMap project and the appropriate data version
+found on <https://depmap.org/portal/>: Tsherniak A, Vazquez F,
+Montgomery PG, Weir BA, Kryukov G, Cowley GS, Gill S, Harrington WF,
+Pantel S, Krill-Burger JM, Meyers RM, Ali L, Goodale A, Lee Y, Jiang G,
+Hsiao J, Gerath WFJ, Howell S, Merkel E, Ghandi M, Garraway LA, Root DE,
+Golub TR, Boehm JS, Hahn WC. Defining a Cancer Dependency Map. Cell.
+2017 Jul 27;170(3):564-576.
 
 ## Questions
 
@@ -55,9 +60,9 @@ have a request please submit an
 
 ## Requirements
 
--   GRETTA is supported and compatible for R versions \>= 4.2.0.
--   12G of space to store one DepMap data set with and an additional 11G
-    of temporary space to for .tar.gz prior to extraction.
+- GRETTA is supported and compatible for R versions \>= 4.2.0.
+- 12G of space to store one DepMap data set with and an additional 11G
+  of temporary space to for .tar.gz prior to extraction.
 
 # Installation
 
@@ -126,13 +131,13 @@ make new data sets available as the are released by DepMap.
 1.  Install `GRETTA` and download accompanying data.
 2.  Select mutant cell lines that carry mutations in the gene of
     interest and control cell lines.
-    -   ([optional
-        specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed))
-        can be used to select cell lines based on disease type, disease
-        subtype, or amino acid change.
+    - ([optional
+      specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed))
+      can be used to select cell lines based on disease type, disease
+      subtype, or amino acid change.
 3.  Determine differential expression between mutant and control cell
     line groups.
-    -   (optional but recommended).
+    - (optional but recommended).
 4.  Perform *in silico* genetic screen.
 5.  Visualize results.
 
@@ -140,10 +145,10 @@ make new data sets available as the are released by DepMap.
 
 1.  Install `GRETTA` and download accompanying data.
 2.  Run correlation coefficient analysis.
-    -   ([optional
-        specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed:~:text=For%20the%20essentiality%20network%20analysis%2C%20context%2Dspecific%20cell%20lines%20can%20be%20selected%20in%20two%20ways%3A))
-        can be used to perform analysis on cell lines of a specific
-        disease type(s).
+    - ([optional
+      specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed:~:text=For%20the%20essentiality%20network%20analysis%2C%20context%2Dspecific%20cell%20lines%20can%20be%20selected%20in%20two%20ways%3A))
+      can be used to perform analysis on cell lines of a specific
+      disease type(s).
 3.  Calculate inflection points of negative/positive curve to determine
     a threshold.
 4.  Apply threshold.
@@ -169,15 +174,18 @@ they are not installed yet use `install.packages()` (eg.
 # Load library
 library(tidyverse)
 #> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-#> ✔ dplyr     1.1.4     ✔ readr     2.1.4
+#> ✔ dplyr     1.1.4     ✔ readr     2.1.5
 #> ✔ forcats   1.0.0     ✔ stringr   1.5.1
-#> ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
-#> ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+#> ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+#> ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 #> ✔ purrr     1.0.2     
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 #> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+```
+
+``` r
 library(GRETTA)
 #> 
 #>       _______ .______       _______ .___________.___________.    ___      
@@ -250,6 +258,9 @@ list_cancer_types(data_dir = gretta_data_dir)
 #> [29] "Teratoma"                   "Unknown"                   
 #> [31] "Liver Cancer"               "Adrenal Cancer"            
 #> [33] "Embryonal Cancer"
+```
+
+``` r
 
 ## List all available cancer subtypes
 list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
@@ -280,21 +291,24 @@ consideration and group as `"Deep_del", "Loss", "Neutral",` or
 
 The cell line groups assigned by default are:
 
--   `Control` cell lines do not harbor any single nucleotide variations
-    (SNVs) or insertions and deletions (InDels) with a neutral copy
-    number (CN).
--   `HomDel` cell lines harbor one or more homozygous deleterious SNVs
-    or have deep CN loss.
--   `T-HetDel` cell lines harbor two or more heterozygous deleterious
-    SNVs/InDels with neutral or CN loss.
--   `HetDel` cell lines harbor one heterozygous deleterious SNV/InDel
-    with neutral CN, or no SNV/InDel with CN loss.
--   `Amplified` cell lines harbor no SNVs/InDels with increased CN.
--   `Others` cell lines harbor deleterious SNVs with increased CN.
+- `Control` cell lines do not harbor any single nucleotide variations
+  (SNVs) or insertions and deletions (InDels) with a neutral copy number
+  (CN).
+- `HomDel` cell lines harbor one or more homozygous deleterious SNVs or
+  have deep CN loss.
+- `T-HetDel` cell lines harbor two or more heterozygous deleterious
+  SNVs/InDels with neutral or CN loss.
+- `HetDel` cell lines harbor one heterozygous deleterious SNV/InDel with
+  neutral CN, or no SNV/InDel with CN loss.
+- `Amplified` cell lines harbor no SNVs/InDels with increased CN.
+- `Others` cell lines harbor deleterious SNVs with increased CN.
 
 ``` r
 ARID1A_groups <- select_cell_lines(input_gene = "ARID1A", data_dir = gretta_data_dir)
 #> Selecting mutant groups for: ARID1A in all cancer cell lines
+```
+
+``` r
 
 ## Show number of cell lines in each group 
 count(ARID1A_groups, Group)
@@ -314,10 +328,10 @@ count(ARID1A_groups, Group)
 There are several additional filters that can be combined together to
 narrow down your search. These
 
--   `input_aa_change` - by amino acid change (eg. “p.Q515\*“).
--   `input_disease` - by disease type (eg. “Pancreatic Cancer”)
--   `input_disease_subtype` - by disease subtype (eg. “Ductal
-    Adenosquamous Carcinoma”)
+- `input_aa_change` - by amino acid change (eg. “p.Q515\*“).
+- `input_disease` - by disease type (eg. “Pancreatic Cancer”)
+- `input_disease_subtype` - by disease subtype (eg. “Ductal
+  Adenosquamous Carcinoma”)
 
 ``` r
 ## Find pancreatic cancer cell lines with ARID1A mutations
@@ -325,6 +339,9 @@ ARID1A_pancr_groups <- select_cell_lines(input_gene = "ARID1A",
                                          input_disease = "Pancreatic Cancer",
                                          data_dir = gretta_data_dir)
 #> Selecting mutant groups for: ARID1A in Pancreatic Cancer,  cell lines
+```
+
+``` r
 
 ## Show number of cell lines in each group 
 count(ARID1A_pancr_groups, Group)
@@ -385,6 +402,9 @@ ARID1A_rna_expr <- left_join(
   ARID1A_groups_subset %>% select(DepMap_ID, Group)) %>%
   mutate(Group = fct_relevel(Group,"Control")) # show Control group first
 #> Joining with `by = join_by(DepMap_ID)`
+```
+
+``` r
 
 ## T-test 
 t.test(ARID1A_8289 ~ Group, ARID1A_rna_expr)
@@ -399,6 +419,9 @@ t.test(ARID1A_8289 ~ Group, ARID1A_rna_expr)
 #> sample estimates:
 #>       mean in group Control mean in group ARID1A_HomDel 
 #>                    4.691550                    3.797954
+```
+
+``` r
 
 ## plot 
 ggplot(ARID1A_rna_expr, aes(x = Group, y = ARID1A_8289)) +
@@ -429,40 +452,38 @@ comparing lethality probabilities of each targeted gene between mutant
 and control groups. This generates a data frame with the following
 columns:
 
--   `GeneName_ID` - Hugo symbol with NCBI gene ID
--   `GeneNames` - Hugo symbol
--   `_median, _mean, _sd, _iqr` - Control and mutant group’s median,
-    mean, standard deviation (sd), and interquartile range (iqr) of
-    dependency probabilities. Dependency probabilities range from zero
-    to one, where one indicates a essential gene (ie. KO of gene was
-    lethal) and zero indicates a non-essential gene (KO of gene was not
-    lethal)
--   `Pval` - P-value from Mann Whitney U test between control and mutant
-    groups.
--   `Adj_pval` - BH-adjusted P-value.
--   `log2FC_by_median` - Log2 normalized median fold change of
-    dependency probabilities (mutant / control). Dependency
-    probabilities range from 0.0-1.0 where 1.0 indicates high
-    probability of KO leading to lethality, while 0.0 indicates little
-    to no lethality.
--   `log2FC_by_mean` - Log2 normalized mean fold change of dependency
-    probabilities (mutant / control). Dependency probabilities range
-    from 0.0-1.0 where 1.0 indicates high probability of KO leading to
-    lethality, while 0.0 indicates little to no lethality.
--   `CliffDelta` - Cliff’s delta non-parametric effect size between
-    mutant and control dependency probabilities. Ranges between -1 to 1.
--   `dip_pval` - Hartigan’s dip test p-value. Tests whether distribution
-    of mutant dependency probability is unimodel. If dip test is
-    rejected (p-value \< 0.05), this indicates that there is a
-    multimodel dependency probability distribution and that there may be
-    another factor contributing to this separation.
--   `Interaction_score` - Combined value generated from signed p-values:
-    -log10(Pval) \* sign(log2FC_by_median). Positive scores indicate
-    possible lethal genetic interaction, and negative scores indicate
-    possible alleviating genetic interaction.
+- `GeneName_ID` - Hugo symbol with NCBI gene ID
+- `GeneNames` - Hugo symbol
+- `_median, _mean, _sd, _iqr` - Control and mutant group’s median, mean,
+  standard deviation (sd), and interquartile range (iqr) of dependency
+  probabilities. Dependency probabilities range from zero to one, where
+  one indicates a essential gene (ie. KO of gene was lethal) and zero
+  indicates a non-essential gene (KO of gene was not lethal)
+- `Pval` - P-value from Mann Whitney U test between control and mutant
+  groups.
+- `Adj_pval` - BH-adjusted P-value.
+- `log2FC_by_median` - Log2 normalized median fold change of dependency
+  probabilities (mutant / control). Dependency probabilities range from
+  0.0-1.0 where 1.0 indicates high probability of KO leading to
+  lethality, while 0.0 indicates little to no lethality.
+- `log2FC_by_mean` - Log2 normalized mean fold change of dependency
+  probabilities (mutant / control). Dependency probabilities range from
+  0.0-1.0 where 1.0 indicates high probability of KO leading to
+  lethality, while 0.0 indicates little to no lethality.
+- `CliffDelta` - Cliff’s delta non-parametric effect size between mutant
+  and control dependency probabilities. Ranges between -1 to 1.
+- `dip_pval` - Hartigan’s dip test p-value. Tests whether distribution
+  of mutant dependency probability is unimodel. If dip test is rejected
+  (p-value \< 0.05), this indicates that there is a multimodel
+  dependency probability distribution and that there may be another
+  factor contributing to this separation.
+- `Interaction_score` - Combined value generated from signed p-values:
+  -log10(Pval) \* sign(log2FC_by_median). Positive scores indicate
+  possible lethal genetic interaction, and negative scores indicate
+  possible alleviating genetic interaction.
 
 > **Warning** This process may take a few hours depending on the number
-> of cores assigned. Our example below `GI_screen()` took \~2 hours to
+> of cores assigned. Our example below `GI_screen()` took ~2 hours to
 > process. To save time, we have preprocessed this step for you.
 
 ``` r
@@ -539,7 +560,8 @@ we identified *ARID1B* as a synthetic lethal interactor of *ARID1A*.
 plot_screen(result_df = screen_results, 
             label_genes = TRUE, 
             label_n = 3)
-#> Warning: Removed 7 rows containing missing values (`geom_point()`).
+#> Warning: Removed 7 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 ```
 
 <img src="inst/figures/README-plot-1.png" width="100%" />
@@ -571,7 +593,7 @@ SWI/SNF subunit encoding genes, *SMARCE1* and *SMARCB1*, as the top two
 co-essential genes.
 
 > **Warning** This process may take several minutes. Our example below
-> `coessential_map()` + `get_inflection_points()` took \~17 minutes to
+> `coessential_map()` + `get_inflection_points()` took ~17 minutes to
 > process. To save time we have pre-processed this setp for you.
 
 ``` r
@@ -592,6 +614,9 @@ data and visualize.
 ## Combine and annotate data frame containing co-essential genes
 coess_annotated_df <- annotate_df(coess_df, coess_inflection_df)
 #> Selecting candidates based on inflection points.
+```
+
+``` r
 
 plot_coess(
   result_df = coess_annotated_df, 
@@ -674,13 +699,13 @@ coess_df <- coessential_map(
 
 ``` r
 sessionInfo()
-#> R version 4.2.2 (2022-10-31)
+#> R version 4.3.2 (2023-10-31)
 #> Platform: x86_64-pc-linux-gnu (64-bit)
 #> Running under: CentOS Linux 7 (Core)
 #> 
 #> Matrix products: default
-#> BLAS:   /gsc/software/linux-x86_64-centos7/R-4.2.2/lib64/R/lib/libRblas.so
-#> LAPACK: /gsc/software/linux-x86_64-centos7/R-4.2.2/lib64/R/lib/libRlapack.so
+#> BLAS:   /gsc/software/linux-x86_64-centos7/R-4.3.2/lib64/R/lib/libRblas.so 
+#> LAPACK: /gsc/software/linux-x86_64-centos7/R-4.3.2/lib64/R/lib/libRlapack.so;  LAPACK version 3.11.0
 #> 
 #> locale:
 #>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -690,61 +715,64 @@ sessionInfo()
 #>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 #> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 #> 
+#> time zone: America/Vancouver
+#> tzcode source: system (glibc)
+#> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
 #>  [1] GRETTA_2.3.0    lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
-#>  [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.4     tidyr_1.3.0    
-#>  [9] tibble_3.2.1    ggplot2_3.4.4   tidyverse_2.0.0
+#>  [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
+#>  [9] tibble_3.2.1    ggplot2_3.5.1   tidyverse_2.0.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] matrixStats_1.1.0             doMC_1.3.8                   
-#>  [3] bit64_4.0.5                   filelock_1.0.2               
-#>  [5] doParallel_1.0.17             httr_1.4.7                   
-#>  [7] tools_4.2.2                   backports_1.4.1              
-#>  [9] utf8_1.2.4                    R6_2.5.1                     
-#> [11] nortest_1.0-4                 DBI_1.1.3                    
-#> [13] colorspace_2.1-0              withr_2.5.2                  
-#> [15] tidyselect_1.2.0              Exact_3.2                    
-#> [17] bit_4.0.5                     curl_5.1.0                   
-#> [19] compiler_4.2.2                rcompanion_2.4.34            
-#> [21] cli_3.6.1                     expm_0.999-8                 
-#> [23] sandwich_3.0-2                labeling_0.4.3               
-#> [25] inflection_1.3.6              diptest_0.77-0               
-#> [27] scales_1.3.0                  lmtest_0.9-40                
-#> [29] mvtnorm_1.2-4                 proxy_0.4-27                 
-#> [31] multcompView_0.1-9            RootsExtremaInflections_1.2.1
-#> [33] digest_0.6.33                 rmarkdown_2.21               
-#> [35] pkgconfig_2.0.3               htmltools_0.5.7              
-#> [37] highr_0.10                    dbplyr_2.3.4                 
-#> [39] fastmap_1.1.1                 rlang_1.1.2                  
-#> [41] readxl_1.4.3                  rstudioapi_0.15.0            
-#> [43] RSQLite_2.3.3                 farver_2.1.1                 
-#> [45] generics_0.1.3                zoo_1.8-12                   
-#> [47] magrittr_2.0.3                modeltools_0.2-23            
-#> [49] Matrix_1.6-2                  Rcpp_1.0.11                  
-#> [51] DescTools_0.99.49             munsell_0.5.0                
-#> [53] fansi_1.0.5                   lifecycle_1.0.4              
-#> [55] stringi_1.8.2                 multcomp_1.4-25              
-#> [57] yaml_2.3.7                    MASS_7.3-58.1                
-#> [59] rootSolve_1.8.2.4             plyr_1.8.9                   
-#> [61] BiocFileCache_2.11.1          grid_4.2.2                   
-#> [63] blob_1.2.4                    parallel_4.2.2               
-#> [65] ggrepel_0.9.4                 lmom_3.0                     
-#> [67] lattice_0.20-45               splines_4.2.2                
-#> [69] hms_1.1.3                     knitr_1.45                   
-#> [71] pillar_1.9.0                  boot_1.3-28                  
-#> [73] gld_2.6.6                     codetools_0.2-18             
-#> [75] stats4_4.2.2                  glue_1.6.2                   
-#> [77] evaluate_0.23                 data.table_1.14.8            
-#> [79] vctrs_0.6.5                   tzdb_0.4.0                   
-#> [81] foreach_1.5.2                 cellranger_1.1.0             
-#> [83] gtable_0.3.4                  cachem_1.0.8                 
-#> [85] xfun_0.41                     coin_1.4-3                   
-#> [87] libcoin_1.0-10                broom_1.0.5                  
-#> [89] e1071_1.7-13                  class_7.3-20                 
-#> [91] survival_3.4-0                iterators_1.0.14             
-#> [93] memoise_2.0.1                 timechange_0.2.0             
-#> [95] TH.data_1.1-2
+#>  [1] tidyselect_1.2.1              Exact_3.2                    
+#>  [3] rootSolve_1.8.2.4             farver_2.1.2                 
+#>  [5] libcoin_1.0-10                blob_1.2.4                   
+#>  [7] filelock_1.0.3                fastmap_1.2.0                
+#>  [9] TH.data_1.1-2                 BiocFileCache_2.10.2         
+#> [11] digest_0.6.35                 timechange_0.3.0             
+#> [13] lifecycle_1.0.4               multcompView_0.1-10          
+#> [15] survival_3.6-4                lmom_3.0                     
+#> [17] RSQLite_2.3.7                 magrittr_2.0.3               
+#> [19] compiler_4.3.2                rlang_1.1.3                  
+#> [21] doMC_1.3.8                    tools_4.3.2                  
+#> [23] utf8_1.2.4                    yaml_2.3.8                   
+#> [25] data.table_1.15.4             knitr_1.47                   
+#> [27] labeling_0.4.3                bit_4.0.5                    
+#> [29] curl_5.2.1                    plyr_1.8.9                   
+#> [31] RootsExtremaInflections_1.2.1 multcomp_1.4-25              
+#> [33] expm_0.999-9                  withr_3.0.0                  
+#> [35] stats4_4.3.2                  grid_4.3.2                   
+#> [37] fansi_1.0.6                   e1071_1.7-14                 
+#> [39] colorspace_2.1-0              scales_1.3.0                 
+#> [41] iterators_1.0.14              MASS_7.3-60                  
+#> [43] cli_3.6.2                     mvtnorm_1.2-5                
+#> [45] rmarkdown_2.27                generics_0.1.3               
+#> [47] rstudioapi_0.16.0             httr_1.4.7                   
+#> [49] tzdb_0.4.0                    readxl_1.4.3                 
+#> [51] gld_2.6.6                     DBI_1.2.3                    
+#> [53] cachem_1.1.0                  proxy_0.4-27                 
+#> [55] modeltools_0.2-23             splines_4.3.2                
+#> [57] parallel_4.3.2                cellranger_1.1.0             
+#> [59] rcompanion_2.4.36             matrixStats_1.3.0            
+#> [61] vctrs_0.6.5                   sandwich_3.1-0               
+#> [63] boot_1.3-28.1                 Matrix_1.6-5                 
+#> [65] hms_1.1.3                     bit64_4.0.5                  
+#> [67] ggrepel_0.9.5                 nortest_1.0-4                
+#> [69] foreach_1.5.2                 diptest_0.77-1               
+#> [71] glue_1.7.0                    codetools_0.2-19             
+#> [73] stringi_1.8.4                 gtable_0.3.5                 
+#> [75] lmtest_0.9-40                 munsell_0.5.1                
+#> [77] pillar_1.9.0                  htmltools_0.5.8.1            
+#> [79] R6_2.5.1                      dbplyr_2.5.0                 
+#> [81] doParallel_1.0.17             evaluate_0.23                
+#> [83] lattice_0.22-5                highr_0.11                   
+#> [85] backports_1.5.0               memoise_2.0.1                
+#> [87] broom_1.0.6                   DescTools_0.99.54            
+#> [89] class_7.3-22                  Rcpp_1.0.12                  
+#> [91] coin_1.4-3                    inflection_1.3.6             
+#> [93] xfun_0.44                     zoo_1.8-12                   
+#> [95] pkgconfig_2.0.3
 ```

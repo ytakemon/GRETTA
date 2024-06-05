@@ -32,11 +32,13 @@ The DepMap data used in this tutorial is version 22Q2. This version along with a
 
 This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)'s laboratory at [Canada's Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
-### Citations 
+## Citations 
 
-Please cite the manuscript describing GRETTA on [bioinformatics (Takemon, Y. and Marra, MA., 2023)](https://doi.org/10.1093/bioinformatics/btad381)
-
+When using GRETTA, please cite the manuscript describing GRETTA:
 Yuka Takemon, Marco A Marra, GRETTA: an R package for mapping in silico genetic interaction and essentiality networks, Bioinformatics, Volume 39, Issue 6, June 2023, btad381, https://doi.org/10.1093/bioinformatics/btad381
+
+Please also cite the DepMap project and the appropriate data version found on https://depmap.org/portal/:
+Tsherniak A, Vazquez F, Montgomery PG, Weir BA, Kryukov G, Cowley GS, Gill S, Harrington WF, Pantel S, Krill-Burger JM, Meyers RM, Ali L, Goodale A, Lee Y, Jiang G, Hsiao J, Gerath WFJ, Howell S, Merkel E, Ghandi M, Garraway LA, Root DE, Golub TR, Boehm JS, Hahn WC. Defining a Cancer Dependency Map. Cell. 2017 Jul 27;170(3):564-576.
 
 ## Questions
 
