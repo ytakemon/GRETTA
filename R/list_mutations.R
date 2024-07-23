@@ -145,8 +145,7 @@ list_mutations <- function(gene = NULL, chr = NULL,
       }
       if (!is.null(is_hotspot)) {
         target_mut <- target_mut %>%
-          dplyr::filter(.data$isTCGAhotspot ==
-                          is_hotspot | .data$isCOSMIChotspot ==
+          dplyr::filter(.data$HessDriver ==
                           is_hotspot)
       }
       if (!is.null(is_damaging)) {
