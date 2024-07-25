@@ -34,3 +34,4 @@ From: rocker/verse:4.2.0
     # Run Rscript provided
     # Eg. To run the tutorial with 20 threads using: `singularity run GRETTA.sif ARID1A_tutorial.R 20 /path/to/data`
     exec Rscript $@
+ 
