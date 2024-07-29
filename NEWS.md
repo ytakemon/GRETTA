@@ -1,4 +1,10 @@
+# GRETTA 2.6.0
+Bugs in `select_cell_lines()` were fixed.
+
+# GRETTA 2.5.1
+
 # GRETTA 2.5.0
+Bugs in `list_mutations()` were fixed.
 
 # GRETTA 2.4.0
 - Latest DepMap dataset 23Q4 is now available. See https://github.com/ytakemon/GRETTA/tree/main/DepMap_data_versions/ for more details.
