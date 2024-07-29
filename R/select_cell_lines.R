@@ -194,7 +194,7 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
           .data$GT == "1|1" ~ "Hom_mut",
           TRUE ~ "Het_Mut"),
           AC_Variant = paste0(.data$VariantInfo," ", .data$AC_Variant)) %>% # are there any with 0 contribution from reference?
-        dplyr::rename(Chromosome = .data$Chrom, Start_position = .data$Pos) %>%
+        dplyr::rename(Chromosome = .data$Chrom, Start_position = .data$Pos, Protein_Change = .data$ProteinChange) %>%
         dplyr::select(.data$DepMap_ID, .data$Hugo_Symbol, .data$Chromosome, .data$Start_position, .data$Ref:.data$EntrezGeneID, .data$AC_Variant) %>%
         dplyr::arrange(.data$Start_position) %>% 
         dplyr::distinct()
@@ -204,10 +204,16 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     
     # If specific mutations are defined 
     if(!is.null(input_aa_change)){
-      select_muts <- target_mut %>% 
-        dplyr::filter(.data$Protein_Change %in% paste0("p.",input_aa_change)) %>%
-        dplyr::select(.data$DepMap_ID:.data$Protein_Change, .data$Variant_annotation:.data$AC_Variant)
       
+      if(!any(colnames(target_mut) %in% "GT")){ #if not 23Q4 data
+        select_muts <- target_mut %>% 
+          dplyr::filter(.data$Protein_Change %in% paste0("p.",input_aa_change)) %>%
+          dplyr::select(.data$DepMap_ID:.data$Protein_Change, .data$Variant_annotation:.data$AC_Variant)
+      } else { #if 23Q4 data
+        select_muts <- target_mut %>% 
+          dplyr::filter(.data$Protein_Change %in% paste0("p.",input_aa_change)) %>%
+          dplyr::select(.data$DepMap_ID:.data$Protein_Change)
+      }
       
       # Summarize mutations for all samples 
       # add OncotreeCode if post 23Q
@@ -245,35 +251,65 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
       # Annotate mutant group types based on conditions
       if(!all(summary$CN_status == "Unknown")){
         
-        Groups <- summary %>% 
-          dplyr::mutate(
-            Group = dplyr::case_when(
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status == "Neutral") &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNneutral"),
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status == "Amplified") &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNamplified"),
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status %in% c("Loss","Deep_del")) &
-                 (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNloss"),
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status == "Neutral") &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNneutral"),
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status == "Amplified") &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNamplified"),
-              (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
-                 (.data$CN_status %in% c("Loss","Deep_del")) &
-                 (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNloss"),
-              ((.data$Total_mutations == 0) &
-                 (.data$CN_status == "Neutral")) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNneutral"),
-              ((.data$Total_mutations == 0) &
-                 (.data$CN_status %in% c("Loss","Deep_del"))) ~ paste0(input_gene,"_", input_aa_change, 
-                                                                       "_Control_CNloss"),
-              TRUE ~ "Others")) %>%
-          dplyr::mutate(GeneNameID = input_geneID,
-                        GeneName = input_gene)
+        if(!any(colnames(target_mut) %in% "GT")){ #if not 23Q4 data
+          Groups <- summary %>% 
+            dplyr::mutate(
+              Group = dplyr::case_when(
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Neutral") &
+                   (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNneutral"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Amplified") &
+                   (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNamplified"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status %in% c("Loss","Deep_del")) &
+                   (.data$AC_ref_NULL == TRUE)) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNloss"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Neutral") &
+                   (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNneutral"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Amplified") &
+                   (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNamplified"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status %in% c("Loss","Deep_del")) &
+                   (.data$AC_ref_NULL == FALSE)) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNloss"),
+                ((.data$Total_mutations == 0) &
+                   (.data$CN_status == "Neutral")) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNneutral"),
+                ((.data$Total_mutations == 0) &
+                   (.data$CN_status %in% c("Loss","Deep_del"))) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNloss"),
+                TRUE ~ "Others")) %>%
+            dplyr::mutate(GeneNameID = input_geneID,
+                          GeneName = input_gene)
+        } else { #if 23Q4 data
+          Groups <- summary %>% 
+            dplyr::mutate(
+              Group = dplyr::case_when(
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Neutral") &
+                   (.data$GT == "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNneutral"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Amplified") &
+                   (.data$GT == "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNamplified"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status %in% c("Loss","Deep_del")) &
+                   (.data$GT == "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HomAlt_CNloss"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Neutral") &
+                   (.data$GT != "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNneutral"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status == "Amplified") &
+                   (.data$GT != "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNamplified"),
+                (.data$Protein_Change %in% paste0("p.",input_aa_change) & 
+                   (.data$CN_status %in% c("Loss","Deep_del")) &
+                   (.data$GT != "1|1")) ~ paste0(input_gene,"_", input_aa_change, "_HetAlt_CNloss"),
+                ((.data$Total_mutations == 0) &
+                   (.data$CN_status == "Neutral")) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNneutral"),
+                ((.data$Total_mutations == 0) &
+                   (.data$CN_status %in% c("Loss","Deep_del"))) ~ paste0(input_gene,"_", input_aa_change, "_Control_CNloss"),
+                TRUE ~ "Others")) %>%
+            dplyr::mutate(GeneNameID = input_geneID,
+                          GeneName = input_gene)
+        }
       } else {
         Groups <- summary %>% 
           dplyr::mutate(
