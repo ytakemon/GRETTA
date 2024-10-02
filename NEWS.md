@@ -1,3 +1,5 @@
+# GRETTA 2.6.1
+
 # GRETTA 2.6.0
 Bugs in `select_cell_lines()` were fixed.
 
