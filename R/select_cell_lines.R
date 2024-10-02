@@ -106,7 +106,9 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
            ". Please check spelling and for valid Hugo Symbols")
     }
     # Convert to unique geneID
-    input_geneID <- get_GeneNameID(input_gene, data_dir = data_dir)
+    input_geneID <- copy_num_annot %>% 
+      filter(.data$GeneNames == input_gene) %>% 
+      pull(GeneNameID)
     
     # Get copy number
     # Fix names if needed

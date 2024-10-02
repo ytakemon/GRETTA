@@ -177,7 +177,7 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
                                   count(.data$CellType)
                                 
                                 if (any(df_post_filter_check$n < 2)) {
-                                  populate <- rep(NA, 11)
+                                  populate <- rep(NA, 5)
                                   
                                 } else if (all(df$DepProb == 0)) {
                                   populate <- rep(0, 5)
