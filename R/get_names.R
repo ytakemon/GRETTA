@@ -36,6 +36,7 @@ get_GeneNameID <- function(gene_name, data_dir) {
   dep_annot <- CCLE_exp_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
   load(paste0(data_dir, "/CCLE_exp_annot.rda"), envir = environment())
+  load(paste0(data_dir, "/copy_num_annot.rda"), envir = environment())
   
   # For Hugo symbols/NCBI IDs - from dependency
   # prob.
@@ -54,7 +55,15 @@ get_GeneNameID <- function(gene_name, data_dir) {
                       .data$GeneID %in% gene_name) %>%
       dplyr::pull(.data$GeneNameID)
     
-    # If no matches are found
+  # For Hugo IDs - from CN data.
+  } else if (any(copy_num_annot$GeneNames %in% gene_name |
+               copy_num_annot$GeneID %in% gene_name)) {
+  res <- copy_num_annot %>%
+    dplyr::filter(.data$GeneNames %in% gene_name |
+                    .data$GeneID %in% gene_name) %>%
+    dplyr::pull(.data$GeneNameID)
+  
+  # If no matches are found
   } else {
     stop("Cannot find gene name. Please check the spelling. ",
          "Gene names should be a valid Hugo Symbol and in all caps!")
