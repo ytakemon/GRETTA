@@ -1,6 +1,8 @@
 # GRETTA 2.7.0
+Bugs in `get_GeneNameID ` were fixed.
 
 # GRETTA 2.6.1
+Bugs in `select_cell_lines()` were fixed.
 
 # GRETTA 2.6.0
 Bugs in `select_cell_lines()` were fixed.
