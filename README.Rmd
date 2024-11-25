@@ -30,7 +30,7 @@ The DepMap data used in this tutorial is version 22Q2. This version along with a
 
 ## Maintainer
 
-This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)'s laboratory at [Canada's Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
+This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), a research associate in [Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)'s laboratory at [Canada's Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
 ## Citations 
 
