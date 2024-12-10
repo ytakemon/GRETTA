@@ -268,4 +268,6 @@ dependencies:
   - xz==5.2.6=h166bdaf_0
   - zlib==1.3.1=hb9d3cd8_2
   - zstd==1.5.6=ha6fb4c9_0
+  - conda-forge::r-tidyverse
+  - conda-forge::r-dbplyr=2.3.4
 prefix: /home/rcorbett/miniconda3_new/envs/gretta_env

@@ -25,10 +25,34 @@ Depends:
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-#RoxygenNote: 7.3.1
+RoxygenNote: 7.3.1
 Suggests:
-
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
-    dplyr,
+    dplyr (<= 2.3.4),
+    magrittr,
+    forcats,
+    purrr,
+    rlang,
+    stringr,
+    utils,
+    tidyr,
+    doMC,
+    broom,
+    diptest,
+    parallel,
+    rcompanion,
+    foreach,
+    readr,
+    tidyselect,
+    stats,
+    ggplot2,
+    ggrepel,
+    RootsExtremaInflections,
+    tibble,
+    BiocFileCache,
+    tools
 VignetteBuilder: knitr

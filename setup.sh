@@ -17,3 +17,4 @@ if [ ! -f data/dataset.csv ]; then
     cd ${folder_name}
     tar -xzvf GRETTA_DepMap_23Q4_data.tar.gz
 fi
+
