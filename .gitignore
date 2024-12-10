@@ -7,3 +7,4 @@ Reminders.R
 DepMap_data_versions/20Q1/.gitattributes
 GRETTA.Rproj
 Singularity/Singularity.GRETTA.def
+inst/*

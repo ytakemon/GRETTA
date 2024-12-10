@@ -85,7 +85,7 @@ In this example we use DepMap's 2023 data release (23Q4). However, we also provi
 
 ## Genetic interaction mapping
 
-1. Install `GRETTA` and download accompanying data.
+1. Install `GRETTA` with accompanying data using the commands above.
 1. Select mutant cell lines that carry mutations in the gene of interest and control cell lines. 
     + ([optional specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed)) can be used to select cell lines based on disease type, disease subtype, or amino acid change.
 1. Determine differential expression between mutant and control cell line groups.
@@ -95,7 +95,7 @@ In this example we use DepMap's 2023 data release (23Q4). However, we also provi
 
 ## Co-essential network mapping
 
-1. Install `GRETTA` and download accompanying data.
+1. Install `GRETTA`accompanying data using the commands above.
 1. Run correlation coefficient analysis.
     + ([optional specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed:~:text=For%20the%20essentiality%20network%20analysis%2C%20context%2Dspecific%20cell%20lines%20can%20be%20selected%20in%20two%20ways%3A)) can be used to perform analysis on cell lines of a specific disease type(s).
 1. Calculate inflection points of negative/positive curve to determine a threshold.

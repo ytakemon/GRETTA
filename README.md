@@ -114,7 +114,7 @@ make new data sets available as the are released by DepMap.
 
 ## Genetic interaction mapping
 
-1.  Install `GRETTA` and download accompanying data.
+1.  Install `GRETTA` with accompanying data using the commands above.
 2.  Select mutant cell lines that carry mutations in the gene of
     interest and control cell lines.
     - ([optional
@@ -129,7 +129,7 @@ make new data sets available as the are released by DepMap.
 
 ## Co-essential network mapping
 
-1.  Install `GRETTA` and download accompanying data.
+1.  Install `GRETTA`accompanying data using the commands above.
 2.  Run correlation coefficient analysis.
     - ([optional
       specifications](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-can-context-specific-genetic-screens-or-essentiality-network-analyses-be-performed:~:text=For%20the%20essentiality%20network%20analysis%2C%20context%2Dspecific%20cell%20lines%20can%20be%20selected%20in%20two%20ways%3A))
