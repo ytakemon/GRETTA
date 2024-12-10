@@ -10,10 +10,10 @@ conda activate gretta_env
 Rscript setup.R
 
 # Step 4: Download depmap files
+folder_name="GRETTA_project"
 if [ ! -f data/dataset.csv ]; then
-    mkdir -p data
-    wget -O data/GRETTA_DepMap_23Q4_data.tar.gz  https://www.bcgsc.ca/downloads/ytakemon/GRETTA/23Q4/GRETTA_DepMap_23Q4_data.tar.gz
-    cd data
+    mkdir -p ${folder_name}
+    wget -O ${folder_name}/GRETTA_DepMap_23Q4_data.tar.gz  https://www.bcgsc.ca/downloads/ytakemon/GRETTA/23Q4/GRETTA_DepMap_23Q4_data.tar.gz
+    cd ${folder_name}
     tar -xzvf GRETTA_DepMap_23Q4_data.tar.gz
-
 fi

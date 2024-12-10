@@ -49,57 +49,37 @@ Please check the [FAQ section](https://github.com/ytakemon/GRETTA/wiki/Frequentl
 * GRETTA is supported and compatible for R versions >= 4.2.0. 
 * 12G of storage for each DepMap release plus 11G of temporary space to for .tar.gz prior to extraction.
 
-# Installation
+# Setting Up the Conda Environment
 
-> **Warning**
-> The new version of [dbplyr (v2.4.0)](https://stackoverflow.com/questions/77370659/error-failed-to-collect-lazy-table-caused-by-error-in-db-collect-using/77370920#77370920
-) is currently incompatable with another library used in GRETTA. If you encounter an error message like the one below. Please install the previous working version also shown below.  
->
-> Error message:
-> 
-> ```
-> Error in `collect()`:
-> ! Failed to collect lazy table.
-> Caused by error in `db_collect()`:
-> ! Arguments in `...` must be used.
-> ✖ Problematic argument:
-> • ..1 = Inf
-> ℹ Did you misspell an argument name?
-> ```
-> 
-> Solution:
-> 
-> ```
-> install.packages("devtools")
-> devtools::install_version("dbplyr", version = "2.3.4")`
-> ```
+Follow these steps to set up the Conda environment required for this project:
 
-You can install the GRETTA package from [GitHub](https://github.com) with:
+## Prerequisites
 
-``` r
-install.packages(c("devtools", "dplyr","forcats","ggplot2"))
-devtools::install_github("ytakemon/GRETTA")
-```
+Ensure that you have the following installed on your system:
 
-DepMap 22Q2 data and the data documentation files are provided above and can be extracted directly in terminal using the following bash code (not in R/RStudio). For other DepMap data versions please refer to the [FAQ section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-download-and-use-other-versions-of-depmap-data).
+- [Git](https://git-scm.com/)
+- [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 
-``` bash
-# Make a new directory/folder called GRETTA_project and go into directory
-mkdir GRETTA_project
-cd GRETTA_project
+---
 
-# Download data from the web
-wget https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2/GRETTA_DepMap_22Q2_data.tar.gz
+## Steps to Set Up the Environment
 
-# Extract data and data documentation
-tar -zxvf GRETTA_DepMap_22Q2_data.tar.gz
-```
+**Clone the Repository**
+  ```bash
+  git clone https://github.com/MarraLab/GRETTA.git
+  cd GRETTA
+  bash setup.sh
+  ```
 
-A singularity container has also been provided and instructions can be found [here](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
+The above command will use conda to install the required libraries, install GRETTA from github, and download a recent release of the depmap database.
+  
+DepMap 23Q4 data and the data documentation files are provided above. For other DepMap data versions please refer to the [FAQ section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-download-and-use-other-versions-of-depmap-data).
+
+A less frequently updated singularity container has also been provided and instructions can be found [here](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
 
 ### Additional DepMap versions
 
-In this example we use DepMap's 2022 data release (22Q2). However, we also provide previous data released in 2020 (v20Q1) and 2021 (v21Q4), which are available at :`https://www.bcgsc.ca/downloads/ytakemon/GRETTA/`. We are hoping to make new data sets available as the are released by DepMap.
+In this example we use DepMap's 2023 data release (23Q4). However, we also provide previous data released in 2020 (v20Q1), 2021 (v21Q4), and 2022 (v22Q2) which are available at :`https://www.bcgsc.ca/downloads/ytakemon/GRETTA/`. We are hoping to make new data sets available as the are released by DepMap.
 
 # Workflows 
 
