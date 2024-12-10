@@ -65,11 +65,11 @@ Ensure that you have the following installed on your system:
 ## Steps to Set Up the Environment
 
 **Clone the Repository**
-  ```bash
-  git clone https://github.com/MarraLab/GRETTA.git
-  cd GRETTA
-  bash setup.sh
-  ```
+```bash
+git clone https://github.com/MarraLab/GRETTA.git
+cd GRETTA
+bash setup.sh
+```
 
 The above command will use conda to install the required libraries, install GRETTA from github, and download a recent release of the depmap database.
   

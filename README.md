@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!--You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/master/examples>. -->
+
 <!-- badges: start -->
 
 [![License: GPL
@@ -21,18 +23,18 @@ knockout screens and map essentiality networks. A manuscript describing
 this tool is available at [bioinformatics (Takemon, Y. and Marra, MA.,
 2023)](https://doi.org/10.1093/bioinformatics/btad381).
 
-The DepMap data used in this tutorial is version 22Q2. This version
-along with all versions provided in this repository were downloaded
-through the DepMap data portal, which was distributed and used under the
+DepMap data used in this tutorial are version 22Q2. This version, along
+with all versions provided in this repository. were downloaded through
+the DepMap data portal. All data were distributed and used under the
 terms and conditions of [CC Attribution 4.0
 license](https://creativecommons.org/licenses/by/4.0/).
 
 ## Maintainer
 
 This repository is maintained by [Yuka
-Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco
-Marra](https://www.bcgsc.ca/labs/marra-lab)’s laboratory at [Canada’s
-Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
+Takemon](https://github.com/ytakemon), a research associate in
+[Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)’s laboratory at
+[Canada’s Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
 ## Citations
 
@@ -61,66 +63,50 @@ have a request please submit an
 ## Requirements
 
 - GRETTA is supported and compatible for R versions \>= 4.2.0.
-- 12G of space to store one DepMap data set with and an additional 11G
-  of temporary space to for .tar.gz prior to extraction.
+- 12G of storage for each DepMap release plus 11G of temporary space to
+  for .tar.gz prior to extraction.
 
-# Installation
+# Setting Up the Conda Environment
 
-> **Warning** The new version of [dbplyr
-> (v2.4.0)](https://stackoverflow.com/questions/77370659/error-failed-to-collect-lazy-table-caused-by-error-in-db-collect-using/77370920#77370920)
-> is currently incompatable with another library used in GRETTA. If you
-> encounter an error message like the one below. Please install the
-> previous working version also shown below.
->
-> Error message:
->
->     Error in `collect()`:
->     ! Failed to collect lazy table.
->     Caused by error in `db_collect()`:
->     ! Arguments in `...` must be used.
->     ✖ Problematic argument:
->     • ..1 = Inf
->     ℹ Did you misspell an argument name?
->
-> Solution:
->
->     install.packages("devtools")
->     devtools::install_version("dbplyr", version = "2.3.4")`
+Follow these steps to set up the Conda environment required for this
+project:
 
-You can install the GRETTA package from [GitHub](https://github.com)
-with:
+## Prerequisites
 
-``` r
-install.packages(c("devtools", "dplyr","forcats","ggplot2"))
-devtools::install_github("ytakemon/GRETTA")
-```
+Ensure that you have the following installed on your system:
 
-DepMap 22Q2 data and the data documentation files are provided above and
-can be extracted directly in terminal using the following bash code (not
-in R/RStudio). For other DepMap data versions please refer to the [FAQ
-section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-download-and-use-other-versions-of-depmap-data).
+- [Git](https://git-scm.com/)
+- [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
+
+------------------------------------------------------------------------
+
+## Steps to Set Up the Environment
+
+**Clone the Repository**
 
 ``` bash
-# Make a new directory/folder called GRETTA_project and go into directory
-mkdir GRETTA_project
-cd GRETTA_project
-
-# Download data from the web
-wget https://www.bcgsc.ca/downloads/ytakemon/GRETTA/22Q2/GRETTA_DepMap_22Q2_data.tar.gz
-
-# Extract data and data documentation
-tar -zxvf GRETTA_DepMap_22Q2_data.tar.gz
+git clone https://github.com/MarraLab/GRETTA.git
+cd GRETTA
+bash setup.sh
 ```
 
-A singularity container has also been provided and instructions can be
-found
+The above command will use conda to install the required libraries,
+install GRETTA from github, and download a recent release of the depmap
+database.
+
+DepMap 23Q4 data and the data documentation files are provided above.
+For other DepMap data versions please refer to the [FAQ
+section](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-download-and-use-other-versions-of-depmap-data).
+
+A less frequently updated singularity container has also been provided
+and instructions can be found
 [here](https://github.com/ytakemon/GRETTA/wiki/Frequently-Asked-Questions#q-how-to-run-singularity).
 
 ### Additional DepMap versions
 
-In this example we use DepMap’s 2022 data release (22Q2). However, we
-also provide previous data released in 2020 (v20Q1) and 2021 (v21Q4),
-which are available at
+In this example we use DepMap’s 2023 data release (23Q4). However, we
+also provide previous data released in 2020 (v20Q1), 2021 (v21Q4), and
+2022 (v22Q2) which are available at
 :`https://www.bcgsc.ca/downloads/ytakemon/GRETTA/`. We are hoping to
 make new data sets available as the are released by DepMap.
 
@@ -173,16 +159,23 @@ they are not installed yet use `install.packages()` (eg.
 ``` r
 # Load library
 library(tidyverse)
-#> ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-#> ✔ dplyr     1.1.4     ✔ readr     2.1.5
-#> ✔ forcats   1.0.0     ✔ stringr   1.5.1
-#> ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-#> ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-#> ✔ purrr     1.0.2     
+#> Warning: package 'tidyverse' was built under R version 4.2.1
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+#> ✔ ggplot2 3.5.1     ✔ purrr   1.0.2
+#> ✔ tibble  3.2.1     ✔ dplyr   1.1.4
+#> ✔ tidyr   1.3.1     ✔ stringr 1.5.1
+#> ✔ readr   2.1.5     ✔ forcats 1.0.0
+#> Warning: package 'ggplot2' was built under R version 4.2.3
+#> Warning: package 'tibble' was built under R version 4.2.3
+#> Warning: package 'tidyr' was built under R version 4.2.3
+#> Warning: package 'readr' was built under R version 4.2.3
+#> Warning: package 'purrr' was built under R version 4.2.3
+#> Warning: package 'dplyr' was built under R version 4.2.3
+#> Warning: package 'stringr' was built under R version 4.2.3
+#> Warning: package 'forcats' was built under R version 4.2.3
 #> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
-#> ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 ```
 
 ``` r
@@ -195,7 +188,7 @@ library(GRETTA)
 #>     |  |__| | |  |\  \----.|  |____     |  |        |  |     /  _____  \  
 #>      \______| | _| `._____||_______|    |__|        |__|    /__/     \__\ 
 #>     
-#>     Welcome to GRETTA! The version loaded is: 2.3.0
+#>     Welcome to GRETTA! The version loaded is: 2.7.0
 #> The latest DepMap dataset accompanying this package is v23Q2. 
 #> Please refer to our tutorial on GitHub for loading DepMap data and details: https://github.com/ytakemon/GRETTA
 ```
@@ -208,7 +201,11 @@ downloaded using the following code.
 ``` r
 path <- getwd()
 download_example_data(path)
-#> Data saved to: /projects/marralab/ytakemon_prj/DepMap/GRETTA/GRETTA_example/
+#> Warning in dir.create(paste0(path, "/GRETTA_example")):
+#> '/home/rcorbett/GRETTA/GRETTA_example' already exists
+#> Warning in dir.create(paste0(path, "/GRETTA_example_output")):
+#> '/home/rcorbett/GRETTA/GRETTA_example_output' already exists
+#> Data saved to: /home/rcorbett/GRETTA/GRETTA_example/
 ```
 
 Then, assign variable that point to where the `.rda` files are stored
@@ -264,6 +261,7 @@ list_cancer_types(data_dir = gretta_data_dir)
 
 ## List all available cancer subtypes
 list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
+#> See sample_annot.rda in your data directory for a complist list of cell line annotation.
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"          
 #>  [2] "Small Cell Lung Cancer (SCLC)"                               
 #>  [3] "Non-Small Cell Lung Cancer (NSCLC), Squamous Cell Carcinoma" 
@@ -699,13 +697,12 @@ coess_df <- coessential_map(
 
 ``` r
 sessionInfo()
-#> R version 4.3.2 (2023-10-31)
-#> Platform: x86_64-pc-linux-gnu (64-bit)
+#> R version 4.2.0 (2022-04-22)
+#> Platform: x86_64-conda-linux-gnu (64-bit)
 #> Running under: CentOS Linux 7 (Core)
 #> 
 #> Matrix products: default
-#> BLAS:   /gsc/software/linux-x86_64-centos7/R-4.3.2/lib64/R/lib/libRblas.so 
-#> LAPACK: /gsc/software/linux-x86_64-centos7/R-4.3.2/lib64/R/lib/libRlapack.so;  LAPACK version 3.11.0
+#> BLAS/LAPACK: /home/rcorbett/miniconda3_new/envs/gretta_env/lib/libopenblasp-r0.3.28.so
 #> 
 #> locale:
 #>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -715,64 +712,67 @@ sessionInfo()
 #>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 #> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 #> 
-#> time zone: America/Vancouver
-#> tzcode source: system (glibc)
-#> 
 #> attached base packages:
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETTA_2.3.0    lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
-#>  [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
-#>  [9] tibble_3.2.1    ggplot2_3.5.1   tidyverse_2.0.0
+#>  [1] GRETTA_2.7.0    forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4    
+#>  [5] purrr_1.0.2     readr_2.1.5     tidyr_1.3.1     tibble_3.2.1   
+#>  [9] ggplot2_3.5.1   tidyverse_1.3.2
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1              Exact_3.2                    
-#>  [3] rootSolve_1.8.2.4             farver_2.1.2                 
-#>  [5] libcoin_1.0-10                blob_1.2.4                   
-#>  [7] filelock_1.0.3                fastmap_1.2.0                
-#>  [9] TH.data_1.1-2                 BiocFileCache_2.10.2         
-#> [11] digest_0.6.35                 timechange_0.3.0             
-#> [13] lifecycle_1.0.4               multcompView_0.1-10          
-#> [15] survival_3.6-4                lmom_3.0                     
-#> [17] RSQLite_2.3.7                 magrittr_2.0.3               
-#> [19] compiler_4.3.2                rlang_1.1.3                  
-#> [21] doMC_1.3.8                    tools_4.3.2                  
-#> [23] utf8_1.2.4                    yaml_2.3.8                   
-#> [25] data.table_1.15.4             knitr_1.47                   
-#> [27] labeling_0.4.3                bit_4.0.5                    
-#> [29] curl_5.2.1                    plyr_1.8.9                   
-#> [31] RootsExtremaInflections_1.2.1 multcomp_1.4-25              
-#> [33] expm_0.999-9                  withr_3.0.0                  
-#> [35] stats4_4.3.2                  grid_4.3.2                   
-#> [37] fansi_1.0.6                   e1071_1.7-14                 
-#> [39] colorspace_2.1-0              scales_1.3.0                 
-#> [41] iterators_1.0.14              MASS_7.3-60                  
-#> [43] cli_3.6.2                     mvtnorm_1.2-5                
-#> [45] rmarkdown_2.27                generics_0.1.3               
-#> [47] rstudioapi_0.16.0             httr_1.4.7                   
-#> [49] tzdb_0.4.0                    readxl_1.4.3                 
-#> [51] gld_2.6.6                     DBI_1.2.3                    
-#> [53] cachem_1.1.0                  proxy_0.4-27                 
-#> [55] modeltools_0.2-23             splines_4.3.2                
-#> [57] parallel_4.3.2                cellranger_1.1.0             
-#> [59] rcompanion_2.4.36             matrixStats_1.3.0            
-#> [61] vctrs_0.6.5                   sandwich_3.1-0               
-#> [63] boot_1.3-28.1                 Matrix_1.6-5                 
-#> [65] hms_1.1.3                     bit64_4.0.5                  
-#> [67] ggrepel_0.9.5                 nortest_1.0-4                
-#> [69] foreach_1.5.2                 diptest_0.77-1               
-#> [71] glue_1.7.0                    codetools_0.2-19             
-#> [73] stringi_1.8.4                 gtable_0.3.5                 
-#> [75] lmtest_0.9-40                 munsell_0.5.1                
-#> [77] pillar_1.9.0                  htmltools_0.5.8.1            
-#> [79] R6_2.5.1                      dbplyr_2.5.0                 
-#> [81] doParallel_1.0.17             evaluate_0.23                
-#> [83] lattice_0.22-5                highr_0.11                   
-#> [85] backports_1.5.0               memoise_2.0.1                
-#> [87] broom_1.0.6                   DescTools_0.99.54            
-#> [89] class_7.3-22                  Rcpp_1.0.12                  
-#> [91] coin_1.4-3                    inflection_1.3.6             
-#> [93] xfun_0.44                     zoo_1.8-12                   
-#> [95] pkgconfig_2.0.3
+#>   [1] TH.data_1.1-2                 googledrive_2.1.1            
+#>   [3] colorspace_2.1-1              class_7.3-22                 
+#>   [5] modeltools_0.2-23             fs_1.6.4                     
+#>   [7] gld_2.6.6                     rstudioapi_0.17.1            
+#>   [9] proxy_0.4-27                  farver_2.1.2                 
+#>  [11] ggrepel_0.9.6                 bit64_4.5.2                  
+#>  [13] fansi_1.0.6                   mvtnorm_1.3-2                
+#>  [15] lubridate_1.9.3               coin_1.4-3                   
+#>  [17] xml2_1.3.3                    codetools_0.2-20             
+#>  [19] splines_4.2.0                 doParallel_1.0.17            
+#>  [21] cachem_1.1.0                  rootSolve_1.8.2.4            
+#>  [23] libcoin_1.0-10                knitr_1.47                   
+#>  [25] jsonlite_1.8.9                doMC_1.3.8                   
+#>  [27] broom_1.0.6                   dbplyr_2.3.4                 
+#>  [29] compiler_4.2.0                httr_1.4.7                   
+#>  [31] backports_1.5.0               Matrix_1.6-5                 
+#>  [33] fastmap_1.2.0                 gargle_1.5.2                 
+#>  [35] cli_3.6.3                     htmltools_0.5.8.1            
+#>  [37] tools_4.2.0                   gtable_0.3.6                 
+#>  [39] glue_1.8.0                    lmom_3.2                     
+#>  [41] rappdirs_0.3.3                Rcpp_1.0.13-1                
+#>  [43] cellranger_1.1.0              vctrs_0.6.5                  
+#>  [45] iterators_1.0.14              lmtest_0.9-40                
+#>  [47] xfun_0.45                     rvest_1.0.4                  
+#>  [49] timechange_0.3.0              lifecycle_1.0.4              
+#>  [51] googlesheets4_1.1.1           MASS_7.3-60.0.1              
+#>  [53] zoo_1.8-12                    scales_1.3.0                 
+#>  [55] hms_1.1.3                     parallel_4.2.0               
+#>  [57] sandwich_3.1-1                expm_1.0-0                   
+#>  [59] yaml_2.3.8                    curl_6.0.1                   
+#>  [61] Exact_3.3                     memoise_2.0.1                
+#>  [63] stringi_1.8.4                 RSQLite_2.3.9                
+#>  [65] highr_0.11                    inflection_1.3.6             
+#>  [67] foreach_1.5.2                 nortest_1.0-4                
+#>  [69] e1071_1.7-16                  filelock_1.0.3               
+#>  [71] boot_1.3-30                   rlang_1.1.4                  
+#>  [73] pkgconfig_2.0.3               matrixStats_1.4.1            
+#>  [75] evaluate_0.24.0               lattice_0.22-6               
+#>  [77] RootsExtremaInflections_1.2.1 labeling_0.4.3               
+#>  [79] bit_4.5.0.1                   tidyselect_1.2.1             
+#>  [81] plyr_1.8.9                    magrittr_2.0.3               
+#>  [83] R6_2.5.1                      DescTools_0.99.51            
+#>  [85] generics_0.1.3                multcompView_0.1-10          
+#>  [87] multcomp_1.4-26               DBI_1.2.3                    
+#>  [89] pillar_1.9.0                  haven_2.5.4                  
+#>  [91] withr_3.0.2                   survival_3.7-0               
+#>  [93] modelr_0.1.11                 crayon_1.5.3                 
+#>  [95] rcompanion_2.4.36             utf8_1.2.4                   
+#>  [97] BiocFileCache_2.6.1           tzdb_0.4.0                   
+#>  [99] rmarkdown_2.27                grid_4.2.0                   
+#> [101] readxl_1.4.3                  data.table_1.16.4            
+#> [103] blob_1.2.4                    reprex_2.1.0                 
+#> [105] digest_0.6.36                 diptest_0.77-1               
+#> [107] stats4_4.2.0                  munsell_0.5.1
 ```
