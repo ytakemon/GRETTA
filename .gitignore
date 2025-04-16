@@ -11,3 +11,5 @@ Singularity/Singularity.GRETTA.def
 /doc/
 /Meta/
 tests/testdata/GRETTA_example/*
+GRETTA_example/*
+doc/*.html
