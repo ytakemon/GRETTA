@@ -1,3 +1,10 @@
+# GRETTA 3.0.0
+GRETTA now supports RNAi screns! 
+- Formatted RNAi data can be downloaded from https://www.bcgsc.ca/downloads/ytakemon/GRETTA/RNAi/
+- A script used to format is availale in [DepMap_data_versions/RNAi/](https://github.com/ytakemon/GRETTA/tree/main/DepMap_data_versions/RNAi).
+- Turn on the option to perform RNAi screens using the following optioons `select_cell_lines(rnai_screen = TRUE)`, `GI_screen(rnai_screen = TRUE)`, and `GI_screen_perms(rnai_screen = TRUE)`. Details can be found in `help(GI_screen)`. 
+- *Note:* The DepMap Consortium no longer performs RNAi screens therefore the data available are fixed. 
+
 # GRETTA 2.7.0
 Bugs in `get_GeneNameID ` were fixed.
 

@@ -53,3 +53,6 @@ file.copy(
   from = paste0(RNAi_dir, "data/rnai_annot.rda"), 
   to = paste0(DepMap_data_dir, "data/rnai_annot.rda")
   )
+
+# Zip it up:
+# tar -czvf GRETTA_DepMap_RNAi_data.tar.gz data
