@@ -9,6 +9,7 @@ select_cell_lines(
   input_aa_change = NULL,
   input_disease = NULL,
   input_disease_subtype = NULL,
+  rnai_screen = FALSE,
   data_dir = NULL
 )
 }
@@ -20,6 +21,8 @@ select_cell_lines(
 \item{input_disease}{string Cancer type listed in \code{list_available_cancer_types()}}
 
 \item{input_disease_subtype}{string Cancer subtype listed in \code{list_available_cancer_subtypes()}}
+
+\item{rnai_screen}{logical, TRUE if performing analysis using RNAi screen data, FALSE (default) performing analysis using CRISPR KO data, Default: FALSE}
 
 \item{data_dir}{string Path to GINIR_data}
 }
