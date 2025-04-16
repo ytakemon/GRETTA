@@ -19,12 +19,17 @@
 Pval_perm_adjust <- function(p_value = NULL, perm_pvalues = NULL) {
   if(is.na(p_value)|p_value == Inf){
     return(NA_integer_)
-  }
-  x <- table(perm_pvalues <= p_value)
-  if(length(x) < 2){
-    res <- 1/(x[[1]]+1)
+
+  } else if(p_value == 1){
+    return(1)
+    
   } else {
-    res <- x[["TRUE"]]/(x[["FALSE"]]+ x[["TRUE"]]+1)
+    x <- table(perm_pvalues <= p_value)
+    if(length(x) < 2){
+      res <- 1/(x[[1]]+1)
+    } else {
+      res <- x[["TRUE"]]/(x[["FALSE"]]+ x[["TRUE"]]+1)
+    }
+    return(res)
   }
-  return(res)
 }

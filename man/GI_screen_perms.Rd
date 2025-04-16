@@ -7,6 +7,7 @@
 GI_screen_perms(
   control_id = NULL,
   mutant_id = NULL,
+  rnai_screen = FALSE,
   n_perm = 100,
   core_num = NULL,
   output_dir = NULL,
@@ -18,6 +19,8 @@ GI_screen_perms(
 \item{control_id}{string, A vector containing two or more DepMap_id, Default: NULL}
 
 \item{mutant_id}{string, A vector containing two or more DepMap_id, Default: NULL}
+
+\item{rnai_screen}{logical, TRUE if performing analysis using RNAi screen data, FALSE (default) performing analysis using CRISPR KO data, Default: FALSE}
 
 \item{n_perm}{integer, Number of permutations to run, Default: 100}
 

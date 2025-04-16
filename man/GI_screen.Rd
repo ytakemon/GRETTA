@@ -9,6 +9,7 @@ GI_screen(
   mutant_id = NULL,
   gene_list = NULL,
   core_num = NULL,
+  rnai_screen = FALSE,
   output_dir = NULL,
   data_dir = NULL,
   filename = NULL,
@@ -23,6 +24,8 @@ GI_screen(
 \item{gene_list}{string, A vector containing a list of Hugo symbols to subset the screen and to perform a small in-silico screen, Default: NULL}
 
 \item{core_num}{integer, Number of cores to run analysis, Default: NULL}
+
+\item{rnai_screen}{logical, TRUE if performing analysis using RNAi screen data, FALSE (default) performing analysis using CRISPR KO data, Default: FALSE}
 
 \item{output_dir}{string, Full path to where output file should be saved, Default: NULL}
 

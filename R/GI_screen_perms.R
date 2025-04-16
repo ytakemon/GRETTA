@@ -4,6 +4,7 @@
 #' 
 #' @param control_id string, A vector containing two or more DepMap_id, Default: NULL
 #' @param mutant_id string, A vector containing two or more DepMap_id, Default: NULL
+#' @param rnai_screen logical, TRUE if performing analysis using RNAi screen data, FALSE (default) performing analysis using CRISPR KO data, Default: FALSE
 #' @param n_perm integer, Number of permutations to run, Default: 100
 #' @param core_num integer, Number of cores to run analysis, Default: NULL
 #' @param output_dir string, Full path to where output file should be saved, Default: NULL
@@ -46,7 +47,7 @@
 #' @export 
 #' @importFrom parallel detectCores
 #' @importFrom doMC registerDoMC
-#' @importFrom dplyr mutate filter group_by summarize pull rename
+#' @importFrom dplyr mutate filter group_by summarize pull rename select count
 #' @importFrom forcats fct_relevel
 #' @importFrom foreach `%dopar%` foreach
 #' @importFrom rcompanion cliffDelta
@@ -57,9 +58,10 @@
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
 
-GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
-                      core_num = NULL, output_dir = NULL,
-                      data_dir = NULL, filename = NULL) {
+GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, 
+  rnai_screen = FALSE, n_perm = 100,
+  core_num = NULL, output_dir = NULL,
+  data_dir = NULL, filename = NULL) {
   
   # Check that essential inputs are given:
   if (is.null(control_id)) {
@@ -113,39 +115,62 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
   }
   
   # Load necessary data
-  dep <- dep_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
-  load(paste0(data_dir, "/dep.rda"), envir = environment())
-  load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
+  if(rnai_screen){ # RNAi screen
+    dep <- dep_annot <- rnai_long <- rnai_annot <- NULL
+    load(paste0(data_dir, "/rnai_long.rda"), envir = environment())
+    load(paste0(data_dir, "/rnai_annot.rda"), envir = environment())
+    dep <- rnai_long 
+    dep_annot <- rnai_annot
+
+  } else { # CRISPR KO screen
+    dep <- dep_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
+    load(paste0(data_dir, "/dep.rda"), envir = environment())
+    load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
+  }
   
   # Check to see if enough samples were given
   # after filtering:
-  Control_group_avail <- control_id[control_id %in%
-                                      dep$DepMap_ID]
-  Mutant_groups_avail <- mutant_id[mutant_id %in%
-                                     dep$DepMap_ID]
+  Control_group_avail <- control_id[control_id %in% dep$DepMap_ID]
+  Mutant_groups_avail <- mutant_id[mutant_id %in% dep$DepMap_ID]
   if (length(Control_group_avail) < 2) {
-    say <- paste0("Not enough controls were screened! Only the following control samples were screen: ",
-                  paste0(Control_group_avail, collapse = ", "))
+    say <- paste0(
+      "Not enough controls were screened! Only the following control samples were screen: ",
+      paste0(Control_group_avail, collapse = ", "))
     stop(say)
   }
   if (length(Control_group_avail) < 2) {
-    say <- paste0("Not enough mutants were screened! Only the following mutant samples were screen: ",
-                  paste0(Mutant_groups_avail, collapse = ", "))
+    say <- paste0(
+      "Not enough mutants were screened! Only the following mutant samples were screen: ",
+      paste0(Mutant_groups_avail, collapse = ", "))
     stop(say)
   }
   
-  # Filter dep probs to only those that are
-  # used:
-  select_dep <- dep %>%
-    tidyr::pivot_longer(cols = tidyselect::matches("\\d"),
-                        names_to = "GeneNameID", values_to = "DepProb") %>%
-    dplyr::mutate(CellType = case_when(.data$DepMap_ID %in%
-                                         Mutant_groups_avail ~ "Mutant", .data$DepMap_ID %in%
-                                         Control_group_avail ~ "Control", TRUE ~
-                                         "Others")) %>%
-    dplyr::filter(.data$CellType != "Others") %>%
-    dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType,
-                                                  "Control", "Mutant"))
+  # Filter dep probs to only those that are used:
+  if(rnai_screen){
+    select_dep <- dep %>% 
+      dplyr::rename(DepProb = "values") %>%
+      dplyr::mutate(
+        CellType = case_when(
+          DepMap_ID %in% Mutant_groups_avail ~ "Mutant", 
+          DepMap_ID %in% Control_group_avail ~ "Control", 
+          TRUE ~ "Others")) %>%
+      dplyr::filter(.data$CellType != "Others") %>%
+      dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType, "Control", "Mutant"))
+
+  } else {
+    select_dep <- dep %>%
+      tidyr::pivot_longer(
+        cols = tidyselect::matches("\\d"),
+        names_to = "GeneNameID", 
+        values_to = "DepProb") %>%
+      dplyr::mutate(
+        CellType = case_when(
+          DepMap_ID %in% Mutant_groups_avail ~ "Mutant", 
+          DepMap_ID %in% Control_group_avail ~ "Control", 
+          TRUE ~ "Others")) %>%
+      dplyr::filter(.data$CellType != "Others") %>%
+      dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType, "Control", "Mutant"))
+  }
   
   # Need to define function. A fix for a
   # strange bug:
@@ -153,91 +178,95 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, n_perm = 100,
   
   # Begin loop
   All_res <- each <- NULL
-  All_res <- foreach::foreach(each = seq_len(n_perm),
-                              .combine = bind_rows) %dopar% {
-                                
-                                # Give feedback
-                                if (each == 1) {
-                                  message("Processing ", each, " of ", n_perm)
-                                } else if (each == n_perm) {
-                                  message("Processing ", each, " of ", n_perm)
-                                } else if (each%%1000 == 0) {
-                                  message("Processing ", each, " of ", n_perm)
-                                }
-                                
-                                # Create randomly sampled DepProb dataframe
-                                dummy_geneID <- "A1BG_1"
-                                df <- select_dep %>% 
-                                  mutate(DepProb_randomize = (sample(.data$DepProb, size = length(.data$DepProb), replace = FALSE))) %>%
-                                  filter(.data$GeneNameID == dummy_geneID) %>%
-                                  select(-.data$DepProb) %>%
-                                  rename(DepProb = .data$DepProb_randomize)
-                                
-                                df_post_filter_check <- df %>%
-                                  count(.data$CellType)
-                                
-                                if (any(df_post_filter_check$n < 2)) {
-                                  populate <- rep(NA, 5)
-                                  
-                                } else if (all(df$DepProb == 0)) {
-                                  populate <- rep(0, 5)
-                                  
-                                } else if (all(df$DepProb == 1)) {
-                                  populate <- rep(1, 5)
-                                  
-                                } else {
-                                  # # MWU doesn't handle na or zero's
-                                  # well so # FOR NOW remove zeros.  df
-                                  # <- df %>% filter(!is.na(DepProb))
-                                  # %>% filter(DepProb != 0)
-                                  
-                                  stats <- df %>%
-                                    dplyr::group_by(.data$CellType) %>%
-                                    dplyr::summarize(
-                                      Median = stats::median(.data$DepProb, na.rm = TRUE), 
-                                      Mean = mean(.data$DepProb, na.rm = TRUE), .groups = "drop")
-                                  
-                                  if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
-                                    fit_pval <- stats::wilcox.test(DepProb ~ CellType, df, paired = FALSE, alternative = "two.sided",
-                                                                   conf.int = TRUE, na.action = "na.omit")$p.value
-                                    
-                                  } else if ((any(is.na(stats)) == TRUE) &
-                                             (nrow(stats) == 2)) {
-                                    populate <- rep(0, 5)
-                                  }
-                                  
-                                  if ((any(is.na(stats)) != TRUE) & (nrow(stats) ==
-                                                                     2)) {
-                                    populate <- as.numeric(c(unlist(stats)[-c(1,
-                                                                              2)], fit_pval))
-                                  } else {
-                                    populate <- rep(0, 5)
-                                  }
-                                }
-                                
-                                tibble(Result = c("Control_median", "Mutant_median",
-                                                  "Control_mean", "Mutant_mean",
-                                                  "Pval")) %>%
-                                  dplyr::mutate(!!sym(dummy_geneID) := populate) %>%
-                                  tidyr::pivot_longer(-.data$Result) %>%
-                                  tidyr::pivot_wider(names_from = .data$Result,
-                                                     values_from = .data$value) %>%
-                                  dplyr::rename(GeneNameID = .data$name)
-                              }  # End of for loop
+  All_res <- foreach::foreach(each = seq_len(n_perm), .combine = bind_rows) %dopar% {
+    
+    # Give feedback
+    if (each == 1) {
+      message("Processing ", each, " of ", n_perm)
+    } else if (each == n_perm) {
+      message("Processing ", each, " of ", n_perm)
+    } else if (each%%1000 == 0) {
+      message("Processing ", each, " of ", n_perm)
+    }
+    
+    # Create randomly sampled DepProb dataframe
+    dummy_geneID <- "A1BG_1"
+    df <- select_dep %>% 
+      dplyr::mutate(
+        DepProb_randomize = (sample(.data$DepProb, 
+          size = length(.data$DepProb), 
+          replace = FALSE))) %>%
+      dplyr::filter(.data$GeneNameID == dummy_geneID) %>%
+      dplyr::select(-.data$DepProb) %>%
+      dplyr::rename(DepProb = .data$DepProb_randomize)
+    
+    df_post_filter_check <- df %>%
+      dplyr::count(.data$CellType)
+    
+    if (any(df_post_filter_check$n < 2)) {
+      populate <- rep(NA, 5)
+      
+    } else if (all(df$DepProb == 0)) {
+      populate <- rep(0, 5)
+      
+    } else if (all(df$DepProb == 1)) {
+      populate <- rep(1, 5)
+      
+    } else {
+      # # MWU doesn't handle na or zero's
+      # well so # FOR NOW remove zeros.  df
+      # <- df %>% filter(!is.na(DepProb))
+      # %>% filter(DepProb != 0)
+      
+      stats <- df %>%
+        dplyr::group_by(.data$CellType) %>%
+        dplyr::summarize(
+          Median = stats::median(.data$DepProb, na.rm = TRUE), 
+          Mean = mean(.data$DepProb, na.rm = TRUE), .groups = "drop")
+      
+      if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
+        fit_pval <- stats::wilcox.test(
+          DepProb ~ CellType, df, 
+          paired = FALSE, alternative = "two.sided",
+          conf.int = TRUE, na.action = "na.omit")$p.value
+        
+      } else if ((any(is.na(stats)) == TRUE) & (nrow(stats) == 2)) {
+        populate <- rep(0, 5)
+      }
+      
+      if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
+        populate <- as.numeric(c(unlist(stats)[-c(1, 2)], fit_pval))
+      } else {
+        populate <- rep(0, 5)
+      }
+    }
+    
+    tibble(Result = 
+      c("Control_median", "Mutant_median", "Control_mean", 
+      "Mutant_mean", "Pval")) %>%
+      dplyr::mutate(!!sym(dummy_geneID) := populate) %>%
+      tidyr::pivot_longer(-.data$Result) %>%
+      tidyr::pivot_wider(
+        names_from = .data$Result,
+        values_from = .data$value) %>%
+      dplyr::rename(GeneNameID = .data$name)
+  }  # End of for loop
   
   # Add mutant group name
   output <- All_res %>%
-    mutate(
+    dplyr::mutate(
       perm_test = 1:n_perm,
       n_perm = n_perm) %>%
-    select(-.data$GeneNameID) %>%
-    select(.data$perm_test, everything())
+    dplyr::select(-.data$GeneNameID) %>%
+    dplyr::select(.data$perm_test, everything())
   
   # save and return output
   output %>%
     readr::write_csv(file = output_dir_and_filename)
   
-  message("Permutations finished. Outputs were also written to: ",
-          output_dir_and_filename)
+  message(
+    "Permutations finished. Outputs were also written to: ", 
+    output_dir_and_filename)
+
   return(output)
 }

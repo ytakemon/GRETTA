@@ -13,7 +13,7 @@
       hello,
       "Welcome to GRETTA! ", 
       "The version loaded is: ", utils::packageVersion("GRETTA"), "\n",
-      "The latest DepMap dataset accompanying this package is v23Q2. \n",
+      "The latest DepMap dataset accompanying this package is v24Q3. \n",
       "Please refer to our tutorial on GitHub for loading DepMap data and details: https://github.com/ytakemon/GRETTA \n"
     )
 }

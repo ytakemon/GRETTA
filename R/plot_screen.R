@@ -42,9 +42,9 @@ plot_screen <- function(result_df = NULL, label_genes = FALSE, gene_list = NULL,
     dplyr::mutate(
       Rank = seq_len(length(.data$Interaction_score)),
       color = dplyr::case_when(
-        .data$Pval >= 0.05 ~ "darkgray", .data$Pval < 0.05 & .data$log2FC_by_median >
-          0 ~ "#882255", .data$Pval < 0.05 & .data$log2FC_by_median < 0 ~
-          "#882255"
+        .data$Pval >= 0.05 ~ "darkgray", 
+        .data$Pval < 0.05 & .data$log2FC_by_median > 0 ~ "#882255", 
+        .data$Pval < 0.05 & .data$log2FC_by_median < 0 ~ "#882255"
       )
     )
   

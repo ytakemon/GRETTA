@@ -8,6 +8,7 @@
 #' @param input_aa_change string Amino acid change (eg. "A387A"). input_gene must be specified
 #' @param input_disease string Cancer type listed in `list_available_cancer_types()`
 #' @param input_disease_subtype string Cancer subtype listed in `list_available_cancer_subtypes()`
+#' @param rnai_screen logical, TRUE if performing analysis using RNAi screen data, FALSE (default) performing analysis using CRISPR KO data, Default: FALSE
 #' @param data_dir string Path to GINIR_data
 #' 
 #' @return Data frame containing a summary of mutations found in cell lines and their control and mutant group assignments.
@@ -46,7 +47,7 @@
 #' data_dir = gretta_data_dir)
 #' 
 
-select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_disease = NULL, input_disease_subtype = NULL, data_dir = NULL){
+select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_disease = NULL, input_disease_subtype = NULL, rnai_screen = FALSE, data_dir = NULL){
   
   # Print and check to see input
   if(is.null(c(input_gene, input_disease, input_disease_subtype))){
@@ -96,8 +97,21 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     load(paste0(data_dir, "/mut_calls.rda"), envir = environment())
     load(paste0(data_dir, "/copy_num_annot.rda"), envir = environment())
     load(paste0(data_dir, "/copy_num.rda"), envir = environment())
-    load(paste0(data_dir, "/dep.rda"), envir = environment())
     load(paste0(data_dir, "/sample_annot.rda"), envir = environment())
+
+    # Load dep data
+    if(rnai_screen){ # RNAi screen
+      dep <- dep_annot <- rnai_long <- rnai_annot <- NULL
+      load(paste0(data_dir, "/rnai_long.rda"), envir = environment())
+      load(paste0(data_dir, "/rnai_annot.rda"), envir = environment())
+      dep <- rnai_long 
+      dep_annot <- rnai_annot
+
+    } else { # CRISPR KO screen
+      dep <- dep_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
+      load(paste0(data_dir, "/dep.rda"), envir = environment())
+      load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
+    }
     
     # Check if input gene mutations exist
     if(!any(mut_calls$Hugo_Symbol %in% input_gene) &
@@ -108,7 +122,7 @@ select_cell_lines <- function(input_gene = NULL, input_aa_change = NULL, input_d
     # Convert to unique geneID
     input_geneID <- copy_num_annot %>% 
       filter(.data$GeneNames == input_gene) %>% 
-      pull(GeneNameID)
+      pull(.data$GeneNameID)
     
     # Get copy number
     # Fix names if needed

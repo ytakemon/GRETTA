@@ -33,7 +33,7 @@ get_GeneNameID <- function(gene_name, data_dir) {
   }
   
   # Load necessary data
-  dep_annot <- CCLE_exp_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
+  dep_annot <- CCLE_exp_annot <- copy_num_annot <- NULL  # see: https://support.bioconductor.org/p/24756/
   load(paste0(data_dir, "/dep_annot.rda"), envir = environment())
   load(paste0(data_dir, "/CCLE_exp_annot.rda"), envir = environment())
   load(paste0(data_dir, "/copy_num_annot.rda"), envir = environment())
