@@ -195,8 +195,8 @@ library(GRETTA)
 #>     |  |__| | |  |\  \----.|  |____     |  |        |  |     /  _____  \  
 #>      \______| | _| `._____||_______|    |__|        |__|    /__/     \__\ 
 #>     
-#>     Welcome to GRETTA! The version loaded is: 2.3.0
-#> The latest DepMap dataset accompanying this package is v23Q2. 
+#>     Welcome to GRETTA! The version loaded is: 3.0.0
+#> The latest DepMap dataset accompanying this package is v24Q3. 
 #> Please refer to our tutorial on GitHub for loading DepMap data and details: https://github.com/ytakemon/GRETTA
 ```
 
@@ -264,6 +264,7 @@ list_cancer_types(data_dir = gretta_data_dir)
 
 ## List all available cancer subtypes
 list_cancer_subtypes(input_disease = "Lung Cancer", data_dir = gretta_data_dir)
+#> See sample_annot.rda in your data directory for a complist list of cell line annotation.
 #>  [1] "Non-Small Cell Lung Cancer (NSCLC), Adenocarcinoma"          
 #>  [2] "Small Cell Lung Cancer (SCLC)"                               
 #>  [3] "Non-Small Cell Lung Cancer (NSCLC), Squamous Cell Carcinoma" 
@@ -722,57 +723,57 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#>  [1] GRETTA_2.3.0    lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
+#>  [1] GRETTA_3.0.0    lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
 #>  [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
 #>  [9] tibble_3.2.1    ggplot2_3.5.1   tidyverse_2.0.0
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1              Exact_3.2                    
-#>  [3] rootSolve_1.8.2.4             farver_2.1.2                 
-#>  [5] libcoin_1.0-10                blob_1.2.4                   
-#>  [7] filelock_1.0.3                fastmap_1.2.0                
-#>  [9] TH.data_1.1-2                 BiocFileCache_2.10.2         
-#> [11] digest_0.6.35                 timechange_0.3.0             
-#> [13] lifecycle_1.0.4               multcompView_0.1-10          
-#> [15] survival_3.6-4                lmom_3.0                     
-#> [17] RSQLite_2.3.7                 magrittr_2.0.3               
-#> [19] compiler_4.3.2                rlang_1.1.3                  
-#> [21] doMC_1.3.8                    tools_4.3.2                  
-#> [23] utf8_1.2.4                    yaml_2.3.8                   
-#> [25] data.table_1.15.4             knitr_1.47                   
-#> [27] labeling_0.4.3                bit_4.0.5                    
-#> [29] curl_5.2.1                    plyr_1.8.9                   
-#> [31] RootsExtremaInflections_1.2.1 multcomp_1.4-25              
-#> [33] expm_0.999-9                  withr_3.0.0                  
-#> [35] stats4_4.3.2                  grid_4.3.2                   
-#> [37] fansi_1.0.6                   e1071_1.7-14                 
-#> [39] colorspace_2.1-0              scales_1.3.0                 
-#> [41] iterators_1.0.14              MASS_7.3-60                  
-#> [43] cli_3.6.2                     mvtnorm_1.2-5                
-#> [45] rmarkdown_2.27                generics_0.1.3               
-#> [47] rstudioapi_0.16.0             httr_1.4.7                   
-#> [49] tzdb_0.4.0                    readxl_1.4.3                 
-#> [51] gld_2.6.6                     DBI_1.2.3                    
-#> [53] cachem_1.1.0                  proxy_0.4-27                 
-#> [55] modeltools_0.2-23             splines_4.3.2                
-#> [57] parallel_4.3.2                cellranger_1.1.0             
-#> [59] rcompanion_2.4.36             matrixStats_1.3.0            
-#> [61] vctrs_0.6.5                   sandwich_3.1-0               
-#> [63] boot_1.3-28.1                 Matrix_1.6-5                 
-#> [65] hms_1.1.3                     bit64_4.0.5                  
-#> [67] ggrepel_0.9.5                 nortest_1.0-4                
-#> [69] foreach_1.5.2                 diptest_0.77-1               
-#> [71] glue_1.7.0                    codetools_0.2-19             
-#> [73] stringi_1.8.4                 gtable_0.3.5                 
-#> [75] lmtest_0.9-40                 munsell_0.5.1                
-#> [77] pillar_1.9.0                  htmltools_0.5.8.1            
-#> [79] R6_2.5.1                      dbplyr_2.5.0                 
-#> [81] doParallel_1.0.17             evaluate_0.23                
-#> [83] lattice_0.22-5                highr_0.11                   
-#> [85] backports_1.5.0               memoise_2.0.1                
-#> [87] broom_1.0.6                   DescTools_0.99.54            
-#> [89] class_7.3-22                  Rcpp_1.0.12                  
-#> [91] coin_1.4-3                    inflection_1.3.6             
-#> [93] xfun_0.44                     zoo_1.8-12                   
-#> [95] pkgconfig_2.0.3
+#>  [1] DBI_1.2.3                     gld_2.6.6                    
+#>  [3] sandwich_3.1-0                readxl_1.4.3                 
+#>  [5] rlang_1.1.4                   magrittr_2.0.3               
+#>  [7] multcomp_1.4-25               matrixStats_1.3.0            
+#>  [9] e1071_1.7-14                  compiler_4.3.2               
+#> [11] RSQLite_2.3.7                 vctrs_0.6.5                  
+#> [13] pkgconfig_2.0.3               fastmap_1.2.0                
+#> [15] backports_1.5.0               dbplyr_2.5.0                 
+#> [17] labeling_0.4.3                utf8_1.2.4                   
+#> [19] rmarkdown_2.27                tzdb_0.4.0                   
+#> [21] bit_4.0.5                     xfun_0.44                    
+#> [23] modeltools_0.2-23             cachem_1.1.0                 
+#> [25] blob_1.2.4                    highr_0.11                   
+#> [27] broom_1.0.6                   parallel_4.3.2               
+#> [29] DescTools_0.99.54             R6_2.5.1                     
+#> [31] coin_1.4-3                    stringi_1.8.4                
+#> [33] boot_1.3-28.1                 lmtest_0.9-40                
+#> [35] diptest_0.77-1                cellranger_1.1.0             
+#> [37] Rcpp_1.0.12                   iterators_1.0.14             
+#> [39] knitr_1.47                    zoo_1.8-12                   
+#> [41] Matrix_1.6-5                  splines_4.3.2                
+#> [43] timechange_0.3.0              tidyselect_1.2.1             
+#> [45] rstudioapi_0.16.0             yaml_2.3.8                   
+#> [47] doParallel_1.0.17             codetools_0.2-19             
+#> [49] curl_5.2.1                    lattice_0.22-5               
+#> [51] plyr_1.8.9                    withr_3.0.0                  
+#> [53] inflection_1.3.6              evaluate_0.23                
+#> [55] RootsExtremaInflections_1.2.1 survival_3.6-4               
+#> [57] proxy_0.4-27                  BiocFileCache_2.10.2         
+#> [59] pillar_1.9.0                  filelock_1.0.3               
+#> [61] foreach_1.5.2                 nortest_1.0-4                
+#> [63] stats4_4.3.2                  generics_0.1.3               
+#> [65] hms_1.1.3                     munsell_0.5.1                
+#> [67] scales_1.3.0                  rootSolve_1.8.2.4            
+#> [69] class_7.3-22                  glue_1.7.0                   
+#> [71] lmom_3.0                      tools_4.3.2                  
+#> [73] data.table_1.15.4             Exact_3.2                    
+#> [75] mvtnorm_1.2-5                 grid_4.3.2                   
+#> [77] rcompanion_2.4.36             libcoin_1.0-10               
+#> [79] colorspace_2.1-0              doMC_1.3.8                   
+#> [81] cli_3.6.2                     fansi_1.0.6                  
+#> [83] expm_0.999-9                  gtable_0.3.5                 
+#> [85] digest_0.6.35                 ggrepel_0.9.5                
+#> [87] TH.data_1.1-2                 farver_2.1.2                 
+#> [89] memoise_2.0.1                 htmltools_0.5.8.1            
+#> [91] lifecycle_1.0.4               httr_1.4.7                   
+#> [93] multcompView_0.1-10           bit64_4.0.5                  
+#> [95] MASS_7.3-60
 ```
