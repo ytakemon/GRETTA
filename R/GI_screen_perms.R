@@ -138,7 +138,7 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
       paste0(Control_group_avail, collapse = ", "))
     stop(say)
   }
-  if (length(Control_group_avail) < 2) {
+  if (length(Mutant_groups_avail) < 2) {
     say <- paste0(
       "Not enough mutants were screened! Only the following mutant samples were screen: ",
       paste0(Mutant_groups_avail, collapse = ", "))
@@ -191,14 +191,21 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
     
     # Create randomly sampled DepProb dataframe
     dummy_geneID <- "A1BG_1"
-    df <- select_dep %>% 
-      dplyr::mutate(
-        DepProb_randomize = (sample(.data$DepProb, 
-          size = length(.data$DepProb), 
-          replace = FALSE))) %>%
-      dplyr::filter(.data$GeneNameID == dummy_geneID) %>%
-      dplyr::select(-.data$DepProb) %>%
-      dplyr::rename(DepProb = .data$DepProb_randomize)
+    df <- tibble::tibble(
+      DepMap_ID = unique(select_dep$DepMap_ID),
+      GeneNameID = dummy_geneID,
+      CellType = c(rep("Control", length(Control_group_avail)), rep("Mutant", length(Mutant_groups_avail))),
+      DepProb = sample(select_dep$DepProb, size = length(unique(select_dep$DepMap_ID)), replace = FALSE)
+    )
+
+    # Pick again if NAs
+    while (any(is.na(df$DepProb))) {
+      df <- tibble::tibble(
+      DepMap_ID = unique(select_dep$DepMap_ID),
+      GeneNameID = dummy_geneID,
+      CellType = c(rep("Control", length(Control_group_avail)), rep("Mutant", length(Mutant_groups_avail))),
+      DepProb = sample(select_dep$DepProb, size = length(unique(select_dep$DepMap_ID)), replace = FALSE))
+    }
     
     df_post_filter_check <- df %>%
       dplyr::count(.data$CellType)
