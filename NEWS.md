@@ -1,3 +1,6 @@
+# GRETTA 3.1.0
+- Changing random sampling method in `GI_screen_perms()`to ensure sample size of groups are the same. Otherwise, errors are common.
+
 # GRETTA 3.0.0
 GRETTA now supports RNAi screns! 
 - Formatted RNAi data can be downloaded from https://www.bcgsc.ca/downloads/ytakemon/GRETTA/RNAi/
