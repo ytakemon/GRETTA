@@ -1,3 +1,6 @@
+# GRETTA 3.2.0
+- In `GI_screen_perms()` NAs in dep probs have been filtered early on improve speed.
+
 # GRETTA 3.1.0
 - Changing random sampling method in `GI_screen_perms()`to ensure sample size of groups are the same. Otherwise, errors are common.
 
