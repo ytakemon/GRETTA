@@ -154,7 +154,7 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
           DepMap_ID %in% Mutant_groups_avail ~ "Mutant", 
           DepMap_ID %in% Control_group_avail ~ "Control", 
           TRUE ~ "Others")) %>%
-      dplyr::filter(.data$CellType != "Others") %>%
+      dplyr::filter(.data$CellType != "Others", !is.na(.data$DepProb)) %>%
       dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType, "Control", "Mutant"))
 
   } else {
@@ -168,7 +168,7 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
           DepMap_ID %in% Mutant_groups_avail ~ "Mutant", 
           DepMap_ID %in% Control_group_avail ~ "Control", 
           TRUE ~ "Others")) %>%
-      dplyr::filter(.data$CellType != "Others") %>%
+      dplyr::filter(.data$CellType != "Others", !is.na(.data$DepProb)) %>%
       dplyr::mutate(CellType = forcats::fct_relevel(.data$CellType, "Control", "Mutant"))
   }
   
@@ -197,15 +197,6 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
       CellType = c(rep("Control", length(Control_group_avail)), rep("Mutant", length(Mutant_groups_avail))),
       DepProb = sample(select_dep$DepProb, size = length(unique(select_dep$DepMap_ID)), replace = FALSE)
     )
-
-    # Pick again if NAs
-    while (any(is.na(df$DepProb))) {
-      df <- tibble::tibble(
-      DepMap_ID = unique(select_dep$DepMap_ID),
-      GeneNameID = dummy_geneID,
-      CellType = c(rep("Control", length(Control_group_avail)), rep("Mutant", length(Mutant_groups_avail))),
-      DepProb = sample(select_dep$DepProb, size = length(unique(select_dep$DepMap_ID)), replace = FALSE))
-    }
     
     df_post_filter_check <- df %>%
       dplyr::count(.data$CellType)
