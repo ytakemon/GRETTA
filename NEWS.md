@@ -1,3 +1,6 @@
+# GRETTA 3.3.0
+- Fixes issue #44 compatibility with R-4.4.
+
 # GRETTA 3.2.0
 - In `GI_screen_perms()` NAs in dep probs have been filtered early on improve speed.
 
