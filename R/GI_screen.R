@@ -261,7 +261,8 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
       if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)){
         
         fit_pval <- stats::wilcox.test(
-          DepProb ~ CellType, df, paired = FALSE, 
+          DepProb ~ CellType, df, 
+          # paired = FALSE, 
           alternative = "two.sided", conf.int = TRUE, 
           na.action = "na.omit")$p.value
         
