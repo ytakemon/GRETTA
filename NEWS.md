@@ -1,4 +1,5 @@
 # GRETTA 3.4.0
+- Fixes issues in `GI_screen_perms()` that caused control and mutant groups to be mismatched due to in efficient fitering.
 
 # GRETTA 3.3.0
 - Fixes issue #44 compatibility with R-4.4.
@@ -7,7 +8,7 @@
 - In `GI_screen_perms()` NAs in dep probs have been filtered early on improve speed.
 
 # GRETTA 3.1.0
-- Changing random sampling method in `GI_screen_perms()`to ensure sample size of groups are the same. Otherwise, errors are common.
+- Changing random sampling method in `GI_screen_perms()` to ensure sample size of groups are the same. Otherwise, errors are common.
 
 # GRETTA 3.0.0
 GRETTA now supports RNAi screns! 
