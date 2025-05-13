@@ -190,6 +190,14 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
     }
     
     # Create randomly sampled DepProb dataframe
+    # need to recount due to potential loss of samples with NA values
+    Control_group_avail <- select_dep %>% 
+      dplyr::filter(.data$CellType == "Control") %>% 
+      dplyr::pull(.data$DepMap_ID) %>% unique()
+    Mutant_groups_avail <- select_dep %>%
+      dplyr::filter(.data$CellType == "Mutant") %>% 
+      dplyr::pull(.data$DepMap_ID) %>% unique()
+      
     dummy_geneID <- "A1BG_1"
     df <- tibble::tibble(
       DepMap_ID = unique(select_dep$DepMap_ID),

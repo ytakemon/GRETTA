@@ -1,6 +1,6 @@
 Package: GRETTA
 Title: Genetic inteRaction and EssenTiality neTwork mApper
-Version: 3.3.0
+Version: 3.4.0
 Authors@R:
     c(person(given = "Yuka",
         family = "Takemon",
