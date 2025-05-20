@@ -243,6 +243,11 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
     } else if (all(df$DepProb == 1)) {
       populate <- rep(1, 11)
       
+    # An error occurs when there is no variaion in the data
+    # Move on if that is the case
+    } else if (length(unique(df$DepProb)) == 1) {
+      populate <- rep(0, 11)
+
     } else {
       # # MWU doesn't handle na or zero's
       # well so # FOR NOW remove zeros.  df
