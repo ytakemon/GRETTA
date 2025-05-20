@@ -1,3 +1,6 @@
+# GRETTA 3.4.1
+- Fix for situations when dep scores are identical across all samples. ie. there is no variation. This issue occurs in `GI_screen()`. 
+
 # GRETTA 3.4.0
 - Fixes issues in `GI_screen_perms()` that caused control and mutant groups to be mismatched due to in efficient fitering.
 
