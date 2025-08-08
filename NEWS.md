@@ -1,3 +1,8 @@
+# GRETTA 4.0.0
+- `GI_screen()` and `GI_screen_perms()` are now 5X faster to perform! 
+- Code has been stream lined and uses less compute overhead. 
+- Cliff's delta and dip p-values are only evaluated when P-value is < 0.1 to reduce compute burden. 
+
 # GRETTA 3.4.1
 - Fix for situations when dep scores are identical across all samples. ie. there is no variation. This issue occurs in `GI_screen()`. 
 
