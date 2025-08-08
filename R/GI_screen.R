@@ -69,6 +69,7 @@
 #' @importFrom tidyselect everything
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
+#' @importFrom data.table dcast as.data.table data.table
 
 GI_screen <- function(control_id = NULL, mutant_id = NULL,
   gene_list = NULL, core_num = NULL, rnai_screen = FALSE, 
@@ -202,52 +203,51 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
     select_dep <- select_dep %>%
       dplyr::filter(.data$GeneNameID %in% select_dep_annot$GeneNameID)
   }
+
+  # get list of unique genes
+  unique_GeneNameID <- unique(select_dep$GeneNameID)
   
   # Need to define function. A fix for a strange bug:
   `%dopar%` <- foreach::`%dopar%`
   
   # For testing short loops:
   if (test == TRUE) {
-    run <- 3
+    run <- 10
   } else if (test == FALSE) {
-    run <- length(unique(select_dep$GeneNameID))
+    run <- length(unique_GeneNameID)
   }
   
   # Begin loop
   All_res <- each <- NULL
-  All_res <- foreach::foreach(each = seq_len(run), .combine = bind_rows) %dopar% {                                
+  All_res <- foreach::foreach(each = seq_len(run), .combine = rbind) %dopar% {                                
     # Give feedback
     if (each == 1) {
-      message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
-    } else if (each == length(unique(select_dep$GeneNameID))) {
-      message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
+      message("Processing ", each, " of ", run)
+    } else if (each == run) {
+      message("Processing ", each, " of ", run)
     } else if (each%%1000 == 0) {
-      message("Processing ", each, " of ", length(unique(select_dep$GeneNameID)))
+      message("Processing ", each, " of ", run)
     }
     
     # Get each gene
-    geneID <- unique(select_dep$GeneNameID)[each]
-    df <- select_dep %>%
-      dplyr::filter(.data$GeneNameID == geneID) %>%
-      dplyr::filter(!is.na(.data$DepProb))
+    geneID <- unique_GeneNameID[each]
+    df <- select_dep[select_dep$GeneNameID == geneID & !is.na(select_dep$DepProb), ]
     
     df_post_filter_check <- df %>%
       dplyr::count(.data$CellType)
     
-    if (any(df_post_filter_check$n < 2)) {
-      populate <- rep(NA, 11)
-      
-    } else if (all(df$DepProb == 0)) {
-      populate <- rep(0, 11)
-      
-    } else if (all(df$DepProb == 1)) {
-      populate <- rep(1, 11)
-      
-    # An error occurs when there is no variaion in the data
-    # Move on if that is the case
-    } else if (length(unique(df$DepProb)) == 1) {
-      populate <- rep(0, 11)
+    # setup empty vector table for results
+    empty_df <- data.table::data.table(
+      GeneNameID = geneID, Control_median = NA_real_, Mutant_median = NA_real_,
+      Control_mean = NA_real_, Mutant_mean = NA_real_, Control_sd = NA_real_,
+      Mutant_sd = NA_real_, Control_iqr = NA_real_, Mutant_iqr = NA_real_,
+      Pval = NA_real_, CliffDelta = NA_real_, dip_pval = NA_real_)
 
+    if (
+      any(df_post_filter_check$n < 2) | all(df$DepProb == 0) | all(df$DepProb == 1) | 
+      length(unique(df$DepProb)) == 1) {
+      return(empty_df)
+      
     } else {
       # # MWU doesn't handle na or zero's
       # well so # FOR NOW remove zeros.  df
@@ -264,73 +264,80 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
           .groups = "drop")
       
       if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)){
-        
+
+        # Feed in vectors instead of formula to reduce run time
+        X_mut = df$DepProb[df$CellType == "Mutant"]
+        Y_ctrl = df$DepProb[df$CellType == "Control"]
+
         fit_pval <- stats::wilcox.test(
-          DepProb ~ CellType, df, 
+          X_mut, Y_ctrl,
           # paired = FALSE, 
-          alternative = "two.sided", conf.int = TRUE, 
+          alternative = "two.sided", conf.int = FALSE, 
           na.action = "na.omit")$p.value
-        
-        # If group size is < 3 cliffDelta
-        # will have error: missing value
-        # where TRUE/FALSE needed
-        # Important note: because
-        # celltype has a specific factor
-        # order specified for select_dep,
-        # a delta > 0 indicates an effect
-        # score greater in the Control
-        # (first level) and a delta < 0
-        # means an effect score greater
-        # in the Mutant( second level)
-        
-        CliffDelta <- rcompanion::cliffDelta(
-          DepProb ~ CellType, df)
-        
-        # Add diptest for uni/multi
-        # modality null hypothesis if p >
-        # 0.05 the data is unimodal
-        # alternative hyp if p < 0.05 the
-        # data is multimodal
-        dip_pval <- df %>%
-          dplyr::filter(.data$CellType == "Mutant") %>%
-          dplyr::pull(.data$DepProb) %>%
-          diptest::dip.test() %>%
-          broom::tidy() %>%
-          dplyr::pull(.data$p.value)
+
+        # Comput cliff's delta and dip test if needed
+        # to reduce expensive run time 
+        if(fit_pval < 0.1){
+          # If group size is < 3 cliffDelta
+          # will have error: missing value
+          # where TRUE/FALSE needed
+          # Important note: because
+          # celltype has a specific factor
+          # order specified for select_dep,
+          # a delta > 0 indicates an effect
+          # score greater in the Control
+          # (first level) and a delta < 0
+          # means an effect score greater
+          # in the Mutant( second level)
+          CliffDelta <- rcompanion::cliffDelta(
+          x = Y_ctrl, y = X_mut)
+
+          # Add diptest for uni/multi
+          # modality null hypothesis if p >
+          # 0.05 the data is unimodal
+          # alternative hyp if p < 0.05 the
+          # data is multimodal
+          dip_pval <- diptest::dip.test(X_mut)$p.value
+
+        } else {
+          CliffDelta <-  NA_real_
+          dip_pval <-  NA_real_
+        }
         
       } else if ((any(is.na(stats)) == TRUE) & (nrow(stats) == 2)) {
-        populate <- rep(0, 11)
+        return(empty_df)
       }
       
       if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
-        populate <- as.numeric(
-          c(
-            unlist(stats)[-c(1, 2)], 
-            fit_pval, 
-            -CliffDelta[[1]],
-            dip_pval
-          )
-        )
+        wide_stats <- data.table::dcast(
+          data.table::as.data.table(stats), . ~ CellType, value.var = c("Median", "Mean", "SD", "IQR"))
+
+        out <- data.table::data.table(
+          GeneNameID = geneID,
+          Control_median = wide_stats$Median_Control,
+          Mutant_median = wide_stats$Median_Mutant,
+          Control_mean = wide_stats$Mean_Control,
+          Mutant_mean = wide_stats$Mean_Mutant,
+          Control_sd = wide_stats$SD_Control,
+          Mutant_sd = wide_stats$SD_Mutant,
+          Control_iqr = wide_stats$IQR_Control,
+          Mutant_iqr = wide_stats$IQR_Mutant,
+          Pval = fit_pval,
+          CliffDelta = CliffDelta,
+          dip_pval = dip_pval
+        ) 
+
+        return(out)
+
       } else {
-        populate <- rep(0, 11)
+        return(empty_df)
       }
     }
-    
-    tibble(Result = c("Control_median", "Mutant_median",
-                      "Control_mean", "Mutant_mean", "Control_sd",
-                      "Mutant_sd", "Control_iqr", "Mutant_iqr",
-                      "Pval", "CliffDelta", "dip_pval")) %>%
-      dplyr::mutate(!!sym(geneID) := populate) %>%
-      tidyr::pivot_longer(-.data$Result) %>%
-      tidyr::pivot_wider(
-        names_from = .data$Result, 
-        values_from = .data$value) %>%
-      dplyr::rename(GeneNameID = .data$name)
   }  # End of for loop
   
   # Add mutant group name
   if(rnai_screen){
-    output <- All_res %>%
+    output <- All_res %>% as_tibble() %>%
       dplyr::mutate(
         # flip sign to match KO data  (Interaction_score > 0 == SL ; < 0 == AL)
         log2FC_by_median = log2((.data$Mutant_median + 10)/(.data$Control_median + 10)) * -1,
@@ -345,7 +352,7 @@ GI_screen <- function(control_id = NULL, mutant_id = NULL,
                     tidyselect::everything(), .data$Interaction_score)
 
   } else {
-    output <- All_res %>%
+    output <- All_res %>% as_tibble() %>%
       dplyr::mutate(
         log2FC_by_median = log2(.data$Mutant_median/.data$Control_median),
         log2FC_by_mean = log2(.data$Mutant_mean/.data$Control_mean),

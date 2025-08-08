@@ -54,5 +54,6 @@ Imports:
     RootsExtremaInflections,
     tibble,
     BiocFileCache,
-    tools
+    tools,
+    data.table
 VignetteBuilder: knitr

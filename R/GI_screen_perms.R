@@ -57,6 +57,7 @@
 #' @importFrom tidyselect everything
 #' @importFrom readr write_csv
 #' @importFrom stats median sd IQR wilcox.test p.adjust
+#' @importFrom data.table dcast as.data.table data.table
 
 GI_screen_perms <- function(control_id = NULL, mutant_id = NULL, 
   rnai_screen = FALSE, n_perm = 100,
@@ -209,14 +210,16 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
     df_post_filter_check <- df %>%
       dplyr::count(.data$CellType)
     
-    if (any(df_post_filter_check$n < 2)) {
-      populate <- rep(NA, 5)
-      
-    } else if (all(df$DepProb == 0)) {
-      populate <- rep(0, 5)
-      
-    } else if (all(df$DepProb == 1)) {
-      populate <- rep(1, 5)
+    # setup empty vector table for results
+    empty_df <- data.table::data.table(
+      GeneNameID = dummy_geneID, 
+      Control_median = NA_real_, Mutant_median = NA_real_,
+      Control_mean = NA_real_, Mutant_mean = NA_real_,
+      Pval = NA_real_)
+
+    if (any(df_post_filter_check$n < 2) | all(df$DepProb == 0) | all(df$DepProb == 1) | 
+      length(unique(df$DepProb)) == 1) {
+      return(empty_df)
       
     } else {
       # # MWU doesn't handle na or zero's
@@ -231,36 +234,43 @@ GI_screen_perms <- function(control_id = NULL, mutant_id = NULL,
           Mean = mean(.data$DepProb, na.rm = TRUE), .groups = "drop")
       
       if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
+        # Feed in vectors instead of formula to reduce run time
+        X_mut = df$DepProb[df$CellType == "Mutant"]
+        Y_ctrl = df$DepProb[df$CellType == "Control"]
+
         fit_pval <- stats::wilcox.test(
-          DepProb ~ CellType, df, 
+          X_mut, Y_ctrl,
           # paired = FALSE, 
-          alternative = "two.sided",
-          conf.int = TRUE, na.action = "na.omit")$p.value
+          alternative = "two.sided", conf.int = FALSE, 
+          na.action = "na.omit")$p.value
         
       } else if ((any(is.na(stats)) == TRUE) & (nrow(stats) == 2)) {
-        populate <- rep(0, 5)
+        return(empty_df)
       }
       
       if ((any(is.na(stats)) != TRUE) & (nrow(stats) == 2)) {
-        populate <- as.numeric(c(unlist(stats)[-c(1, 2)], fit_pval))
+        wide_stats <- data.table::dcast(
+          data.table::as.data.table(stats), . ~ CellType, value.var = c("Median", "Mean"))
+
+        out <- data.table::data.table(
+          GeneNameID = dummy_geneID,
+          Control_median = wide_stats$Median_Control,
+          Mutant_median = wide_stats$Median_Mutant,
+          Control_mean = wide_stats$Mean_Control,
+          Mutant_mean = wide_stats$Mean_Mutant,
+          Pval = fit_pval
+        ) 
+
+        return(out)
+
       } else {
-        populate <- rep(0, 5)
+        return(empty_df)
       }
     }
-    
-    tibble(Result = 
-      c("Control_median", "Mutant_median", "Control_mean", 
-      "Mutant_mean", "Pval")) %>%
-      dplyr::mutate(!!sym(dummy_geneID) := populate) %>%
-      tidyr::pivot_longer(-.data$Result) %>%
-      tidyr::pivot_wider(
-        names_from = .data$Result,
-        values_from = .data$value) %>%
-      dplyr::rename(GeneNameID = .data$name)
   }  # End of for loop
   
   # Add mutant group name
-  output <- All_res %>%
+  output <- All_res %>% as_tibble() %>%
     dplyr::mutate(
       perm_test = 1:n_perm,
       n_perm = n_perm) %>%
