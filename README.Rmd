@@ -30,7 +30,7 @@ The DepMap data used in this tutorial is version 22Q2. This version along with a
 
 ## Maintainer
 
-This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), a PhD candidate in [Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)'s laboratory at [Canada's Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
+This repository is maintained by [Yuka Takemon](https://github.com/ytakemon), research associate in [Dr. Marco Marra](https://www.bcgsc.ca/labs/marra-lab)'s laboratory at [Canada's Michael Smith Genome Sciences Centre](https://www.bcgsc.ca/).
 
 ## Citations 
 
@@ -349,7 +349,7 @@ To determine co-essential genes, we will perform multiple Pearson correlation co
 ```{r coess_df, eval = FALSE}
 ## Map co-essential genes
 coess_df <- coessential_map(
-  input_gene = "ARID1A", 
+  input_genes = "ARID1A", 
   data_dir = gretta_data_dir, 
   output_dir = gretta_output_dir) 
 
@@ -395,7 +395,7 @@ Instead of mapping for essentiality across all available cell lines, users can a
 ```{r coess_for_panc, eval = FALSE}
 ## Map co-essential genes in pancreatic cancers only
 coess_df <- coessential_map(
-  input_gene = "ARID1A",
+  input_genes = "ARID1A",
   input_disease = "Pancreatic Cancer",
   core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
   data_dir = gretta_data_dir, 
@@ -415,7 +415,7 @@ We can also map essentiality across a manually defined list of cell lines using 
 custom_lines <- c("ACH-000001", "ACH-000002", "ACH-000003",...)
 
 coess_df <- coessential_map(
-  input_gene = "ARID1A",
+  input_genes = "ARID1A",
   input_cell_lines = custom_lines,
   core_num = 5, ## Depending on how many cores you have access to, increase this value to shorten processing time.
   data_dir = gretta_data_dir, 

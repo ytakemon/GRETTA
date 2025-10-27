@@ -235,7 +235,14 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
                                           data_dir = data_dir
       )
       Gene_A_effect <- gene_effect_long %>%
-        dplyr::filter(.data$GeneNameID == Gene_A_GeneNameID)
+        dplyr::filter(
+          .data$GeneNameID == Gene_A_GeneNameID,
+          !is.na(.data$Effect_score)
+          )
+      
+      if(nrow(Gene_A_effect) < 10){
+        stop("Less than 10 obs. Co-essentiality screens require > 10 observations.")
+      }
       
       # Need to define function. A fix for a
       # strange bug:
@@ -252,6 +259,7 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
       } else {
         run <- length(unique(AllGenes))
       }
+
       res <- each <- NULL
       res <- foreach::foreach(
         each = seq_len(run),
@@ -276,27 +284,42 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
         
         Gene_B_effect <- gene_effect_long %>%
           dplyr::filter(.data$GeneNameID == AllGenes[each])
-        
-        test_df <- Gene_A_effect %>%
-          dplyr::select(.data$DepMap_ID, Effect_scoreA = .data$Effect_score) %>%
-          dplyr::full_join(Gene_B_effect %>% dplyr::select(.data$DepMap_ID, Effect_scoreB = .data$Effect_score)) %>%
-          filter(!is.na(.data$Effect_scoreA) & !is.na(.data$Effect_scoreB))
-        
-        res_pearson <- cor.test(test_df$Effect_scoreA,
-                                test_df$Effect_scoreB,
-                                alternative = "two.sided",
-                                method = "pearson", na.action = "na.omit") %>%
-          broom::tidy() %>%
-          dplyr::mutate(
+
+        if(nrow(Gene_B_effect) < 10){
+          res_pearson <- dplyr::tibble(
             GeneNameID_A = Gene_A_GeneNameID,
             GeneNameID_B = AllGenes[each]
-          ) %>%
-          dplyr::select(
-            .data$GeneNameID_A, .data$GeneNameID_B,
-            tidyr::everything()
           )
-        
-        res_pearson
+
+        } else {
+          test_df <- Gene_A_effect %>%
+            dplyr::select(.data$DepMap_ID, Effect_scoreA = .data$Effect_score) %>%
+            dplyr::full_join(Gene_B_effect %>% dplyr::select(.data$DepMap_ID, Effect_scoreB = .data$Effect_score)) %>%
+            filter(!is.na(.data$Effect_scoreA) & !is.na(.data$Effect_scoreB))
+          
+          if(nrow(test_df) < 10){
+            res_pearson <- dplyr::tibble(
+              GeneNameID_A = Gene_A_GeneNameID,
+              GeneNameID_B = AllGenes[each]
+            )
+          } else {
+            res_pearson <- cor.test(test_df$Effect_scoreA,
+                                    test_df$Effect_scoreB,
+                                    alternative = "two.sided",
+                                    method = "pearson", na.action = "na.omit") %>%
+              broom::tidy() %>%
+              dplyr::mutate(
+                GeneNameID_A = Gene_A_GeneNameID,
+                GeneNameID_B = AllGenes[each]
+              ) %>%
+              dplyr::select(
+                .data$GeneNameID_A, .data$GeneNameID_B,
+                tidyr::everything()
+              )
+            
+            return(res_pearson)
+          }
+        }
       }
       All_res <- dplyr::bind_rows(All_res, res)
     }
@@ -345,5 +368,4 @@ coessential_map <- function(input_genes = NULL, input_disease = NULL,
     )
     return(output)
   }
-  }
-
+}
