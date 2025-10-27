@@ -1,3 +1,6 @@
+# GRETTA 4.1.0
+- Bug due to missing observations in `coessential_map()` were fixed.
+
 # GRETTA 4.0.0
 - `GI_screen()` and `GI_screen_perms()` are now 5X faster to perform! 
 - Code has been stream lined and uses less compute overhead. 
