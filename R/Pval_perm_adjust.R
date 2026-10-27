@@ -17,19 +17,22 @@
 #' @export 
 
 Pval_perm_adjust <- function(p_value = NULL, perm_pvalues = NULL) {
-  if(is.na(p_value)|p_value == Inf){
-    return(NA_integer_)
+  if(is.na(p_value) | is.infinite(p_value)){
+    return(NA_real_)
 
   } else if(p_value == 1){
     return(1)
-    
+
   } else {
-    x <- table(perm_pvalues <= p_value)
-    if(length(x) < 2){
-      res <- 1/(x[[1]]+1)
-    } else {
-      res <- x[["TRUE"]]/(x[["FALSE"]]+ x[["TRUE"]]+1)
+    perm_pvalues <- perm_pvalues[!is.na(perm_pvalues)]
+
+    n <- length(perm_pvalues)
+    if(n == 0){
+      return(NA_real_)
     }
+
+    res <- (sum(perm_pvalues <= p_value) + 1)/(n + 1)
+
     return(res)
   }
 }
